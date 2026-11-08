@@ -23,15 +23,19 @@ local function normalize(values)
     return result
 end
 
-local saved = {}
-if openUnnerfPack:HasData() then
-    local ok, value = pcall(function() return json.decode(openUnnerfPack:LoadData()) end)
-    if ok and type(value) == "table" and value.version == 1 then
-        saved = value
+local choices, run
+local function load()
+    local saved = {}
+    if openUnnerfPack:HasData() then
+        local ok, value = pcall(function() return json.decode(openUnnerfPack:LoadData()) end)
+        if ok and type(value) == "table" and value.version == 1 then
+            saved = value
+        end
     end
+    choices = normalize(saved.settings)
+    run = type(saved.run) == "table" and saved.run or nil
 end
-local choices = normalize(saved.settings)
-local run = type(saved.run) == "table" and saved.run or nil
+load()
 local active = normalize(run and run.settings or choices)
 
 local function save()
@@ -66,6 +70,9 @@ local function registerMenu()
 end
 
 openUnnerfPack:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, continued)
+    -- Isaac selects a separate mod data file for each save slot. Lua can stay
+    -- loaded across slot switches, so never write the previous slot's cache.
+    load()
     local seed = Game():GetSeeds():GetStartSeed()
     if continued and run and run.seed == seed then
         active = normalize(run.settings)

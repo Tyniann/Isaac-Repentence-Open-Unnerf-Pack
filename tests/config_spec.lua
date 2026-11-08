@@ -122,6 +122,36 @@ test("continue with no matching snapshot uses saved choices", function()
     start(true); assert(not openUnnerfPack.Config.IsEnabled("relic"))
 end)
 
+test("save-slot switches reload choices and Continue snapshots without reloading Lua", function()
+    for _, withMenu in ipairs({false, true}) do
+        for _, nextSeed in ipairs({12345, 67890}) do
+            boot(nil, withMenu); start(false)
+            local slotA = storage
+            -- Select slot B while the same Lua callbacks/menu closures remain alive.
+            seed = nextSeed
+            storage = dkjson.encode({version = 1, settings = {orbitals = false},
+                run = {seed = nextSeed, settings = {orbitals = false, relic = false}}})
+            start(true)
+            assert(not openUnnerfPack.Config.IsEnabled("orbitals"), "slot B active")
+            assert(not openUnnerfPack.Config.IsEnabled("relic"), "slot B snapshot")
+            assert(dkjson.decode(storage).settings.orbitals == false, "slot B choices")
+            if withMenu then assert(menu[2].CurrentSetting() == false, "slot B menu") end
+            local slotB = storage
+            storage, seed = slotA, 12345
+            start(true)
+            assert(openUnnerfPack.Config.IsEnabled("orbitals"), "slot A active")
+            if withMenu then assert(menu[2].CurrentSetting() == true, "slot A menu") end
+            storage, seed = slotB, nextSeed
+            start(false)
+            assert(not openUnnerfPack.Config.IsEnabled("orbitals"), "slot B new run")
+            assert(openUnnerfPack.Config.IsEnabled("relic"), "slot B new choices")
+            -- A previously unused slot must not inherit the preceding slot's Off.
+            storage = nil
+            start(false); checkDefaults()
+        end
+    end
+end)
+
 test("Maw damage cache is refreshed after selecting new-run settings", function()
     boot('{"version":1,"settings":{"mawOfTheVoid":false},"run":{"seed":12345,"settings":{"mawOfTheVoid":true}}}', true)
     player.HasCollectible = function() return true end

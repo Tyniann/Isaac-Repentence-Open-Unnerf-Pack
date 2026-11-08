@@ -44,9 +44,9 @@ the pack's own Isaac `SaveData`, not in MCM. Missing/invalid JSON or an unknown
 schema version defaults all seven to On. Within version 1, missing/non-boolean
 fields default individually to On; unknown fields are ignored. Continue without
 a matching saved run seed uses saved choices (including runs predating this
-feature). Only the most recent run's snapshot is retained; switching save slots
-can therefore lose the older run's snapshot. Avoid changing slots during a
-stateful configuration test.
+feature). Settings and the latest run snapshot are stored separately for each Isaac save
+slot and reloaded at game start, including when switching slots without
+relaunching the game.
 
 The integration targets **MCM Pure v113**, inspected at revision
 [`a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d`](https://github.com/Zamiell/isaac-mod-config-menu/blob/a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d/scripts/modconfig.lua).

@@ -29,9 +29,11 @@ lua tests/config_spec.lua /tmp/ounp-modconfig.lua
 find . -name '*.lua' -print0 | xargs -0 -n1 luac -p
 ```
 
-Both harness modes pass 13 checks. Optional source mode executes the upstream
+Both harness modes pass 14 checks. Optional source mode executes the upstream
 registration helpers from OptionType through AddText, rather than substituting
 those helpers. It does **not** execute MCM's rendering/input loop or Isaac.
+The suite also switches save-slot backing data without reloading Lua to check
+that one slot cannot overwrite another's choices or Continue snapshot.
 Fixtures test all seven callback gates independently; soul-heart helper spies
 verify dispatch isolation, not the helpers' engine behavior. Existing gameplay
 bugs remain in scope for issue #1/#2, not fixed or certified by these tests.
@@ -85,6 +87,10 @@ provide console-assisted item access; no item-access seeds are claimed here.
 5. On backed-up disposable pack save data only, test invalid JSON, missing file,
    wrong schema version and individual malformed fields per README fallback.
    Relaunch and confirm defaults; retain logs. Restore the original data after.
+6. Save different choices and continued runs in two disposable save slots.
+   Switch between them without restarting the game; confirm each slot retains
+   its menu choices and run snapshot, then starts new runs with its own choices.
+   The harness covers both equal and different seeds, with MCM present/absent.
 
 Outstanding acceptance: real MCM UI/input, engine callback ordering (particularly
 initial cache/familiar updates), exit/relaunch/Continue in-engine, absent MCM
