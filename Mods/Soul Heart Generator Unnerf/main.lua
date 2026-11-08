@@ -1,10 +1,7 @@
 soulheartgeneratorUnnerf = RegisterMod("Soul Heart Generator Unnerf",1)
 soulheartgeneratorUnnerf.game = Game()
-soulheartgeneratorUnnerf.enableRelicUnnerf = true
-soulheartgeneratorUnnerf.enableDarkBumUnnerf = true
 soulheartgeneratorUnnerf.enableNailUnnerf = false
 soulheartgeneratorUnnerf.enableSatanicBibleUnnerf = false
-soulheartgeneratorUnnerf.enableBlueFireUnnerf = true
 
 
 --Requires
@@ -15,16 +12,16 @@ require("Mods/Soul Heart Generator Unnerf/satanicbibleunnerf")
 require("Mods/Soul Heart Generator Unnerf/bluefireunnerf")
 
 function soulheartgeneratorUnnerf:familiarUpdate(familiar) --Unnerf Relic
-	if (self.enableRelicUnnerf) then
+	if (openUnnerfPack.Config.IsEnabled("relic")) then
 	self.relicunnerf.initRelicClearCount(familiar)
 	end
 end
 
 function soulheartgeneratorUnnerf:PickupInit(pickup)
-	if (self.enableRelicUnnerf) then
+	if (openUnnerfPack.Config.IsEnabled("relic")) then
 		self.relicunnerf.pickupInit(pickup)
 	end
-	if (self.enableDarkBumUnnerf) then
+	if (openUnnerfPack.Config.IsEnabled("darkBum")) then
 		self.darkbumunnerf.pickupInit(pickup)
 	end
 end
@@ -46,8 +43,8 @@ function soulheartgeneratorUnnerf:UseItem(item, rng, player, flags)
 end
 
 function soulheartgeneratorUnnerf:EntityTakeDamage(entity, amount, flags)
-	if (self.enableBlueFireUnnerf and self.game.Difficulty == Difficulty.DIFFICULTY_HARD) then
-		self.bluefireUnnerf.entityTakeDamage(entity, flags)
+	if (openUnnerfPack.Config.IsEnabled("blueFires") and self.game.Difficulty == Difficulty.DIFFICULTY_HARD) then
+		self.bluefireUnnerf.entityTakeDamage(entity, amount, flags)
 
 	end
 end

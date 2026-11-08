@@ -1,6 +1,7 @@
 local orbitalUnnerf = RegisterMod("Orbital Unnerf",1)
 
 function orbitalUnnerf:familiarUpdate(familiar)
+    if not openUnnerfPack.Config.IsEnabled("orbitals") then return end
 	local orbitDistance = familiar.OrbitDistance
 	local data = familiar.GetData(familiar)
 	if (orbitDistance.X ~= 0 and orbitDistance.Y ~= 0 and (data.processed == nil or data.processed == false) and familiar.Variant ~= FamiliarVariant.BLUE_FLY) then --Check if familiar is an orbital and has not already been processed
