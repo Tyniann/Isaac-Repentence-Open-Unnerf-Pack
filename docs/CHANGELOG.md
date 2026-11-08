@@ -1,0 +1,17 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/),
+and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Added
+
+- Add seven independent unnerf toggles through optional Mod Config Menu Pure,
+  saved across relaunches and applied to new runs (#3, #5).
+
+### Fixed
+
+- Fix Mom's boss-foot stomp bypassing Host Hat and Pyromaniac immunity through additional contact damage; preserve one full red heart of Pyromaniac healing per crush impact ([#2](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/2)).
