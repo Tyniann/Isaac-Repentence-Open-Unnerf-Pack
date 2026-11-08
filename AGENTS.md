@@ -23,3 +23,7 @@ Single-context: root `GLOSSARY.md` and `docs/adr/`. Before exploring the codebas
 ### Pull requests
 
 Before creating, updating, taking over, or merging a pull request, read `docs/agents/pull-requests.md`. Own the review and fix cycle through integration or an explicit handoff.
+
+### Changelog
+
+Before making project changes or preparing a release, read `docs/agents/changelog-rules.md` for what to record in `docs/CHANGELOG.md` and how to format entries.
