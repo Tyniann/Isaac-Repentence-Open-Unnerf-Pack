@@ -1,4 +1,12 @@
 -- Contract regressions only: these doubles do not simulate Isaac's engine.
+local dkjson = require("dkjson")
+package.preload.json = function()
+    return {encode = dkjson.encode, decode = function(value)
+        local decoded, _, err = dkjson.decode(value)
+        if err then error(err) end
+        return decoded
+    end}
+end
 local mods, callbacks = {}, {}
 ModCallbacks = setmetatable({}, {__index = function(t, k) rawset(t, k, k); return k end})
 local function enums(names)
@@ -19,7 +27,8 @@ CacheFlag = {CACHE_DAMAGE=1}
 DamageFlag = {DAMAGE_EXPLOSION=4, DAMAGE_CRUSH=8}
 Difficulty = {DIFFICULTY_HARD=1, DIFFICULTY_NORMAL=0}
 local players, spawned = {}, 0
-local game = {Difficulty=1, GetNumPlayers=function() return #players end}
+local game = {Difficulty=1, GetNumPlayers=function() return #players end,
+    GetSeeds=function() return {GetStartSeed=function() return 12345 end} end}
 function Game() return game end
 Isaac = {GetPlayer=function(i) assert(i >= 0 and i < #players); return players[i+1] end,
     Spawn=function() spawned = spawned + 1 end}
@@ -27,6 +36,8 @@ function Vector(x,y) return {X=x,Y=y} end
 function RegisterMod(name)
     local mod = {}
     mods[name] = mod
+    function mod:HasData() return false end
+    function mod:SaveData() end
     function mod:AddCallback(id, fn)
         callbacks[id] = callbacks[id] or {}
         table.insert(callbacks[id], {self,fn})
@@ -56,7 +67,11 @@ local function player(count, bundle)
     return p
 end
 dofile('main.lua')
-assert(soulheartgeneratorUnnerf.enableRelicUnnerf and soulheartgeneratorUnnerf.enableDarkBumUnnerf and soulheartgeneratorUnnerf.enableBlueFireUnnerf)
+players = {player(0,false)}
+emit(ModCallbacks.MC_POST_GAME_STARTED, false)
+for _, key in ipairs({"mawOfTheVoid", "orbitals", "stompImmunity", "humblingBundle", "darkBum", "relic", "blueFires"}) do
+    assert(openUnnerfPack.Config.IsEnabled(key))
+end
 assert(not soulheartgeneratorUnnerf.enableNailUnnerf and not soulheartgeneratorUnnerf.enableSatanicBibleUnnerf)
 -- Index zero, final player, absence, and pre-doubled pickups.
 for _, ownership in ipairs({{true}, {false,true}, {true,false}}) do

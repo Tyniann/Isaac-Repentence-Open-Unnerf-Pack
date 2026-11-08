@@ -1,6 +1,7 @@
 local pyromaniacunnerf = RegisterMod("pyromaniacunnerf",1)
 
 function pyromaniacunnerf:takeDamage(target, amount, flags)
+    if not openUnnerfPack.Config.IsEnabled("stompImmunity") then return end
     local isCrush = (flags & DamageFlag.DAMAGE_CRUSH) ~= 0
     if (target.Type == EntityType.ENTITY_PLAYER and (isCrush)) then
         local player = target:ToPlayer()
