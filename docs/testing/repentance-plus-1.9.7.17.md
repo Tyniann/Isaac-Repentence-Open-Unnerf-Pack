@@ -136,7 +136,15 @@ ordering and #2 stomp reproduction are unresolved. If vanilla has restored a
 mechanic, revise that module before accepting the row; this audit does not assume
 an old nerf still exists. No closure keyword belongs in this PR yet.
 
-Before merging, compare the parallel #3 configuration PR and resolve overlapping
+Compared the published [configuration PR #5](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/pull/5)
+diff on 2026-11-08. It overlaps Maw, Humbling Bundle, soul-heart callback dispatch,
+stomp and README. Before merging, compare its latest head and resolve overlapping
 module changes: preserve these callback arguments, index range, player data cache
 and spawner guards while incorporating its configuration independently. Nail and
 Satanic Bible must remain disabled. #4 Magic Mushroom is outside this change.
+
+PR #5 gates callbacks through `openUnnerfPack.Config.IsEnabled`; retain those gates
+alongside this patch's fixes. Its damage-cache callback/run-start re-evaluation
+must operate on the per-player count implementation. Update the regression
+harness to supply configuration when testing the integrated loader, and rerun
+both test suites. The current independent PRs have not been merged together.
