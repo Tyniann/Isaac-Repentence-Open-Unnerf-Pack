@@ -68,6 +68,17 @@ end
 players = {player(0,false)}
 assert(emit(ModCallbacks.MC_POST_PICKUP_SELECTION, {}, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY) == nil)
 assert(emit(ModCallbacks.MC_POST_PICKUP_SELECTION, {}, PickupVariant.PICKUP_COIN, CoinSubType.COIN_DOUBLEPACK) == nil)
+players = {player(0,true)}
+for _, pair in ipairs({
+    {PickupVariant.PICKUP_HEART,HeartSubType.HEART_FULL,HeartSubType.HEART_DOUBLEPACK},
+    {PickupVariant.PICKUP_COIN,CoinSubType.COIN_PENNY,CoinSubType.COIN_DOUBLEPACK},
+    {PickupVariant.PICKUP_KEY,KeySubType.KEY_NORMAL,KeySubType.KEY_DOUBLEPACK},
+    {PickupVariant.PICKUP_BOMB,BombSubType.BOMB_NORMAL,BombSubType.BOMB_DOUBLEPACK}
+}) do
+    local selected=emit(ModCallbacks.MC_POST_PICKUP_SELECTION,{},pair[1],pair[2])
+    assert(selected[1] == pair[1] and selected[2] == pair[3])
+    assert(emit(ModCallbacks.MC_POST_PICKUP_SELECTION,{},pair[1],pair[3]) == nil)
+end
 -- Distinct players must not continually invalidate one another's damage cache.
 local a,b = player(1),player(0)
 for _=1,3 do emit(ModCallbacks.MC_POST_PEFFECT_UPDATE,a); emit(ModCallbacks.MC_POST_PEFFECT_UPDATE,b) end
@@ -95,4 +106,26 @@ local orbitalData={}
 local orbital={Variant=100,OrbitDistance=Vector(40,40),Size=10,CollisionDamage=7,GetData=function() return orbitalData end}
 emit(ModCallbacks.MC_FAMILIAR_UPDATE,orbital); emit(ModCallbacks.MC_FAMILIAR_UPDATE,orbital)
 assert(orbital.Size == 13 and orbital.CollisionDamage == 14)
+-- Dark Bum morphs only pickup rewards for eligible owners, not missing owners.
+local bum={Variant=FamiliarVariant.DARK_BUM,Player={GetPlayerType=function() return 100 end}}
+function bum:ToFamiliar() return self end
+local morphs=0
+local reward={SpawnerType=3,SpawnerEntity=bum,Variant=PickupVariant.PICKUP_COIN,SubType=CoinSubType.COIN_PENNY}
+function reward:Morph(kind,variant,subtype)
+    assert(kind == EntityType.ENTITY_PICKUP)
+    morphs=morphs+1; self.Variant=variant; self.SubType=subtype
+end
+emit(ModCallbacks.MC_POST_PICKUP_INIT,reward); assert(morphs == 1 and reward.SubType == HeartSubType.HEART_SOUL)
+emit(ModCallbacks.MC_POST_PICKUP_INIT,reward); assert(morphs == 1)
+for _,excluded in pairs(PlayerType) do
+    bum.Player.GetPlayerType=function() return excluded end
+    reward.Variant=PickupVariant.PICKUP_COIN; reward.SubType=CoinSubType.COIN_PENNY
+    emit(ModCallbacks.MC_POST_PICKUP_INIT,reward); assert(morphs == 1)
+end
+bum.Player=nil; emit(ModCallbacks.MC_POST_PICKUP_INIT,reward); assert(morphs == 1)
+-- Preserve the existing Maw dark-ring selector and assignment.
+local laser={SpawnerEntity={ToPlayer=function() return a end},GetSprite=function()
+    return {GetFilename=function() return "gfx/007.001.003_Dark Ring.anm2" end}
+end}
+emit(ModCallbacks.MC_POST_LASER_UPDATE,laser); assert(laser.BlackHpDropChance == 0.05)
 print('PASS: callback contract regressions (not engine/gameplay validation)')

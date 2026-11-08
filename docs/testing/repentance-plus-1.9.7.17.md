@@ -14,6 +14,28 @@ Local `lua5.3 tests/compatibility.lua` exercises registered callbacks with test
 doubles. It proves Lua control flow regressions only, not engine behavior,
 spawn timing, native damage, native rewards, or vanilla balance.
 
+## Installed-build source evidence
+
+The [read-only Windows evidence report](../research/repentance-plus-installed-evidence.md)
+records installed API/script line citations, packed XML provenance and checksum
+verification, and the limits of those sources. Key observations:
+
+- `resources/scripts/enums.lua:20–26,54–57` specifies the damage/pickup callback
+  contracts; `resources/scripts/main.lua:223` defaults GetPlayer to index 0.
+- `repentance.a` → `resources-dlc3/items.xml:406` lists Maw cache `tearcolor`,
+  whereas `afterbirth.a` → `resources/items.xml:403` lists `tearcolor damage`.
+  This is consistent with removed damage behavior, but does not prove a +1
+  amount or establish the current engine's effective archive precedence.
+- `repentance.a` → `resources-dlc3/entities2.xml:203–239,293` gives distinct
+  orbital collision damage/interval values (e.g. Dagger 15/4, Meat L1 7/4,
+  Big Fan 2/7). The installed changelog says several orbitals' contact damage
+  was fixed; it does not identify them. Uniform doubling still needs testing.
+- `changelog.txt:992,1031` historically restores blue-fire Normal drops to 25%.
+  It establishes neither the current Hard rate nor purple-fire rates.
+- XML identifies Relic 3.23, Dark Bum 3.64, fires 33.2/33.3 and distinct Mom/Satan
+  stomp entities. Native payout algorithms, callback readiness, per-frame stat
+  rewrites and immunity are not specified by those records.
+
 ## API and implementation audit
 
 The five `require` calls remain in the root loader. Soul-heart defaults remain
@@ -70,6 +92,7 @@ API references (API descriptions, not game-runtime evidence):
 - [Game player count](https://wofsauge.github.io/IsaacDocs/rep/Game.html#getnumplayers)
 - [Isaac.GetPlayer](https://wofsauge.github.io/IsaacDocs/rep/Isaac.html#getplayer)
 - [Familiar fields](https://wofsauge.github.io/IsaacDocs/rep/EntityFamiliar.html)
+- [Console command syntax](https://wofsauge.github.io/IsaacDocs/rep/tutorials/DebugConsole.html)
 - [Laser fields/methods](https://wofsauge.github.io/IsaacDocs/rep/EntityLaser.html)
 
 ## Owner-run procedure
@@ -82,7 +105,7 @@ commit SHA, character, difficulty, other mods, fresh/continue status and Lua err
 
 Use an already enabled debug console. If it is not enabled, coordinate the owner's
 preferred console setup separately. The commands below use the standard `giveitem
-c<ID>`, `remove c<ID>` and `spawn type.variant.subtype` syntax. No item-access seed
+c<ID>`, named `remove` and `spawn type.variant.subtype` syntax. No item-access seed
 is claimed. Each row starts a separate fresh Isaac run unless stated otherwise.
 Run the same interaction with the pack disabled, then with the pack enabled.
 Do not toggle the pack during a continued run. Quit to menu and Continue with the
@@ -91,13 +114,13 @@ same configuration for continuation checks. Save logs/error text and observation
 | Feature | Exact setup / interaction | Intended pack outcome; vanilla comparison | Observed / outstanding |
 | --- | --- | --- | --- |
 | Load | Start Normal Isaac with pack enabled; enter a room, quit to menu, Continue; repeat Hard | Five modules load, no pack Lua errors or state drift | **Pending owner**, fresh and continue |
-| Maw | `giveitem c399`; record damage, charge/release ring into enemies; give a second copy; `remove c399` and record count/damage again | +1 damage per copy through cache; removal recalculates; ring can drop black hearts at configured 0.05 chance. Compare vanilla item damage and many ring kills for already restored effects | Contract cache tests pass; native damage, ring identity, drops and continue **pending** |
+| Maw | `giveitem c399`; record damage, charge/release ring into enemies; give a second copy; `remove Maw of the Void` and record count/damage again | +1 damage per copy through cache; removal recalculates; ring can drop black hearts at configured 0.05 chance. Compare vanilla item damage and many ring kills for already restored effects | Contract cache tests pass; native damage, ring identity, drops and continue **pending** |
 | Orbitals | Separately `giveitem c73` (Cube of Meat), `giveitem c10` (Halo of Flies), `giveitem c279` (Big Fan); touch the same enemy type with the orbital; add repeated c73 copies to change its state; leave/return and Continue | Existing rule size >=13 and doubled contact damage once per entity. Compare contact damage/ticks and hitbox to vanilla; do not apply twice if already restored | Contract idempotence passes; native damage resetting, state transitions, recreation and stacking **pending** |
 | Dark Bum | `giveitem c278`; repeatedly `spawn 5.10.1`, allow Bum to consume hearts and pay out; repeat with Lost/Keeper and tainted variants | Nonexcluded owners' familiar pickup rewards become soul hearts; excluded owners keep native rewards. Record spiders separately and compare native payout frequency | Missing-spawner guard passes; reward identity, owner, payout cycle, continue **pending** |
 | Relic | `giveitem c98`; clear actual hostile rooms, number each clear and payout; add another c98; quit/Continue between payouts | Counter-based earlier soul-heart payout, each familiar independently. Record exact native versus modded intervals, first payout and remainder after continue before accepting restoration | Contract counter writes pass; native threshold/reset timing and exact cadence **pending** |
 | Blue/purple fires Hard | Hard Isaac: `spawn 33.2.0`, then `spawn 33.3.0`; `giveitem c19` (Boom); bomb each fire. Repeat many times, recording 0/1/2 heart drops and repeated/nonlethal hits | Extra 0.17 roll on explosion damage only; establish whether vanilla already restores the intended rate and whether duplicates distort it | Callback forwarding/type/mode tests pass; native baseline, final distribution and duplicate risk **pending** |
 | Blue/purple fires Normal | Repeat same fire/bomb procedure in Normal | Pack contributes no additional roll; native behavior unchanged | Contract mode gate passes; engine comparison **pending** |
-| Stomp | Separate runs: `giveitem c375` (Host Hat), `giveitem c223` (Pyromaniac), both, neither. For each `spawn 45.0.0` (Mom's foot); stand under a stomp. Wound Isaac beforehand for healing case | No stomp damage with either item; Pyromaniac heals one red heart per cancelled crush. Repeat against an ordinary enemy to confirm noncrush damage remains. Capture actual flags/logs if mismatch | **Pending owner and #2**; console foot fixture must be confirmed to attack in this room, otherwise use actual Mom fight |
+| Stomp | Separate runs: `giveitem c375` (Host Hat), `giveitem c223` (Pyromaniac), both, neither. For each `giveitem c550` (Broken Shovel); confirm it produces damaging stomps before testing protection. Wound Isaac beforehand for healing case | No stomp damage with either item; Pyromaniac heals one red heart per cancelled crush. Repeat against an ordinary enemy to confirm noncrush damage remains. Capture actual flags/logs if mismatch | **Pending owner and #2**; Broken Shovel fixture must first damage unprotected Isaac; confirm separately in actual Mom fight |
 | Humbling Bundle | `giveitem c203`; spawn `5.10.1`, `5.20.1`, `5.30.1`, `5.40.1`; also obtain random room rewards, open chests and revisit uncollected pickups; repeat without item | Single full red hearts/pennies/keys/bombs select double packs; already doubled pickups remain doubles. Compare vanilla random selection, also verify explicit spawn path invokes selection | Contract player enumeration and no reconversion pass; native callback paths and continue **pending** |
 
 For RNG rows, a single missing reward is not a failure and a single reward is not

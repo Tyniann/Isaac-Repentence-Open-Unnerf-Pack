@@ -5,7 +5,7 @@ function pyromaniacunnerf:takeDamage(target, amount, flags)
     if (target.Type == EntityType.ENTITY_PLAYER and (isCrush)) then
         local player = target:ToPlayer()
         if (player:HasCollectible(CollectibleType.COLLECTIBLE_PYROMANIAC) or player:HasCollectible(CollectibleType.COLLECTIBLE_HOST_HAT)) then
-            if (player:HasCollectible(CollectibleType.COLLECTIBLE_PYROMANIAC)) then --heal 1/2 heart when taking explosive/crush damage
+            if (player:HasCollectible(CollectibleType.COLLECTIBLE_PYROMANIAC)) then --heal one red heart (two half-heart units) on cancelled crush damage
                 player:AddHearts(2)
             end
             return false
