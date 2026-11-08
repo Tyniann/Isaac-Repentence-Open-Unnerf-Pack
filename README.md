@@ -77,8 +77,10 @@ is a validation target, not a result established by the Lua harness.
 
 For the owner's inspected installation the intended destination is
 `D:\The.Binding.of.Isaac.Repentance.v4.0.2\mods\open unnerf pack\`.
-Deployment there must be coordinated with the owner; it currently contains no
-installed copy of this pack. To uninstall, exit and remove the fork directory.
+The coordinated validation deployment is recorded in the engine results ledger;
+further changes there must be coordinated with the active session owner. To
+uninstall a normal local copy, exit and remove the fork directory. For the shared
+validation installation, use its recorded backup/restore plan.
 Other builds, Greed modes and multiplayer require separate validation.
 
 # Developer checks

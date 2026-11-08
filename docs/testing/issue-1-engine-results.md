@@ -491,17 +491,21 @@ Observer remains active with label `O1-independent-on`, latest snapshot sequence
 new test runs and menu choices were owner-controlled. No cleanup while active.
 Optional Maw ring observations are deferred to a later explicit handoff.
 
-## Optional observer protocol (not yet deployed or engine verified)
+## Shared observer protocol (deployed; initial snapshot engine verified)
 
-Source: `tools/compatibility-observer.lua`. It is not loaded by production
-`main.lua`. #3 must approve exact bytes and record hashes before optional staging.
-The session owner chooses its loader/path and verifies `luarun` support; do not
-guess a Windows working directory or reload production modules via `luamod`.
+Source: `tools/compatibility-observer.lua`, adopted unchanged by #3. It is not
+loaded by production `main.lua`; the shared validation installation loads these
+exact bytes as the separate `open_unnerf_validation_observer/main.lua` mod.
+The approved hash and verified installation are recorded above, and C1/M1/O1
+exercise its initial snapshot path. No additional staging or `luarun` is needed
+for that installation. Do not reload production modules via `luamod`.
 
-After loading the agreed observer file, the console protocol is:
+The established console protocol below is a reference for future bounded
+sessions, not an instruction to run commands or deploy again now. Only the
+explicit session owner may issue the next test sequence:
 
 ```lua
-lua OUPProbe.Start("M1-on", "ACTUAL_DEPLOYED_SHA", "fresh")
+lua OUPProbe.Start("TEST-LABEL", "ACTUAL_DEPLOYED_SHA", "fresh")
 lua OUPProbe.Snapshot("before-maw")
 lua OUPProbe.Snapshot("after-maw")
 lua OUPProbe.Stop()
