@@ -1,5 +1,7 @@
 openUnnerfPack = RegisterMod("Open Unnerf Pack",1)
 
+openUnnerfPack.Config = require("config")
+
 --Load Mods
 require("Mods/MawOfVoidUnnerf/main")
 require("Mods/Orbital Unnerf/main")

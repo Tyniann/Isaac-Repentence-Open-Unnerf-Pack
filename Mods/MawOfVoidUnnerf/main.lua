@@ -7,6 +7,7 @@ function mawofvoidunnerf:init(player)
 end
 
 function mawofvoidunnerf:blackheats(laser)
+    if not openUnnerfPack.Config.IsEnabled("mawOfTheVoid") then return end
 	local data = laser:GetData()
 	local spawnentity = laser.SpawnerEntity
 	if spawnentity ~= nil then
@@ -20,6 +21,7 @@ function mawofvoidunnerf:blackheats(laser)
 end
 
 function mawofvoidunnerf:statChange(player, flag)
+    if not openUnnerfPack.Config.IsEnabled("mawOfTheVoid") then return end
 	if player:HasCollectible(mawofvoid) and flag == CacheFlag.CACHE_DAMAGE then
 		local realMawOfVoidCount = player.GetCollectibleNum(player ,mawofvoid)
 		player.Damage = player.Damage + 1 * (realMawOfVoidCount)
@@ -27,6 +29,7 @@ function mawofvoidunnerf:statChange(player, flag)
 end
 
 function mawofvoidunnerf:update(player)
+    if not openUnnerfPack.Config.IsEnabled("mawOfTheVoid") then return end
 	local realMawOfVoidCount = player.GetCollectibleNum(player ,mawofvoid)
 	if (mawofVoidCount ~= realMawOfVoidCount) then
 	mawofVoidCount = realMawOfVoidCount

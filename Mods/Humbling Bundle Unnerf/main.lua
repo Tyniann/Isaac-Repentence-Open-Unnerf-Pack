@@ -2,6 +2,7 @@ local humbleBundleUnnerf = RegisterMod("Humbleing Bundle Unnerf Unnerf",1)
 humbleBundleUnnerf.game = Game()
 
 function humbleBundleUnnerf:pickUpSelection(pickup, variant, subtype) 
+    if not openUnnerfPack.Config.IsEnabled("humblingBundle") then return end
     hasItem = false
     
     for i,player in ipairs(humbleBundleUnnerf:getAllPlayers()) do
