@@ -1,0 +1,120 @@
+Issue #2: Mom boss-foot stomp immunity
+====================================
+Issue: https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/2
+Test date: 2026-11-08
+Game: Repentance+ 1.9.7.17.J460 (Windows installation/log evidence)
+Baseline gameplay revision: e2eb46f53ef2d70f7c1a97d173f8c867e1f8ca89
+Candidate: issue-2-v1, Open Unnerf Pack - Issue 2 Candidate
+Changed gameplay file: Mods/Stomp Immunity Unnerf/main.lua
+Candidate file SHA256:
+acdc6bf173ce5aacc02c87bdfceb20dd2aa9b5b89a76ec051cf530c972ecc735
+
+Diagnosis
+---------
+An owner-driven, console-assisted fresh Isaac run captured Mom's actual boss
+foot, not just a Broken Shovel foot. At game frame 142, source 45.10.0 was in
+state 7, animation Stomp, animation frames 27 and 28. It generated two events:
+
+1. amount=2.0, flags=16777216 (DAMAGE_CRUSH). The original pack cancelled it.
+2. amount=2.0, flags=0. The original pack allowed this extra foot contact.
+
+Host Hat was present, Pyromaniac absent, the pack global present, and the
+original stomp callback was registered. Next-frame red health went from 6/6
+to 4/6 (half-heart units): one full red heart lost across the sequence.
+Both events refer to the same source and frame; do not count them as two
+separately measured health losses.
+
+Baseline seed: YXZ9 KTZH. Full preserved log SHA256:
+91808a3be8fb811e75275468be8c930e1eac3495ee57956a02784c859f26751b
+
+Change
+------
+Preserve existing DAMAGE_CRUSH immunity. Also cancel unflagged contact when
+its source is Mom (type 45), foot variant 10, playing Stomp. Do not grant
+immunity to other enemies, Mom's door variants, other animations, or other
+non-crush flagged damage through this added check.
+
+Keep Pyromaniac healing at the existing AddHearts(2), one full red heart on
+the flagged crush impact. The extra contact events cancel without healing,
+including continued contact in subsequent frames. Correct the obsolete
+half-heart comment; do not change the implemented healing amount.
+
+Owner gameplay observations
+---------------------------
+Broken Shovel, original pack enabled:
+- No protective item: two stomps, one full heart lost in total.
+- Host Hat: visible foot hit and slight knockback, no damage or crash.
+- Pyromaniac: one full heart restored.
+Broken Shovel, no mods active:
+- Host Hat: one full heart lost.
+- Pyromaniac: one full heart lost.
+These initial observations did not include seeds or absolute health readings.
+
+Actual Mom, original pack:
+- Owner reported damage with Host Hat both without and with the pack.
+- Owner later distinguished an enemy-hit attempt from the fresh stomp run.
+- The instrumented YXZ9 KTZH run above independently captures the true foot
+  failure with Host Hat. No baseline actual-Mom Pyromaniac trace was captured.
+
+Actual Mom, candidate, Host Hat:
+- Owner reported no health loss and confirmed normal enemies still hurt.
+- Seed NKKG R339, Isaac, stage 6/type 0, room 93, frame 123.
+- Both 45.10.0 Stomp events (DAMAGE_CRUSH then flags=0) were cancelled;
+  next-frame red health stayed 6/6.
+- At frame 220, ordinary enemy source 15.0.0, animation Hop, flags=0,
+  amount=1.0 was allowed; red health went from 6/6 to 5/6.
+- Only candidate main.lua executed after the latest Lua reset, with one
+  stomp callback registered. Content-directory listings alone are not proof
+  of other mods' Lua being enabled.
+- No relevant Lua error or capture-cap warning was found.
+Full preserved log SHA256:
+82478fa50528bde63716e7cea79dff43a305c1f917319b0dfc698d168ac6156e
+
+Actual Mom, candidate, Pyromaniac:
+- Owner was guided through a separate fresh Isaac run, giving Pyromaniac,
+  removing two red hearts with AddHearts(-4), stage 6 and The Emperor card.
+- Owner reported: "Done. Gained 1 full heart" after one descending-foot hit.
+- Latest log seed 1RZM SAG2 confirms granting Pyromaniac and reaching Mom.
+- This result is owner-observed, not independently confirmed by a damage
+  trace: no new pyro=true hit events appeared. The probe's global guard said
+  it was already loaded after the new run, but callbacks produced no new
+  records. Do not claim the prior Host Hat events verify Pyromaniac.
+Full preserved final snapshot SHA256:
+9bcb02a5eb75eeea803dd4fe008ab7e86b398d0b531e35a75bdf7b9f2419689f
+
+Automated regression coverage
+-----------------------------
+Run from repository root: lua tests/stomp_immunity_test.lua
+The tests invoke the real registered damage callback with minimal engine
+adapters and the captured event pattern. The original callback failed 7 of
+19 cases; the candidate passes all 19 using Lua 5.4. This does not simulate
+the entire engine or replace the owner gameplay observations above.
+
+Coverage includes both events for both items, one-heart healing without
+extra contact healing, later impacts, no protective item, both items held,
+independent players, ordinary enemies, Mom door damage, other animations,
+special damage flags, missing source entities, and non-player targets.
+All 11 packaged Lua files passed syntax checks; required modules and archive
+contents were checked. The Windows candidate matches all 15 manifest-listed
+file hashes (16 package files total; the manifest does not hash itself).
+
+Cleanup and scope
+-----------------
+No diagnostic code is included in the repository fix or candidate package.
+The known temporary issue2_probe.lua was moved out of the game root into
+scratch after verifying its SHA256. A full game restart unloads its callbacks
+still in memory. The original baseline package and log snapshots are retained.
+
+The observed Mom-foot bypass is addressed by the narrow candidate. Other
+stomp sources, champion animations, difficulty modes, and game versions are
+not all covered. Do not describe every historical stomp report as verified.
+
+Integration with current master
+-------------------------------
+Master subsequently added the stompImmunity configuration toggle. The PR
+preserves its IsEnabled guard, so disabling the unnerf bypasses both crush
+and extra-contact cancellation and healing. Two additional callback checks
+cover the disabled setting independently for Host Hat and Pyromaniac, making
+21 regression checks in the integrated version. The candidate hash and game
+observations above refer to the earlier 19-check gameplay build, not a
+gameplay validation of the configuration menu itself.
