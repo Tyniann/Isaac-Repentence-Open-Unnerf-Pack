@@ -682,3 +682,176 @@ active/next-run/continued/seed state, preserve artifacts, and return ownership
 explicitly. No #3 competing game prompts or shared-state mutations while held.
 MCM/fallback fixture cleanup provenance remains preserved; slot3 pack data was
 originally absent and must not be silently removed while the game runs.
+
+## Corrected independent O1 orbital acquisition — shared engine evidence
+
+Issue #1 explicitly returned ownership after preserving corrected acquisition
+cases. Strict Off case: seed2753493845 (`ZR22 KLBA`), [New,2], baseline/Dagger
+sequence1932/1933, only orbitals=false and the other six (including Maw)=true
+in active/saved/run settings. Dagger collision-damage field15, size10,
+unprocessed; familiar1364138763, owner2795575305.
+
+Strict On case: seed711482952 (`E0DW DPJF`), [New,2], sequences1935(newrun),
+1936(baseline),1937(Dagger), all seven=true. Dagger collision-damage field30,
+size13, processed=true; familiar1909136033, owner4017206558. Exclude sequence1934:
+premature On label on the old Off run (active=false, next-run=true). The owner's
+pre-grant aggregate checks independently confirmed the six other active gates
+and fresh boundary in each corrected case.
+
+Artifacts: O1-independent-log SHA256
+`e95d7d7df2b85a9df9bde0b4a8937497fd1b50ac4b43d42c59c05ff1316831c7`;
+O1-independent JSONL SHA256
+`b5350229a71b33c294aa0dc940e3288ff0c70f4ad4aa74cdcb5f5f38b5e4e663`.
+All six raw records preserved with matching pre/post/copy hashes and no bounded
+Lua errors. Source/MCM/observer unchanged. Assessment: independent orbital field
+gating is demonstrated. Contact DPS, BFFS combat scaling, Meat transitions,
+other orbitals and a true pack-disabled vanilla control are not inferred.
+
+Earlier doorway/BFFS/Continue field observations had Maw=false in BOTH runs;
+retain those only with that actual context, not as strict six-others-On evidence.
+Their log SHA5ee0c315879717b15c1ed254c1267dad70703b827e8ae6e6d3b71d555e2acb09
+and JSONL SHA514744f70f3e2daf048787e227bfc30a63695b78c6b6a1e25288115730b95061
+remain useful lifecycle observations, not an independent acquisition pass.
+
+Returned current state: fresh Normal Isaac slot2 seed711482952, all seven On,
+Dagger1/BFFS0/Maw0, damage3.5, redhalf6, soul0, observer active
+O1-independent-on sequence1937/frame121. No implicit item cleanup. Issue #3
+owns next prompts; issue #1 sends none until another handoff. Planned next case:
+set only RelicOff, fresh Normal Isaac to clear the current Dagger test inventory,
+verify Relic=false and all other six active gates=true before any item grant.
+
+## R0/R1 independent Relic-Off setup and initialization
+
+Owner reported `R0 false true false 0` before granting anything: Relic=false,
+aggregate of the other six active gates=true, actual continued=false, Relic
+copies0 in a new Normal Isaac slot2 run. This clears the prior Dagger fixture
+via the explicit new-run transition.
+
+Owner then ran OUPProbe.Start('R-off',productionSHA,'fresh'), `giveitem c98`,
+closed the console for one second without changing rooms, and captured
+R-off-acquired. The short counter query returned0. This is owner-observed
+Relic-Off initial room-clear counter state; actual seed, familiar/owner IDs and
+complete active/saved/run fields will be extracted from the preserved log.
+No native payout cadence or room-clear behavior is inferred.
+
+Next control explicitly stops the Off probe before changing preferences/new
+run so automatic post-game-start snapshots cannot be mislabeled as Off evidence.
+Then set RelicOn (all seven On), start a new Normal Isaac slot2 run without
+restarting the app, and verify aggregate all-seven=true, actual continued=false,
+Relic copies0 using labelR2. Do not label/start the On probe or grant the item
+before the fresh-run setup check passes. Outcome pending.
+
+## R2/R3 Relic-On initialization — owner observation
+
+Owner reported `R2 true false 0` after a fresh Normal Isaac run: all seven active
+gates true, actual continued=false, Relic copies0. Only then was the On probe
+started, item98 granted, console closed one second without room traversal, and
+R-on-acquired captured. The short counter query returned `R3 2`.
+
+Together with Off's verified six-others-On setup and R1=0, this is matched
+independent initialization-gate evidence (Off initial counter0 versus On2).
+It is not payout cadence/reset ordering, a general Relic compatibility pass,
+or a guarantee about later room clears. Complete seeds/settings/familiar-owner
+identities and errors are being collected from the two labeled log snapshots.
+Current run stays open with Relic1; no implicit item cleanup or room movement.
+
+## Relic capture blocked by Windows provider bootstrap
+
+The R-final collection run failed BEFORE provider startup; no shell or copy
+operation ran. Exact failure: Codex cannot create shadow-home entry
+`state_5.sqlite` because the existing entry at
+`C:\\Users\\Mario\\.t3\\userdata\\providers\\codex\\codex_2bc57465-463e-4def-bb7d-e607a46dc4d9\\shadow\\state_5.sqlite`
+is not a symlink. Mafia-Server remains reachable and the required Luna/medium
+model is listed, but session bootstrap is blocked. Do not retry unchanged or
+delete/move provider databases as a game-test workaround.
+
+Issue #1 confirmed no live Windows Luna shell/PTY remains available; its prior
+collector had completed. No replacement provider/model was used, no provider
+DB was touched, and no game/config/source changes resulted from this failure.
+The owner-reported Relic Off0/On2 and strict setup queries remain recorded as
+OWNER-OBSERVED initialization/gate evidence; no R-final artifact/hash, exact
+Relic seeds/identities or log-error pass is claimed until captured.
+
+Issue #3 retains session ownership. Owner asked not to restart Isaac, to avoid
+overwriting the current launch log; the current On run with Relic1 remains open
+per last observation. A user-preference question offers provider restoration,
+a one-off manual log backup (only because agent access cannot perform it), or
+an explicit pause. No new gameplay steps should race the pending recovery.
+Deferred workflow issue #8 should retain this lesson: machine reachability and
+model catalog availability do not prove provider bootstrap or shell access.
+
+## Owner-requested collection retry — same bootstrap blocker
+
+Owner reported both machines online/paired/full-access and explicitly asked to
+retry. Parent confirmed Mafia-Server reachable/full-access, resumed the same
+Luna/medium collector, and observed the same pre-start shadow state_5.sqlite
+non-symlink failure. A separate fresh delegated startup smoke with the SAME
+provider/model/effort also failed before Get-Location could execute. This rules
+out an old-thread-only problem; pairing and remote API access work, while Codex
+provider bootstrap is blocked. No provider DB edits, model substitution, game
+commands or file collection occurred in either attempt. Preserve current game
+log; Relic exact artifact verification remains pending, with owner observations
+unchanged. Stop unchanged retries until an actual provider-state change or
+explicit recovery action is available.
+
+## Windows recovery and Relic snapshot corroboration
+
+After owner-reported infrastructure fixes, the same Windows Codex Luna/medium
+provider successfully started and executed Get-Location. The collector recovered
+the existing launch log without asking the owner to repeat any game step. PID2272
+remained open; source log/save metadata were unchanged during capture. Earlier
+startup failures were infrastructure-only; no provider DB repairs/model switch
+or game mutations were performed by issue #3.
+
+Five exact-label snapshots were preserved: R-off start/acquired/stop and R-on
+start/acquired. All report actual continued=false, MCM113, one type0 player,
+six red half-hearts and zero Maw copies. All six non-Relic gates are true in
+active/saved/run settings throughout. Relic is false in all three settings
+objects Off and true in all three On.
+
+- Off seed3124566089; baseline no familiar. Acquired/stop Relic variant23,
+  type3, familiar seed3779570156, owner seed2482275868, room-clear counter0.
+- On seed3074871929; baseline no familiar. Acquired Relic variant23, type3,
+  familiar seed2038030361, owner seed768699799, room-clear counter2.
+- Current pack schema1 has all seven choices/run settings true, seed3074871929.
+
+Artifacts: R-final-log.txt (578,425 bytes), SHA256
+`012e44e44fada520971fa62ce091185115a2913ce29516704e7f0b37a95beaf3`;
+R-final-snapshots.jsonl (five raw records), SHA256
+`194be4f949aef5d1a49f969a2c0b8853b3fd6c127865d3eafdd7e022a8b4e438`;
+R-final-save2.dat (313 bytes), SHA256
+`f9c2931af6613f5065861f516341cf4c1cfa18039a5fd4ebd57049ab175df807`.
+No matching Lua error/stack-trace lines. Assessment: independent Relic
+initialization-gate effect is now corroborated in-engine. No native payout
+cadence, reset-ordering or general compatibility conclusion is inferred.
+
+Current run remains On with Relic1. Next proposed case explicitly stops this
+probe, sets only DarkBumOff with other six On, and starts a fresh Normal Isaac
+slot2 run to clear the Relic fixture. A pre-grant aggregate check must pass
+before adding Dark Bum or feeding hearts. Any pickup tracing must remain
+read-only and distinguish native payout behavior from a synthetic callback case.
+
+## DB0 / DBAPI preparation
+
+Owner reported `DB0 false true false 0` in a fresh Normal Isaac slot2 run:
+DarkBum=false, aggregate other six active gates=true, actual continued=false,
+Dark Bum copies0. No item has been granted yet. The installed API check returned
+`DBAPI function function` for AddPriorityCallback and RemoveCallback.
+
+The main agent authored `tools/validation/dark-bum-pickup-trace.lua`, version1,
+and syntax-checked it. It is a separate optional diagnostic, not a change to the
+immutable observer or production functions. Planned registration: pickup-init
+observers at priorities-100/+100 around the existing default-priority production
+callback, plus a first-update observer at+100. Each observer returns nil and
+only logs state; no Morph, spawn, RNG, config, reward or save writes are present.
+It records pickup index AND InitSeed because Morph may change identity fields;
+matching must inspect actual before/after/first-update records, not assume seeds
+stay unchanged. Spawner presence/conversion and owner type are explicit fields.
+
+Only labels DB-off/DB-on with an active existing probe enable logging. Stop()
+disables logging and removes only the diagnostic's own exact callback function
+references. Installation source hash and registered callback metadata must be
+recorded separately. The file is not auto-loaded; first engine registration and
+native-payout observations remain pending. No synthetic payout/RNG forcing is
+part of the planned native feeding test. This is an issue-specific fixture,
+not implementation of the deferred general workflow in issue #8.
