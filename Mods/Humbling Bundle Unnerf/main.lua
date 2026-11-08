@@ -2,7 +2,7 @@ local humbleBundleUnnerf = RegisterMod("Humbleing Bundle Unnerf Unnerf",1)
 humbleBundleUnnerf.game = Game()
 
 function humbleBundleUnnerf:pickUpSelection(pickup, variant, subtype) 
-    hasItem = false
+    local hasItem = false
     
     for i,player in ipairs(humbleBundleUnnerf:getAllPlayers()) do
         hasItem = hasItem or player:HasCollectible(CollectibleType.COLLECTIBLE_HUMBLEING_BUNDLE)
@@ -25,12 +25,12 @@ function humbleBundleUnnerf:pickUpSelection(pickup, variant, subtype)
     end   
 end
 
-function humbleBundleUnnerf:getAllPlayers(this)
+function humbleBundleUnnerf:getAllPlayers()
     local allPlayers = { }
     local numPlayers = humbleBundleUnnerf.game:GetNumPlayers()
 
-    for i=1, numPlayers do
-        table.insert(allPlayers, humbleBundleUnnerf.game:GetPlayer(i) )
+    for i=0, numPlayers - 1 do
+        table.insert(allPlayers, Isaac.GetPlayer(i) )
     end
 
     return allPlayers
