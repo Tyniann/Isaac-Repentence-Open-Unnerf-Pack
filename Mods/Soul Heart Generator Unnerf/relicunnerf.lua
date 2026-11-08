@@ -8,9 +8,11 @@ function soulheartgeneratorUnnerf.relicunnerf.initRelicClearCount(familiar2)
 end
 
 function soulheartgeneratorUnnerf.relicunnerf.pickupInit(pickup)
-    if (pickup.SpawnerType == EntityType.ENTITY_FAMILIAR) then -- Pickup Spawned by familiar
-        if (pickup.SpawnerEntity.Variant == FamiliarVariant.RELIC) then --Pickup Spawned by Relic
-            pickup.SpawnerEntity.ToFamiliar(pickup.SpawnerEntity).RoomClearCount = 2 --Reset Relic RoomClearCount to 2
+    local spawner = pickup.SpawnerEntity
+    local familiar = spawner and spawner:ToFamiliar()
+    if (familiar and pickup.SpawnerType == EntityType.ENTITY_FAMILIAR) then -- Pickup Spawned by familiar
+        if (familiar.Variant == FamiliarVariant.RELIC) then --Pickup Spawned by Relic
+            familiar.RoomClearCount = 2 --Reset Relic RoomClearCount to 2
         end
 
     end
