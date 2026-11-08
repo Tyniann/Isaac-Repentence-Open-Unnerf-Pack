@@ -1,9 +1,5 @@
 ## Agent skills
 
-### Subagents and orchestration
-
-Before computer use or delegating work, read `docs/agents/subagents.md` for mandatory model and reasoning-effort assignments, task boundaries, validation handoffs, and coordination rules.
-
 ### Skill workflows
 
 Before choosing a task's workflow, inspect the names and descriptions in `.agents/skills/*/SKILL.md`. Read and apply the skills relevant to the task, loading their referenced material as needed. Discover the current catalog from the files rather than relying on a fixed list.
