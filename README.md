@@ -1,8 +1,13 @@
 # Isaac-Repentence-Open-Unnerf-Pack
 A pack of modular balance reverts targeting **The Binding of Isaac: Repentance+ v1.9.7.17**.
 
-Compatibility is under validation: no mod-enabled gameplay or multiplayer mode has
-yet been verified on this build. See the [per-feature audit and owner test matrix](docs/testing/repentance-plus-1.9.7.17.md) for evidence and outstanding checks.
+Compatibility is under validation. Fresh local Normal loading, relaunch/Continue,
+single-copy Maw damage/removal, and bounded Sacrificial Dagger field checks have
+been observed on this build. Full feature compatibility, combat/RNG behavior,
+other modes and multiplayer remain unverified. See the
+[per-feature audit and owner test matrix](docs/testing/repentance-plus-1.9.7.17.md)
+and [engine results ledger](docs/testing/issue-1-engine-results.md) for the exact
+conditions, evidence and outstanding checks.
 Steam Workshop link: https://steamcommunity.com/sharedfiles/filedetails/?id=2554325871
 
 # Unnerfs Currently Included
