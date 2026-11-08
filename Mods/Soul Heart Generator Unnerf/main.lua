@@ -44,7 +44,7 @@ end
 
 function soulheartgeneratorUnnerf:EntityTakeDamage(entity, amount, flags)
 	if (openUnnerfPack.Config.IsEnabled("blueFires") and self.game.Difficulty == Difficulty.DIFFICULTY_HARD) then
-		self.bluefireUnnerf.entityTakeDamage(entity, flags)
+		self.bluefireUnnerf.entityTakeDamage(entity, amount, flags)
 
 	end
 end

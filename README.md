@@ -1,9 +1,13 @@
 # Isaac-Repentence-Open-Unnerf-Pack
-A mod for The Binding of Isaac Repentance that combines diffrent unnerf mods into a single mod.
+A pack of modular balance reverts targeting **The Binding of Isaac: Repentance+ v1.9.7.17**.
+
+Compatibility is under validation: no mod-enabled gameplay or multiplayer mode has
+yet been verified on this build. See the [per-feature audit and owner test matrix](docs/testing/repentance-plus-1.9.7.17.md) for evidence and outstanding checks.
 Steam Workshop link: https://steamcommunity.com/sharedfiles/filedetails/?id=2554325871
 
 # Unnerfs Currently Included
 - Maw of the Void Unnerf
+- Humbling Bundle Unnerf
 - Orbital Unnerf
 - Stomp Immunity Unnerf
 - Soul Hearth Generator Unnerf
@@ -53,3 +57,27 @@ The integration targets **MCM Pure v113**, inspected at revision
 See [configuration validation](docs/configuration-validation.md) for reproducible
 checks and outstanding Repentance+ **1.9.7.17** gameplay validation. Engine support
 is a validation target, not a result established by the Lua harness.
+
+# Install for local validation
+
+1. Exit the game. Record the fork commit SHA being tested; download/extract that
+   revision (GitHub archives add an outer directory).
+2. Copy the directory containing `main.lua`, `metadata.xml` and `Mods/` into the
+   active Repentance+ installation's `mods/open unnerf pack/` directory. Avoid an
+   extra nested directory: `mods/open unnerf pack/main.lua` must exist.
+3. Disable the original Workshop pack and any duplicate standalone unnerfs so
+   callbacks are not registered twice. Enable this pack in the game's Mods menu.
+4. Start a disposable local run, then test quit/Continue. Record any console or
+   log errors and follow the linked matrix for Normal/Hard vanilla comparisons.
+
+For the owner's inspected installation the intended destination is
+`D:\The.Binding.of.Isaac.Repentance.v4.0.2\mods\open unnerf pack\`.
+Deployment there must be coordinated with the owner; it currently contains no
+installed copy of this pack. To uninstall, exit and remove the fork directory.
+Other builds, Greed modes and multiplayer require separate validation.
+
+# Developer checks
+
+With Lua 5.3 installed, run `lua5.3 tests/compatibility.lua` from the repository
+root. Syntax-check Lua files with `luac5.3 -p <file>`. The regression harness uses
+test doubles and is not a substitute for the engine checks above.

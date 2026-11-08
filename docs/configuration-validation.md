@@ -24,6 +24,7 @@ The game supplies its own `json`; dkjson is only a test dependency.
 
 ```sh
 lua tests/config_spec.lua
+lua tests/compatibility.lua
 curl -fsSL https://raw.githubusercontent.com/Zamiell/isaac-mod-config-menu/a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d/scripts/modconfig.lua -o /tmp/ounp-modconfig.lua
 lua tests/config_spec.lua /tmp/ounp-modconfig.lua
 find . -name '*.lua' -print0 | xargs -0 -n1 luac -p
@@ -95,5 +96,6 @@ provide console-assisted item access; no item-access seeds are claimed here.
 Outstanding acceptance: real MCM UI/input, engine callback ordering (particularly
 initial cache/familiar updates), exit/relaunch/Continue in-engine, absent MCM
 loading, and seven independent vanilla comparisons on 1.9.7.17. Do not close #3
-or merge claiming these are complete until evidence is recorded. Compare the
-parallel issue-1 compatibility branch/PR before integration; both edit modules.
+or merge claiming these are complete until evidence is recorded. Compatibility PR #6 was merged into this branch before integration. Its player
+index/cache fixes, spawner guards and blue-fire argument forwarding are retained
+alongside all configuration gates; both suites pass on the combined code.
