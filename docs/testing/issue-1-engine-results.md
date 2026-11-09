@@ -914,8 +914,8 @@ Evidence files under the session `evidence` directory:
 
 The owner confirmed a fresh Normal Isaac baseline with all seven On, actual
 continued false, damage 3.5, zero Maw, six red half-hearts and no soul hearts.
-The new seed was printed but not transcribed; matching log collection remains
-was later recovered as 3259019300. After one Maw and a native charge/release, the initial 20-point setup
+The new seed was printed but not transcribed; log collection later recovered it
+as 3259019300. After one Maw and a native charge/release, the initial 20-point setup
 stopped at its room-boundary assertion before spawning anything. A revised
 inside-room-only setup reported 13 requested frozen, one-HP Gapers. The owner
 reported summary `6 0 0 0`. After two more seconds without movement/shooting,
