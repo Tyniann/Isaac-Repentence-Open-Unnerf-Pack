@@ -855,3 +855,190 @@ recorded separately. The file is not auto-loaded; first engine registration and
 native-payout observations remain pending. No synthetic payout/RNG forcing is
 part of the planned native feeding test. This is an issue-specific fixture,
 not implementation of the deferred general workflow in issue #8.
+
+## Dark Bum tracer v1 staged, registration still pending
+
+Published fixture commit87093f3249f5c80ff47ee0798fd91ee357f53eca, version1,
+3,404 bytes, SHA256
+`f30c68cc350e3c08ed24d3baba90601da02c32f82c8103b6491380f7320a4c9b`.
+Windows Luna downloaded the exact commit-pinned raw file and added only
+`mods/open_unnerf_validation_observer/dark-bum-pickup-trace.lua`, verified
+previously absent and byte-identical. Immutable observer main.lua still hashes
+to aea0ac0b...; production source/save/options/markers were not changed.
+PID2272 remained open. The added file is dormant, not main.lua or required by
+any loader, and has not executed.
+
+Staging provenance: evidence/DB-trace-v1-staging.json, SHA256
+`356a2c4b3649add757dd84cf2ef97c44311d2f7bef87d91d0656dbb242543e33`.
+Owner will explicitly load the file with luarun to smoke-check actual callback
+registration. Expected DBTRACE READY only means all three diagnostic callbacks
+registered without an error; it does not establish pickup timing/conversion.
+No Dark Bum/item/heart grant precedes successful registration.
+
+## DB trace registration smoke — owner confirmed
+
+Owner explicitly loaded the staged version1 file via luarun and reported
+DBTRACE READY. This verifies actual AddPriorityCallback registration of the
+three read-only fixture callbacks; native pickup timing/conversion remains
+untested at this point. No production function or immutable observer was
+replaced, and no Dark Bum grant had occurred before registration.
+
+Next main-designed smallest native feeding case uses strict DB-off setup from
+DB0: Start labelDB-off only after the fresh setup, grant c278, spawn ten full
+red hearts as FOOD (`spawn 5.10.1` plus repeat9), then let native familiar AI
+consume them and generate its own rewards. This is not a synthetic payout or
+forced payout RNG. Manual food pickups and native familiar rewards must remain
+separate in trace interpretation. Stay in the room; actual native spiders may
+be hostile and are not pickup-conversion evidence.
+
+After feeding, owner captures DB-off-fed and reports the count of remaining
+full-red-heart pickups with labelDB_LEFT; full trace records come from the game
+log. Keep the console open after the query to freeze the capture point. No
+chance/rate or conversion pass is implied by food consumption alone.
+
+## DB-off native payout capture
+
+Owner reported DB_LEFT0 and held the console open. Windows Luna captured stable
+log/save metadata with the same Isaac PID2272; no game commands were issued by
+the collector. Main cross-checked the captured snapshot and event table in the
+collector's actual PowerShell output. Seed3699682887, actual continued=false,
+Isaac type0, red-half-hearts6, damage3.5, no baseline familiar. DarkBum=false
+and other six=true in both snapshots' active/saved/run settings.
+
+After feeding, Dark Bum is familiar variant64, seed2534023003,
+owner4027424614. Two native pickup seeds2910244689 and1677691434 have that
+spawner, type5/variant70/subtypes9 and8. Their init-before/init-after/first-update
+phases retain their respective variant/subtype/seed, with spawner type3,
+variant64, familiar conversion=true and owner type0 present. Frames are
+224/224/225 and407/407/408; indices0/0/25 and0/0/90. Initial index0 is therefore
+not a unique pickup identity. The observed presence/conversion/owner fields
+provide the relevant readiness evidence; there is no separate readiness flag.
+Neither native pickup was converted with DarkBumOff. This is bounded native
+pickup-gate evidence, not payout-rate coverage or an On-case pass.
+
+The tracer has36 events (12 pickups ×3 phases): ten manual food pickups with
+no familiar provenance, plus the two familiar-attributed native pickups. The
+immutable observer additionally logs repeated pickup_first_observed events
+across frames:1,668 records cover12 distinct pickup seeds, not1,668 rewards.
+Retain that known diagnostic limitation when counting evidence; do not change
+the frozen observer during this comparison. Two other familiars variant73 are
+present after feeding; no inference about their origin is needed here.
+
+Artifacts under the existing session evidence directory:
+
+- DB-off-log.txt,978,597 bytes, SHA256
+  `151066598ca450bb1bb4c1bd0c51e595aefa0b1f7efecba765501e80d478d3df`.
+- DB-off-snapshots.jsonl,1,670 exact-label records (two snapshots plus repeated
+  pickup records), SHA256
+  `87b7eb4317b8548bb711d35e897b2d7eb8e20d7ac7ca99359d947417d1b63c50`.
+- DB-off-trace.jsonl,36 records, SHA256
+  `c6570a1fcb69fe457d9e42cdc3f26b09d67972bcc7b80d1a0ca021b2226eb779`.
+- DB-off-save2.dat, SHA256
+  `5e3a17825e96d3a2f07d1b5f6df7933473767a47d094c92c360f5a9065545949`.
+
+No matching Lua error/stack-trace lines were found. Tracer and immutable observer
+file hashes still match their recorded values. Source remains f1c8325/MCM113.
+Next: stop only OUPProbe, enable DarkBum (all seven On), start a new Normal
+Isaac run in slot2 without relaunching, and check all seven active gates,
+continued=false, Dark Bum copies0 and tracer registered before the On grant.
+
+## DB-on owner checkpoint, trace assessment pending
+
+Owner confirmed DB1 true,false,0,true after stopping OUPProbe, enabling DarkBum
+(all seven On), and starting a new Normal Isaac run in slot2 without relaunch.
+The separate tracer remains registered. Only after that check, owner started
+DB-on, granted c278 and supplied the same ten manual full-red-heart food
+pickups. After native feeding, owner reported DB_LEFT0 and six soul hearts,
+no dark hearts. This is the owner's observation, not six independently counted
+native payout events. The console remains open while the log is captured;
+native before/after conversion and actual seed/settings still require trace
+assessment. No additional item/RNG/provenance manipulation was requested.
+
+## DB-on captured native conversion comparison
+
+Main cross-checked the collector's actual PowerShell snapshot and phase output.
+Seed3582772347, continued=false, run-start observed, all seven active/saved/run
+settings true, fresh Isaac type0/red-half-hearts6/soul-half-hearts0/damage3.5.
+No baseline familiar; after feeding Dark Bum variant64 seed3357659119,
+owner572960397. The observed pickups remained on the floor rather than adding
+six soul hearts to player health.
+
+Six native pickup chains have spawner type3/variant64/seed3357659119, owner
+present/type0 and gate=true. Their init-before entity values and frames are:
+5/70/11 at223,5/70/6 at247,5/300/15 at286,5/10/6 at319,5/70/6 at349,
+5/70/3 at383. Each is immediately followed at the same frame by reentrant
+init-before and two init-after records of5/10/3, then first-update5/10/3 one
+frame later. Pickup seeds change on Morph; the ordered chains, spawner identity,
+frame and first-update evidence must be retained rather than joining solely by
+InitSeed or initial Index0. The final first-update indices are26,29,32,35,38,41.
+This corroborates the owner's six-soul-heart observation without counting
+recursive initialization as additional payouts. The source emits60 tracer
+records:30 manual food records plus30 native/reentrant records;22 init-before,
+22 init-after and16 first-update records. The immutable observer's2,668 pickup
+records are repeated observations, not2,668 distinct rewards.
+
+Compared with Off's two unchanged native pills, this independently supports
+the Dark Bum gate for eligible Isaac/native pickup cases with the other six
+gates On. It does not establish native reward probabilities, excluded-character
+behavior, or all familiar payout variants. File/log capture metadata remained
+stable with PID2272. Collector's final bounded error/hash review is pending.
+
+Collector's completed error/hash check found no Lua error/stack-trace markers
+after DB-on start, and both diagnostic file hashes unchanged. The emitted
+presence/conversion/owner fields are observed readiness evidence only; they do
+not imply a separate readiness API was checked. The Morph-chain interpretation
+is an inference combining ordered same-frame/spawner records, recursive init
+shape, final pickup values and the production helper's Morph call. Different
+seeds/initial Index0 alone cannot establish same-entity continuity.
+
+Captured artifacts:
+
+- DB-on-log.txt,1,654,169 bytes, SHA256
+  `56eb03c505cd8cb1741bdd404a7fb9f0c3bfe1f32b82af70b69319d0486dff0d`.
+- DB-on-snapshots.jsonl,2,670 records, SHA256
+  `c6fdf6db1bd557fc141fc31edae18aac85800916e0eec45ef8e27efd017b7206`.
+- DB-on-trace.jsonl,60 records, SHA256
+  `5edcf550c1f9cbaddb35fc09bb1ced53685757bd62185a3349159e142ac4f759`.
+- DB-on-save2.dat,313 bytes, SHA256
+  `4316453c7d1f1781b4339d8747bbff6f9fef6ccc7dfbfdbe32b14efa3ddffcd3`.
+
+Next owner transition stops OUPProbe and removes only OUPDBTrace's own exact
+callbacks, sets only Humbling Bundle Off, and starts a new Normal Isaac run in
+slot2. Its pre-grant check must confirm Bundle=false/other six=true/fresh/item203
+copies0. No Bundle behavior result is implied by that setup check.
+
+## Humbling Bundle native-selection fixture prepared
+
+Primary API research confirms MC_POST_PICKUP_SELECTION receives a mostly empty
+EntityPickup wrapper plus selected Variant/Subtype and permits nil or a
+replacement table. Selection also occurs on room entry/already selected pickups
+and dropped cards, so callback visits alone do not prove a random reward.
+Neither explicit Spawn nor Morph is documented as guaranteeing this hook.
+Sources: https://wofsauge.github.io/IsaacDocs/rep/enums/ModCallbacks.html#mc_post_pickup_selection
+and https://wofsauge.github.io/IsaacDocs/rep/EntityPickup.html#void-morph-int-type-int-variant-int-subtype-boolean-keepprice-false-boolean-keepseed-false-boolean-ignoremodifiers-false
+(the latter link describes Morph, not a native-selection guarantee).
+
+Main authored a separate optional read-only fixture,
+tools/validation/humbling-bundle-selection-trace.lua version1. It logs selection
+arguments at priorities-100/+100 and actual pickup init/first-update at+100,
+with gate, per-player Bundle count and explicit entity/provenance fields.
+All observers return nil; no replacement table, RNG manipulation, production
+callback replacement, spawn or save/config mutation. Stop removes only its own
+four exact function references. Missing late-selection callbacks are not proof
+of override: runtime return/priority propagation requires actual observations.
+Selection wrapper index/seed are not a reliable join key; correlate ordered
+events with actual native contents and retain uncertain cases as uncertain.
+
+Syntax and a parent-owned local protocol smoke passed: all four callbacks
+return nil, selected arguments are recorded, inactive labels emit nothing,
+first-update duplicates are suppressed, and cleanup retains a production
+sentinel callback. These are fixture checks, not game-engine verification.
+Engine registration and native chest-content selection remain pending.
+
+Planned smallest native route: place a single ordinary chest as a container,
+then have the owner open it normally while holding Bundle. Contents must be
+selected by the game's chest logic, not spawned as already-selected rewards.
+The trace must first demonstrate a real selection hook and resulting pickup;
+no assumption that every chest/open path invokes it. Additional containers
+require a bounded reason if the first contents provide no eligible observation.
+Other six gates must be confirmed On before any item grant in each fresh case.
