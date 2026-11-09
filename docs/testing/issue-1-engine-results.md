@@ -9,6 +9,9 @@ later actual settings/seeds supersede earlier requested or assumed setup.
 - Fresh local Normal loading and relaunch/Continue are corroborated.
 - Single-copy Maw damage/cache acquisition and removal are corroborated with
   independent Maw On/Off controls.
+- M2 additionally corroborates two-copy damage and removal of one copy, plus
+  native ring fields of 0.05 with Maw On and 0 with only Maw Off. Actual
+  black-heart drops and distinct-player isolation remain unverified.
 - Independent Sacrificial Dagger field processing is corroborated. Earlier
   doorway/BFFS/Continue field observations were made with Maw Off and retain
   that narrower context; they are not contact-DPS measurements.
@@ -755,7 +758,9 @@ parent-run contract smoke passed, including always-nil callbacks, source-record
 classification and exact own-callback cleanup. The injected diagnostic-error
 case deliberately verifies fail-closed logging without cancelling native damage.
 These are diagnostic safety checks only, not engine kill attribution or drops.
-The new trace has NOT been staged or loaded in the Windows installation yet.
+At this preparation checkpoint, the new trace had not been staged or loaded in
+the Windows installation. The later M2 staging checkpoint below supersedes that
+deployment status; engine registration still requires its own observation.
 
 Owner selected manual console continuation after the supported desktop connector
 failed its bounded retry. No further desktop-control attempts are authorized by
@@ -787,6 +792,163 @@ the actual deployed runtime as 8af78fc because documentation/tools merged.
 session/restoration responsibility to #1. Its validation branch was removed and
 own worktree left clean/detached. #1 and #8 remain open. Current M2 request is
 still waiting for owner baseline; the #3 checkpoint is not an M2 outcome.
+
+### M2: multiple copies and native ring fields
+
+Production remains f1c8325, with MCM Pure v113 and the frozen base observer.
+These are fresh Normal Isaac runs (difficulty 0, actual continued false).
+Active settings, saved choices and saved run settings agree: the On run has all
+seven On; the Off run has only Maw Off and the other six On.
+
+| Label / seed | Checkpoint | Frame / sequence | Damage / Maw copies / cached copies |
+| --- | --- | --- | --- |
+| M2-ring-on / 3114500365 | start | 188 / 12375 | 3.5 / 0 / 0 |
+| M2-ring-on / 3114500365 | M2-two-copies | 481 / 12435 | 5.5 / 2 / 2 |
+| M2-ring-on / 3114500365 | M2-one-left | 530 / 12436 | 4.5 / 1 / 1 |
+| M2-ring-off / 1072936563 | start | 11 / 12438 | 3.5 / 0 / 0 |
+| M2-ring-off / 1072936563 | M2-off-ring-check | 138 / 12451–12453 | 3.5 / 1 / 0 |
+
+All listed snapshots record six red half-hearts, zero soul half-hearts and black
+mask zero. The owner separately reported damage/copies 5.5/2 and 4.5/1 after
+acquisition and one removal. The three Off checkpoint records are distinct
+snapshot invocations at the same game frame, not three independent ring trials.
+
+Both runs contain native laser type 7, variant 1, subtype 3 with sprite
+`gfx/007.001.003_Dark Ring.anm2`. The first On observation is frame 374 / sequence
+12376, `BlackHpDropChance=0.050000000745058`, spawner player seed 1146726165.
+The first Off observation is frame 127 / sequence 12439,
+`BlackHpDropChance=0`, spawner player seed 1907838666. Both report laser InitSeed
+4215710538; shared InitSeed alone does not identify the same entity across runs.
+Further laser observations across frames are not independent kill/drop trials.
+
+The owner reported an On ring value of 0.05. During the Off query, the full
+snapshot printed after the short line and obscured it in the console. The supplied
+screenshot contains the Off snapshot (one Maw, damage 3.5, only Maw Off), with no
+legible ring-result or error line. Read-only log recovery established the Off
+ring field without asking the owner to repeat the interaction. Future feedback
+commands must print their short result last, after any full snapshot.
+
+Artifacts under the Windows session's `evidence` directory:
+
+- `M2-fields-20261109T031203445Z-full.log`: 3,225,867 bytes, SHA-256
+  `5a4ee1b330d086a56d509ffcfa814c9c0022e1fb919455298f00cafa281fe7be`.
+- `M2-fields-20261109T031203445Z-probes.jsonl`: 27,702 bytes, SHA-256
+  `2650cd5e2ad3da79486e73d8297745bc8eac1f4f8fc0ab7ce66e62da3599aa95`.
+  It preserves 79 raw records, all unique by sequence, label and seed.
+- Two shared-read full captures matched byte-for-byte, with unchanged source
+  length and timestamp. The bounded Lua-error/traceback/error scan found no
+  matches. Short console result lines were not present in the collected log;
+  the recorded JSON fields provide corroboration.
+
+This establishes the ring-field gate and two-copy stat handling in these runs.
+It does not establish any kill reward, final drop probability, distinct-player
+isolation or pack-absent vanilla behavior. Maw Off is a feature gate control.
+
+### M2 native kill trace: staging verified, registration owner-observed
+
+The reviewed optional `tools/validation/maw-ring-kill-trace.lua` from source
+commit `4e6944b936dc60e2f3f8ce1921c2df371358a31b` is now installed as a dormant
+extra file at `mods/open_unnerf_validation_observer/maw-ring-kill-trace.lua`.
+It is 6,984 bytes with SHA-256
+`0f1e48677ccc646023927dc23af29b393e3473e71cb6aeed42a958e09cc03182`.
+Independent read-only verification matches those bytes and the unchanged base
+observer SHA-256 `aea0ac0b0098c29aeb8c5bbe1a73447ee0fd721c085baa2dcd99cd539ec2a7db`.
+The scratch sidecar `maw-trace-v1/staging-manifest.json` has SHA-256
+`26752cb0537590aab050fdb96ebc4acb312c090f7eb023ed6ea7709330375245`
+and status `DORMANT`. This source commit identifies diagnostic bytes, not a
+replacement for the deployed production commit f1c8325.
+
+The earlier compound command was rejected before execution without a stated
+reason. A smaller scratch-only download/hash step succeeded. The subsequent
+copy recipe initially stopped at an ordinary PowerShell `Split-Path` parameter
+error; correcting that path assignment allowed the guarded copy and sidecar.
+No production module, base observer, MCM file or save/config file was changed.
+The diagnostic is not auto-loaded. The owner manually loaded it with
+`luarun mods/open_unnerf_validation_observer/maw-ring-kill-trace.lua` and reported
+`READY 4`. Four is the source's actual callback count (damage, NPC death, pickup
+init and pickup update); the initially supplied expected count of five was an
+instruction error. This is owner-observed registration, pending matching log
+collection, and is not a kill/drop pass.
+
+### M2 first target: player-attributed laser damage
+
+The owner spawned one frozen, one-HP Gaper at the existing native ring's radius
+in the Maw-Off run, then resumed without moving or shooting. The owner reported
+summary `1 0 0 0`. Matching raw events corroborate:
+
+- Registration at frame 138 / sequence 1, seed 1072936563, callback count 4.
+- Damage at frame 139 / sequence 2: target type 10, variant/subtype 0/0,
+  index 20, seed 2752254185, HP before 1, amount 3.5, flags 8, countdown 30.
+  Source is player type 1, index 0, seed 1907838666, rather than a laser entity.
+- Death at frame 140 / sequence 3 matches that target and previous damage,
+  one frame apart. The literal direct-laser predicate is false.
+- Summaries at frames 164 and 183 / sequences 4 and 5 report one damage event,
+  one death, zero direct-ring-source deaths, and zero black/soul-heart inits.
+- No diagnostic error or heart init/update occurred in the trace. The base
+  observer also records native Dark Ring lasers with drop field 0 and spawner
+  player seed 1907838666, through frame 183. These are separate observations,
+  not a laser identity carried in the damage callback.
+
+The installed primary enum declaration at `resources/scripts/enums.lua:1059`
+is `DAMAGE_LASER = 1<<3`, establishing flags 8 as laser damage. This rules out a
+missing damage/death match and explains why a predicate requiring source type 7
+did not count this player-source event. It is consistent with owner-attributed
+native Maw damage in the controlled ring setup; the raw source alone does not
+uniquely identify a laser. Preserve the direct-source counter's literal meaning
+and inspect source/flags, native ring observations and fixture conditions
+together. Do not silently promote all player-source damage to ring attribution.
+This attempt supplies no black-heart-drop or probability result.
+
+Evidence files under the session `evidence` directory:
+
+- `M2-firstkill-20261109T034032473Z.log`: 3,241,570 bytes, SHA-256
+  `c5b10b22497e00aef89bca3783cd9c4d85a182567ec64656ea54288f76cbac96`.
+- `M2-firstkill-20261109T034032473Z-raw.jsonl`: five exact JSON records, SHA-256
+  `f71056ec00236101677dd35519822f33118d6208adcf568a80959038f3c79c48`.
+  An auxiliary file without `-raw` contains prefixed log lines and is not a
+  JSONL-object dataset; use the named `-raw.jsonl` artifact.
+- Both full shared reads matched, with unchanged length and last-write time
+  `2026-11-09T03:37:44.4296600Z`. No collection race was observed.
+
+### M2 On sample: incomplete target accounting; retry preparation
+
+The owner confirmed a fresh Normal Isaac baseline with all seven On, actual
+continued false, damage 3.5, zero Maw, six red half-hearts and no soul hearts.
+The new seed was printed but not transcribed; matching log collection remains
+pending. After one Maw and a native charge/release, the initial 20-point setup
+stopped at its room-boundary assertion before spawning anything. A revised
+inside-room-only setup reported 13 requested frozen, one-HP Gapers. The owner
+reported summary `6 0 0 0`. After two more seconds without movement/shooting,
+the owner reported still six deaths, no remaining enemies and no black hearts.
+
+This sample has unresolved accounting: 13 requests are not 13 verified deaths.
+The version-1 observer records damage/death only while NPC type equals Gaper
+(10). Type transitions, removals or placement could explain the mismatch; none
+is established as the cause. Do not count it as 13 eligible reward trials or a
+failed black-heart mechanic. Preserve six as the owner-reported traced deaths,
+with final raw-event reconciliation pending.
+
+Diagnostic version 2 observes all NPC damage/death plus first NPC updates and
+records explicit target requests with identity/position. It retains literal
+direct-laser attribution rather than treating player-source damage as a proven
+ring source. Per-type death counts and first observations help investigate type
+changes, but first observations are not a spawn denominator. Room background
+NPCs must also be distinguished from requested targets when interpreting totals.
+
+The contract regression failed on version 1 with `non-Gaper NPC damage was
+omitted`, then passed after version 2 broadened observation. Coverage includes
+player-source laser flags, NPC type changes, requested-target serialization,
+always-nil callbacks, diagnostic/logger failure containment and exact cleanup
+of all five callbacks. These remain stubbed diagnostic-contract checks, not
+engine proof of transformations, native kills or rewards. Version 2 is not yet
+staged or engine verified at this preparation checkpoint.
+
+The next smallest retry will use one type-15 Clotty target on an inside-room
+point with `GetGridCollisionAtPos == COLLISION_NONE`, checking nearby footprint
+points too. Installed enums establish Clotty 15 and collision-none 0; installed
+LuaDocs declare `Room:GetGridCollisionAtPos(Vector)`. They do not certify target
+transformation behavior or the proposed placement recipe. Verify that smallest
+engine case before increasing the sample.
 
 ## Shared observer protocol (deployed; initial snapshot engine verified)
 
@@ -863,8 +1025,8 @@ requires the actual vanilla comparison arranged by the shared session owner.
 | Criterion | Current engine status | Next bounded evidence |
 | --- | --- | --- |
 | Fresh and continued load | Pass for recorded local Normal runs C1/C3/C4 | Matched owner observations, source/manifest, seeds, fresh/Continue log and no Lua errors. Other modes unverified. |
-| Maw cache/damage and per-player isolation | Single-copy acquisition/removal On/Off pass, owner + logs corroborated | Multiple copies, distinct-player isolation and pack-absent control remain unverified. |
-| Maw ring/black-heart drops | Pending | Observe actual ring fields and kill/drop outcomes; no nondrop inference from one trial. |
+| Maw cache/damage and per-player isolation | Single-copy acquisition/removal On/Off plus two-copy acquisition and one-copy removal corroborated | Distinct-player isolation and pack-absent control remain unverified. |
+| Maw ring/black-heart drops | Native ring field 0.05 On / 0 Off corroborated | Actual kills/drops, final probability and pack-absent control remain unverified. |
 | Orbitals/native state | Independent Dagger acquisition fields pass with owner + log evidence; doorway/BFFS/Continue fields logged under Maw-Off context | Contact/BFFS combat scaling, Meat transitions, other orbitals and pack-absent comparison remain unverified. |
 | Dark Bum/output/exclusions | Pending | Controlled red-heart feeding, record reward provenance and excluded owner cases. |
 | Relic timing | Independent initialization/gating corroborated (Off counter 0, On 2); cadence pending | Number actual hostile clears/payouts, trace native reset ordering, repeat control and Continue. |

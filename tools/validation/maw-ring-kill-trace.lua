@@ -2,6 +2,8 @@
 -- No RNG calls, damage/stat writes, entity spawns, Morph or save/config writes.
 -- A death's latest observed damage source is correlation, not universal proof
 -- of attribution. Inspect raw events if another source can reach the target.
+-- Observe every NPC type, including possible transitions. Summary deaths are
+-- not an eligible-trial denominator until reconciled with requested targets.
 assert(OUPMawTrace == nil, "Maw trace already loaded; stop it before reloading")
 local json = require("json")
 local standalone = openUnnerfPack == nil
@@ -9,11 +11,12 @@ local mod = openUnnerfPack or RegisterMod("Open Unnerf Maw validation trace", 1)
 assert(type(mod.AddPriorityCallback) == "function", "AddPriorityCallback unavailable")
 assert(type(mod.RemoveCallback) == "function", "RemoveCallback unavailable")
 
-local trace = {enabled = true, registered = true, sequence = 0}
+local trace = {enabled = true, registered = true, sequence = 0, fixtureVersion = 2}
 OUPMawTrace = trace
-local callbacks, lastDamage, sessions, seenPickups = {}, {}, {}, {}
+local callbacks, lastDamage, sessions, seenPickups, seenNPCs = {}, {}, {}, {}, {}
 local labels = { ["M2-ring-on"] = true, ["M2-ring-off"] = true,
-    ["M2-ring-vanilla"] = true }
+    ["M2-ring-vanilla"] = true, ["M2-ring-on-v2"] = true,
+    ["M2-ring-off-v2"] = true, ["M2-ring-vanilla-v2"] = true }
 
 local function active()
     return trace.enabled and OUPProbe and OUPProbe.active and labels[OUPProbe.label]
@@ -27,7 +30,8 @@ local function stats()
     local key = sessionKey()
     if not sessions[key] then
         sessions[key] = {damageEvents = 0, deaths = 0,
-            deathsWithLastRingSource = 0, blackHeartInits = 0, soulHeartInits = 0}
+            deathsWithLastRingSource = 0, blackHeartInits = 0, soulHeartInits = 0,
+            deathsByType = {}}
     end
     return sessions[key]
 end
@@ -35,7 +39,8 @@ end
 local function identity(entity)
     if not entity then return nil end
     return {index = entity.Index, seed = entity.InitSeed, type = entity.Type,
-        variant = entity.Variant, subtype = entity.SubType}
+        variant = entity.Variant, subtype = entity.SubType,
+        position = entity.Position and {x = entity.Position.X, y = entity.Position.Y} or nil}
 end
 
 local function entityKey(entity)
@@ -50,7 +55,7 @@ local function emit(kind, record)
     record.frame = Game():GetFrameCount()
     record.seed = Game():GetSeeds():GetStartSeed()
     record.difficulty = Game().Difficulty
-    record.fixtureVersion = 1
+    record.fixtureVersion = trace.fixtureVersion
     Isaac.DebugString("OUP_MAWTRACE " .. json.encode(record))
 end
 
@@ -91,7 +96,7 @@ local function register(id, priority, observe)
 end
 
 register(ModCallbacks.MC_ENTITY_TAKE_DMG, -100, function(_, entity, amount, flags, source, countdown)
-    if entity.Type ~= EntityType.ENTITY_GAPER then return end
+    if not entity:ToNPC() then return end
     local sourceInfo = sourceRecord(source)
     local record = {target = identity(entity), hpBefore = entity.HitPoints,
         amount = amount, flags = flags, countdown = countdown, source = sourceInfo,
@@ -102,16 +107,27 @@ register(ModCallbacks.MC_ENTITY_TAKE_DMG, -100, function(_, entity, amount, flag
 end)
 
 register(ModCallbacks.MC_POST_NPC_DEATH, 100, function(_, npc)
-    if npc.Type ~= EntityType.ENTITY_GAPER then return end
     local previous = lastDamage[entityKey(npc)]
     local counts = stats()
     counts.deaths = counts.deaths + 1
+    local typeKey = tostring(npc.Type)
+    counts.deathsByType[typeKey] = (counts.deathsByType[typeKey] or 0) + 1
     local ring = previous and previous.source.ringSource or false
     if ring then counts.deathsWithLastRingSource = counts.deathsWithLastRingSource + 1 end
     emit("native_death", {target = identity(npc), lastObservedDamage = previous,
         framesSinceObservedDamage = previous and Game():GetFrameCount() - previous.frame or nil,
         lastSourceWasRing = ring})
     lastDamage[entityKey(npc)] = nil
+end)
+
+register(ModCallbacks.MC_NPC_UPDATE, 100, function(_, npc)
+    local key = entityKey(npc) .. ":" .. tostring(npc.Type) .. ":" ..
+        tostring(npc.Variant) .. ":" .. tostring(npc.SubType)
+    if seenNPCs[key] then return end
+    seenNPCs[key] = true
+    emit("npc_first_observed", {entity = identity(npc), hp = npc.HitPoints,
+        maxHp = npc.MaxHitPoints, size = npc.Size, state = npc.State,
+        spawner = identity(npc.SpawnerEntity)})
 end)
 
 register(ModCallbacks.MC_POST_PICKUP_INIT, 100, function(_, pickup)
@@ -145,13 +161,29 @@ function trace.Summary()
         counts.blackHeartInits, counts.soulHeartInits)
 end
 
+-- Called explicitly by the owner-authored setup after spawning its NPCs. This
+-- records requests, not proof that every NPC survived to an engine update.
+function trace.RecordTargets(targets)
+    assert(active(), "Start an active M2 ring probe label first")
+    assert(type(targets) == "table", "Expected a table of fixture NPCs")
+    local requested = {}
+    for _, entity in ipairs(targets) do
+        assert(entity:ToNPC(), "Expected an NPC fixture target")
+        local record = identity(entity)
+        record.hp, record.size = entity.HitPoints, entity.Size
+        requested[#requested + 1] = record
+    end
+    emit("targets_requested", {targets = requested})
+    print("M2 TARGETS READY", #requested)
+end
+
 function trace.Stop()
     if not trace.registered then return end
     trace.enabled = false
     for _, callback in ipairs(callbacks) do
         mod:RemoveCallback(callback.id, callback.fn)
     end
-    callbacks, lastDamage, seenPickups = {}, {}, {}
+    callbacks, lastDamage, seenPickups, seenNPCs = {}, {}, {}, {}
     trace.registered = false
     OUPMawTrace = nil
     -- Finish cleanup even when the diagnostic output channel is unavailable.
@@ -160,4 +192,4 @@ function trace.Stop()
 end
 
 emit("registered", {standaloneDiagnostic = standalone, callbackCount = #callbacks})
-print("M2TRACE READY", #callbacks)
+print("M2TRACE READY", #callbacks, "v" .. trace.fixtureVersion)
