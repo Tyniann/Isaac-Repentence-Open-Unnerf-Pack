@@ -689,6 +689,80 @@ First #1 step after accepting ownership: owner starts a NEW Normal Isaac in
 the same slot, retaining all seven On, then records M2 baseline before Maw or
 any test enemies are granted. No file/deployment changes for that transition.
 
+### M2 ring On baseline and first field probe
+
+Owner confirmed `M2 BASE true false 3.5 0 0 1` followed by the run seed (not
+transcribed numerically): all seven gates On, observed fresh start, damage 3.5,
+zero Maw/Host Hat, stage 1. Actual numeric seed will be taken from observer logs.
+Owner requested future result questions use the question tool with choices;
+commands remain in visible final replies with Lua syntax fences.
+
+Next smallest engine case grants one Maw, then owner charges shooting for three
+seconds, releases and immediately pauses with the console to inspect live laser
+Subtype/BlackHpDropChance/sprite fields. The base observer also records the first
+laser update, so failure to catch a short-lived ring in the console is not proof
+that no ring occurred. No enemy is spawned and no drop inference is made here.
+
+Owner selected `M2 RING shows drop chance 0.05` after granting c399, charging
+shooting three seconds, releasing and inspecting a live laser. This confirms
+the observed On ring field assignment, not native kill attribution, heart-drop
+generation or the final drop probability. Next smallest case adds a second Maw
+and snapshots damage/count after a normal effect update; expected 5.5/2.
+
+Owner selected `5.5 damage and 2 copies` at checkpoint `M2-two-copies` after
+granting the second c399. This confirms the two-copy additive cache value in
+the current On run. Next uses native `RemoveCollectible(399)` once, then waits
+for normal effect updates and snapshots expected 4.5 damage / one copy; no
+direct Damage write or synthetic cache evaluation is performed by the test.
+
+Owner selected `4.5 damage and 1 copy` at `M2-one-left` after exactly one
+native RemoveCollectible call and normal effect updates. Two-copy acquisition
+and one-copy removal therefore match intended per-copy damage in this On run,
+pending log corroboration. This is still one player; player isolation is open.
+
+### Requested console-only UI automation smoke
+
+Owner explicitly requested a subagent operate the Windows console for tests
+that do not involve active gameplay. Mandatory Terra/xhigh was assigned exactly
+one read-only stat-query round-trip, with game-only before/after capture and no
+item, run, settings or file changes. Windows is reachable and Terra available.
+
+The installed computer-use skill initialized `@oai/sky`, but its first
+`list_apps` call failed: `Computer Use native pipe is unavailable: failed to
+connect native pipe: ... file not found (os error 2)`. It stopped before window
+inspection, keyboard input or screenshots. The query was NOT executed; do not
+count this as an automation pass or a feature failure.
+
+Failure manifest is in the Windows scratch thread directory
+`2026-11-09-act-as-the-test-sub-d018a3c4/console-smoke-manifest.txt`. A bounded
+read of the skill's documented recovery instructions is in progress. No helper
+binary launch, custom native-pipe client, model substitution, game change or
+silent alternate UI method has been performed. Current game state is still
+last owner-observed M2 one-copy Maw at damage 4.5, console left open.
+
+A fresh Terra/xhigh bounded retry initialized @oai/sky but the single list_apps
+call immediately failed with the same missing-native-pipe/os-error-2 result.
+No UI inspection, screenshots or input occurred in either attempt. The installed
+computer-use guidance requires node_repl + supported sky APIs and does not permit
+PowerShell UIA/SendInput substitution; no helper/client bypass was attempted.
+Desktop automation is currently environment-blocked, not a feature failure.
+Owner was offered manual continuation or a pause for desktop repair; choice is
+pending, so no new game command is issued meanwhile.
+
+Separate Maw trace source and callback-contract test were authored locally.
+After restoring the missing temporary Lua 5.3.6 checker, syntax and the first
+parent-run contract smoke passed, including always-nil callbacks, source-record
+classification and exact own-callback cleanup. The injected diagnostic-error
+case deliberately verifies fail-closed logging without cancelling native damage.
+These are diagnostic safety checks only, not engine kill attribution or drops.
+The new trace has NOT been staged or loaded in the Windows installation yet.
+
+Owner selected manual console continuation after the supported desktop connector
+failed its bounded retry. No further desktop-control attempts are authorized by
+that choice. #1 is publishing/reviewing the local Maw observer before staging a
+separate dormant file; owner will explicitly load it. Existing production source,
+frozen observer, settings and current one-copy run remain unchanged.
+
 ### #3 final repository checkpoint (configuration-only closure)
 
 #3 reports validation PR #10 merged at
