@@ -1158,3 +1158,213 @@ is ordered between matching early/late real damage events. Native engine drop
 ordering is unknown; do not classify every drop as mod-created or infer a final
 drop probability from this fixture. First planned smoke uses a real fireplace
 and a real Isaac.Explode call in a fresh Hard run, with owner away from blast.
+
+## HB-on bounded additional native sample — independent gate effect
+
+Owner opened three additional brown chests normally in the same run and
+captured HB-on-chests-2-to-4. Main inspected the collector's actual raw trace.
+All seven active/saved/run settings remain true, seed2293994026, continued=false,
+Bundle copies[1] throughout. Containers seq25–36 are separate from contents.
+Native ordered early-selection -> init/first-update chains include:
+
+- frame346,seq41→42/43: normal key30/1 becomes double key30/3,
+  pickup seed1450155434,index24.
+- frame419,seq52→53/54,55→56/57,58→59/60,61→62/63: four single pennies20/1
+  become20/4; seeds3359300636,1970191824,3824850840,2213316639,
+  first-update indices31–34.
+- frame477,seq72→73/74: normal bomb40/1 becomes40/2,
+  seed2113269919,index47.
+- frame477,seq68/69→70/71: half heart10/2 stays10/2,
+  seed3755223066,index46. This is outside the full-red-heart eligibility rule.
+
+The six eligible conversions have no late-selection event; ineligible/already
+double items have early+late visits with unchanged arguments. The missing late
+event alone is not the evidence: each has actual matching ordered same-frame
+init/first-update final subtype. These observations are consistent with a
+production non-nil selection return stopping later observers in this runtime.
+No synthetic selection callback or forced reward RNG was used. Together with
+Off's unchanged single penny/other six gates On, this supports the independent
+Bundle gate. Full-red-heart conversion, every reward source, co-op and a pack-
+disabled vanilla control remain untested here; no broader behavior is claimed.
+
+Captured artifacts (stable pre/post metadata, same PID2272):
+
+- HB-on-chests4-log.txt,2,789,559 bytes, SHA256
+  `6004bbca3cc57e0aa1c7b3ad92728f24c8dc888a9385ed59a3832bbcf75b3ff5`.
+- HB-on-chests4-snapshots.jsonl,4,663 records(three snapshots plus4,660 repeated
+  pickup events), SHA256
+  `8fb3f49c7f073c59da5f7ec6df37bc34477cc0b6c66d13fe028679e476f0163b`.
+- HB-on-chests4-trace.jsonl,62 records(50 new), SHA256
+  `30e87680ad86b3f993724b9adf927331c5e79bda8f663702527370f06e1ed7d7`.
+- HB-on-chests4-save2.dat,313 bytes, unchanged SHA256
+  `b27b68b63da1ba342d8210d4bbeda685df1ef72109791098bdb623d39a8ca815`.
+
+No bounded Lua/stack errors in the collector's captured output. Next transition
+stops probe and HB fixture only, sets only BlueFiresOff/other six On, and starts
+a new Hard Isaac slot2 run. BF0 must confirm blueFires=false,other six=true,
+Hard=true,actual continued=false before any explosion setup. Blue-fire fixture
+is published at b8270707763c33ddce0f039ffa78916ddcadcaff; staging is queued,
+not yet evidence of installation or registration.
+
+## BF0 confirmed and blue-fire fixture staged
+
+Owner confirmed BF0 false,true,true,false: blueFires Off, other six On, actual
+Hard difficulty and fresh (continued=false), after stopping the probe and HB
+fixture and starting a new Hard Isaac slot2 run. No fire/explosion requested yet.
+
+Main checked the Windows staging command's actual output: the previously absent
+blue-fire-damage-trace.lua is now dormant alongside the immutable observer,
+4,027 bytes, SHA256cd25282e07ee4dfffdee181f35a420c553f30ceafb5d1cf237f1cea6518778e7,
+source commitb8270707763c33ddce0f039ffa78916ddcadcaff. Original observer hash
+unchanged, PID2272 still open. Sidecar evidence/BF-trace-v1-staging.json SHA256
+`2c8934bf19676ddad174d5534315dbeec34c5157d993d6957b5cba39dca347e9`.
+Only the new diagnostic file was added; no loader/runtime/source/save/options
+changes. Registration and actual native explosion/drop observations remain
+pending. Owner will load explicitly before any target creation.
+
+## BF-off first explosion — counter fault preserved
+
+Owner confirmed BFTRACE READY, then the parent-designed smallest real-engine
+case: start BF-off, create one33/2/0 at room bottom-right minusVector80/80,
+allow one second of updates, Isaac.Explode(same position,player0,100), allow two
+seconds and snapshotBF-off-first-explosion. Owner reported BF1=1,6 and visually
+exploded fire/no drops. The original counter counted Type33 variants2/3 with
+HP>0 and incorrectly expected0. Preserve that failed verifier result; no
+production change, extra explosion or replay was requested.
+
+Read-only BF_STATE was supplied as screenshot. Mandatory Terra xhigh inspected
+it and read exactly `BF_STATE 4082058775 2 1.0 false NoFire 14`; no BF1 line
+was visible. Attachment suffix2e4b7f34-6577-4931-bb3a-42c3e4c3559e.png.
+This directly shows the extinguished NoFire entity retains1HP and IsDead=false;
+HP>0 is not a valid burning-fire predicate for this case. The verifier is being
+corrected to report NoFire and non-NoFire counts separately, without repeating
+the explosion. Corrected query must be verified on this same retained object.
+
+Collector's initial actual output corroborates one real explosion atframe171,
+fire33/2 seed4082058775, amount100, sourceplayer1/0 seed790376512, both early
+and late HP5/explosion=true. Fresh seed1196611030, Hard difficulty1,
+blueFires=false/other six=true, Isaac health6 red-half-hearts/no soul/black.
+No heart init/update events, stable log/save metadata, PID2272; no bounded
+Lua/stack errors. Console print BF_STATE/BF1 is absent from the game log, so
+the screenshot/owner response is its separate evidence. Future short diagnostic
+lines should also use Isaac.DebugString when a durable log copy is needed.
+Final raw flags/run-settings/hash summary remains to be cross-checked.
+
+Owner confirmed corrected BF2=0,1,6 on the SAME retained object: zero
+non-NoFire blue/purple entities, one NoFire entity, six red half-hearts. The
+read-only corrected query also DebugStrings its short result for later capture.
+This verifies the changed counter on the original failure case, without any
+new explosion or production change. Next bounded Off case uses one purple
+fire at top-right (separate from the spent bottom-right blue fire), preserving
+run/settings/probe and player at upper-left. No-fire entities must not be
+treated as new living targets or independent drop trials.
+
+## BF-off both variants — native damage path corroborated
+
+Owner reported BF3=0,2,6 and no drops. Main inspected the actual raw copied
+trace and snapshots: same seed1196611030, difficulty1/Hard, continued=false,
+MCM113, blueFires=false and other six=true in active/saved/run settings.
+Isaac type0 remains6 red-half-hearts/0 soul/black/damage3.5, no familiars.
+Blue33/2 seed4082058775,index25 has exactly one early/late pair atframe171;
+purple33/3 seed277918510,index39 has exactly one atframe295. All four records
+amount100,flags4/explosion=true, sourceplayer1/0 seed790376512, pre/lateHP5.
+The second explosion did not generate another damage record for the spent
+blue target. No heart init/first-update events. DebugStrings match BF2 0 1 6
+and BF3 0 2 6. This validates the real explosion/damage recipe and corrected
+counter for both target variants; no rate or full independent-gate proof is
+inferred from these two no-drop outcomes. On comparison still required.
+
+BF-off-first artifacts (retain original counter-fault capture): log SHA256
+`65da79daf891fab50f36eed24e5324f52c04ed60e911bb7e2179bc02b1dc2c8f`,
+snapshots `f48d69d7d95df7895b36a605a2d7b449842172da489ba5878c5c7933ee076d0d`,
+trace `ea4b6cc409ded557f6e64f575e7fd564120368523454b7cea88f0e9876b1d3e0`,
+save2 `82efbd2921e3f7df86219d49c2aa5f9981e221e8dee42d2aac28ef38f10d6ee4`.
+
+New BF-off-both artifacts:
+
+- log.txt,2,807,397 bytes, SHA256
+  `9496b82136989a207f57df595a28f8d69d871501b81af16c982242495116a338`.
+- snapshots.jsonl,five records(three snapshots/two damage events), SHA256
+  `0b23f8745ee87c73a0c20b2b67d87ce6e40b3d78260895678bf3bad45818d756`.
+- trace.jsonl,four records, SHA256
+  `e02738c2263ef2b94602b83565c9a72bfd61f4e456044343a41586d016d1a33d`.
+- save2.dat,315 bytes, unchanged SHA25682efbd2921e3f7df86219d49c2aa5f9981e221e8dee42d2aac28ef38f10d6ee4.
+
+Stable source metadata, same PID2272, no matching Lua/stack errors, diagnostic
+and immutable observer hashes unchanged. Next: stop only OUPProbe, enable blue
+fires/all seven On, fresh Hard Isaac slot2; verify all seven active, Hard,
+continued=false and fixture registered before bounded On targets. The first
+On batch may scale the verified real-target/explosion recipe to five distinct
+blue and five purple entities clustered within each proven blast location.
+Trace must confirm unique target seeds/one damage event each; NoFire remnants
+and repeated callbacks must not inflate the sample. This is an effect witness,
+not a final drop-rate estimate, and no RNG is forced.
+
+## BF-on first bounded batch — owner checkpoint
+
+Owner confirmed BF4 true,true,false,true: all seven active On, Hard difficulty,
+fresh/continued=false and fixture registered. After StartBF-on, parent recipe
+created five blue targets clustered at bottom-right and five purple at top-right
+(x offsets-32,-16,0,16,32 around each proven blast center). After one second
+of updates, two real Isaac.Explode100 calls hit those centers, then two seconds
+of updates and snapshotBF-on-batch-1. Owner reported BF5=0,10,6 and one soul
+heart, left uncollected, console held open. The short counter DebugStrings the
+same result. Trace must verify distinct fire identities and event ordering;
+one visible heart alone cannot distinguish mod extra drop from native drop.
+No rates or blue-fire gate-effect pass is claimed from the owner count alone.
+
+## BF-on native extra-spawn witness — parent phase assessment
+
+Main inspected the collector's actual raw decisive chain. Fresh seed2231620276,
+Hard1, continued=false, all seven active/saved/run settings true; Isaac red6,
+soul0/black0/damage3.5. Atframe202, ten distinct fires(five33/2,five33/3)
+each receive one early/late explosion pair amount100/flags4/sourceplayer1/0
+seed2947567635,HP5. Parent will retain any earlier non-explosion events in the
+full trace rather than count them as extra native trials.
+
+The decisive chain atframe202 is seq243 damage_early for purple33/3
+seed3189282251,index28; seq244 pickup_init5/10/3 seed394267365 with spawner
+entity present/type33/variant3/seed3189282251; seq245 matching damage_late.
+Seq246 first-update atframe203 retains the same heart/spawner identity,
+index180. Gate=true/Hard1 throughout. This is a heart initialization inside
+the matching early/late callback interval, with the exact fireplace spawner
+used by the production helper's Isaac.Spawn. Combined with the unchanged
+production source and isolated enabled mods, the mod-extra-spawn attribution
+is an inference from direct ordering/provenance evidence, not the floor count
+alone. The two Off native callbacks had no nested heart spawns. This supports
+the independent blue-fire gate for the observed Hard explosion path; no final
+probability, lethal-hit requirement, Normal-mode behavior or guaranteed payout
+for each variant is inferred. Exact BF5 0 10 6 is logged, heart uncollected.
+Final full-trace counts/hash summary still needs recording.
+
+## Stomp fixture prepared locally only
+
+Primary API research confirms EntityPlayer:UseCard(Card ID,UseFlags=0) and
+Card.CARD_EMPEROR=5; the symbolic Lua call is documented, not yet engine-tested
+in this session. MC_POST_PLAYER_UPDATE takes EntityPlayer at60Hz, without a
+documented ordering guarantee relative to damage. Sources:
+https://wofsauge.github.io/IsaacDocs/rep/EntityPlayer.html
+https://wofsauge.github.io/IsaacDocs/rep/enums/Card.html
+https://wofsauge.github.io/IsaacDocs/rep/enums/ModCallbacks.html
+Existing issue2's stage6/Emperor actualMom evidence is a setup reference only;
+new current-build events must establish actual source45/10/Stomp and settings.
+
+Main authored tools/validation/stomp-damage-trace.lua version1,5,348 bytes,
+SHA256a659e0d732606cd260730537cdd1549dbe4eb2ec05d72453081cd5178ad1f869.
+Read-only damage observer priority-100 logs all player damage before production
+can cancel it, including shield counts, gate/health/source type/variant/seed,
+animation/frame/state, room/stage and crush flag. A player-update observer at
+priority100 waits until Game frame exceeds the damage frame, then logs one
+health outcome grouping all events for that player/frame. Mixed-source frames
+cannot isolate a stomp, and multiple events are not multiple health losses.
+Run/label changes discard pending groups explicitly. Both callbacks return nil;
+no damage forwarding, item grant, health mutation or config/save writes.
+
+Syntax and parent-owned local protocol smoke passed: nil returns, same-frame
+two-event grouping into one health delta, no premature same-frame outcome,
+later-frame observation, duplicate suppression, stale-context discard, exact
+cleanup preserving a production sentinel. This validates fixture protocol only,
+not engine callback timing/cancellation or Mom behavior. First native session
+will check actual source and later health using Host Hat Off/On with other six
+gates On, preserving gameplay criteria. Artifact is local-only until published
+and separately staged/registered; no production/immutable-observer changes.
