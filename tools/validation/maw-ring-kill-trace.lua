@@ -77,11 +77,14 @@ local function register(id, priority, observe)
         local ok, message = pcall(observe, ...)
         if not ok then
             trace.enabled = false
-            emit("diagnostic_error", {message = tostring(message)})
-            print("M2TRACE ERROR; logging disabled. Report the error before continuing.")
+            -- Reporting can fail too (including error-object formatting). Keep
+            -- both output paths contained so native callbacks still receive nil.
+            pcall(function() emit("diagnostic_error", {message = tostring(message)}) end)
+            pcall(print, "M2TRACE ERROR; logging disabled. Report the error before continuing.")
         end
         -- Always nil, including after diagnostic failure. Never cancel damage
         -- or prevent subsequent callbacks from executing.
+        return nil
     end
     mod:AddPriorityCallback(id, priority, callback)
     callbacks[#callbacks + 1] = {id = id, fn = callback}
@@ -150,9 +153,10 @@ function trace.Stop()
     end
     callbacks, lastDamage, seenPickups = {}, {}, {}
     trace.registered = false
-    emit("callbacks_removed", {standaloneDiagnostic = standalone})
     OUPMawTrace = nil
-    print("M2TRACE STOPPED")
+    -- Finish cleanup even when the diagnostic output channel is unavailable.
+    pcall(emit, "callbacks_removed", {standaloneDiagnostic = standalone})
+    pcall(print, "M2TRACE STOPPED")
 end
 
 emit("registered", {standaloneDiagnostic = standalone, callbackCount = #callbacks})

@@ -84,4 +84,15 @@ assert(emit(11,npc,1,0,{Entity=badSource},0) == nil)
 assert(not OUPMawTrace.enabled and records[#records].kind == "diagnostic_error")
 OUPMawTrace.Stop()
 assert(#removed == 8)
+-- A logger failure while reporting another failure must not escape a callback.
+dofile("tools/validation/maw-ring-kill-trace.lua")
+local originalDebug = Isaac.DebugString
+Isaac.DebugString = function() error("fixture logger unavailable") end
+local ok, result = pcall(emit,11,npc,1,0,{Entity=laser},0)
+assert(ok and result == nil, "diagnostic-report failure escaped the callback")
+assert(not OUPMawTrace.enabled)
+local stopped = pcall(OUPMawTrace.Stop)
+Isaac.DebugString = originalDebug
+assert(stopped and OUPMawTrace == nil and #removed == 12,
+    "logger failure interrupted exact callback/global cleanup")
 print("PASS Maw trace callback/cleanup contracts; NOT engine attribution or drop validation")
