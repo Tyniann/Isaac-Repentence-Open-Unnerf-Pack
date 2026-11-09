@@ -1042,3 +1042,119 @@ The trace must first demonstrate a real selection hook and resulting pickup;
 no assumption that every chest/open path invokes it. Additional containers
 require a bounded reason if the first contents provide no eligible observation.
 Other six gates must be confirmed On before any item grant in each fresh case.
+
+## Humbling Bundle fixture staged, HB0 pending
+
+Fixture published at ef33e9243cc2ffd3081ae1507edcdcb784650ee1,3,946 bytes,
+SHA256 `622242a2507e26bf6dd6f3a59d00d3c067febf89119ed7cb31f2b9142d7507a1`.
+Windows Luna added only the previously absent dormant file
+mods/open_unnerf_validation_observer/humbling-bundle-selection-trace.lua.
+Observer main.lua and Dark Bum tracer remain byte-identical; PID2272 is still
+open. No loader, production source, save, options, mod marker or unrelated mod
+was changed. Sidecar evidence/HB-trace-v1-staging.json SHA256
+`3b121b4e15df5190ebe46acde46410f6bf076abecb951dc907454ae0af0aa0a8`.
+The file has not executed or registered. Owner HB0 confirmation remains pending;
+no Bundle item grant or behavior test has been requested yet.
+
+## HB0 and first native-chest smoke — owner checkpoints
+
+Owner confirmed HB0 false,true,false,0 (only Bundle Off/other six On/actual
+fresh/Bundle copies0), then explicitly
+loaded the staged fixture and confirmed HBTRACE READY. Main then requested
+the smallest native-content case: Start HB-off at runtime f1c8325, giveitem c203,
+spawn5.50.0 as one container, close console and walk into that brown chest to
+open it normally. Owner confirmed chest opened and the post-open snapshot
+HB-off-chest-1/HB1 captured. Console held open for collection. Callback visit,
+native-content provenance, actual selected/final values and gate settings still
+require log assessment; no Bundle behavior pass follows from these confirmations.
+
+## HB-off first native chest — parent trace assessment
+
+Main inspected actual captured raw HB trace lines. Seed598256705,
+continued=false, run-start observed; only humblingBundle=false with other six
+true in both snapshots' active/saved/run settings. Every trace event reports
+Bundle copies[1]. Manual container spawn is frame23: early/late selection50/1,
+init5/50/1 seed1518017777 and first-update frame24/index2. The selection wrapper
+is mostly empty (type/variant/index/seed0); wrapper entityFrame is game frame,
+not reliable lifetime/provenance. No chestSeed field is emitted.
+
+After the owner's normal chest opening, frame99 contains these ordered chains:
+
+- seq5/6 early/late selection20/1, seq7 init5/20/1 seed2087185463, seq8
+  first-update5/20/1 same seed/index8. A single penny stays single with Off.
+- seq9/10 early/late selection40/2, seq11 init5/40/2 seed3405511951, seq12
+  first-update5/40/2 same seed/index9. Already doubled bomb remains unchanged;
+  native doubling while the mod gate is Off is not evidence of a gate failure.
+
+Thus this smallest test establishes actual native chest-content hook activity
+and a bounded eligible unchanged Off result. The container's console-spawn
+events are separate from its native content events. No per-source spawner
+provenance is present; the owner's isolated opening and ordered frame99 events
+support the chest-content interpretation. Missing/no-op generic-spawn cases
+are not being substituted for native selection. On comparison remains pending.
+
+Artifacts captured with stable pre/post source metadata and same PID2272:
+
+- HB-off-chest1-log.txt,1,802,323 bytes, SHA256
+  `e8dae31f7e891ccbcf0534520af96f09f646764acd7b3cc2cd8d1e7d9d105a81`.
+- HB-off-chest1-snapshots.jsonl,632 records(two snapshots plus630 repeated
+  pickup events), SHA256
+  `98e52cc9957e3e920737f73cf3165e58d5a3142edd1cc8c28b27d3da18431270`.
+- HB-off-chest1-trace.jsonl,12 records, SHA256
+  `d84cbb91d1faa66e5345b7ed351c7d83ef2ec3244acd20f797b4b90ce7fd1432`.
+- HB-off-chest1-save2.dat,314 bytes, SHA256
+  `54e95993e6812d0bef65a7c1ec9db85b509869643312880c8d80482f467b3e75`.
+
+Next: stop only OUPProbe (keep HB fixture), enable Bundle/all seven On and
+start fresh Normal Isaac slot2; confirm all seven active=true/continued=false/
+Bundle copies0/fixture registered before grant. Captured immutable Off files
+are already preserved; final collector error/hash summary may finish while
+the owner prepares this new run.
+
+## HB-on first chest — valid setup, ineligible content sample
+
+Owner confirmed HB2 true,false,0,true, then the same single-container protocol
+with labelHB-on and snapshotHB-on-chest-1. Owner observed double bomb and5cents.
+Main inspected raw copied trace: seed2293994026, fresh/continued=false,
+all seven active/saved/run=true, Bundle copies[1]. Container seq13–16 atframe11
+is5/50/1 seed155842265. Native contents atframe72:
+seq17/18 selection20/2 (nickel), seq19/20 init/first-update20/2 seed2503434379;
+seq21/22 selection40/2 (already double bomb), seq23/24 init/first-update40/2
+seed3174444321. Both are outside the helper's eligible SINGLE pickup cases.
+No On single-to-double conversion is established and no product failure follows
+from this ineligible random sample. Next bounded sample opens three additional
+ordinary chests normally in this SAME run, retaining settings/item/trace.
+
+Off collector final: no bounded Lua/stack errors, fixture and immutable observer
+hashes unchanged. On first chest: same no-error result, stable pre/post metadata,
+same PID2272; two snapshots plus819 repeated pickup observations,12 HB records.
+Artifacts:
+
+- HB-on-chest1-log.txt,1,987,191 bytes, SHA256
+  `03e05fd292c46cb6fd5074c02187b645029161a83309e06b97c1d9a9eb867a8d`.
+- HB-on-chest1-snapshots.jsonl, SHA256
+  `ddd4867a0d1b2c0fffbda7abb7ec93743a310309992856497258962d8141fa32`.
+- HB-on-chest1-trace.jsonl, SHA256
+  `79c759a85b7b937bcb1f413bb426cad9d61320088c273508a72c3a8395c41e5e`.
+- HB-on-chest1-save2.dat,313 bytes, SHA256
+  `b27b68b63da1ba342d8210d4bbeda685df1ef72109791098bdb623d39a8ca815`.
+
+## Blue-fire fixture prepared locally only
+
+Main authored tools/validation/blue-fire-damage-trace.lua version1. It adds only
+read-only damage observers at priorities-100/+100 for fireplace variants2/3
+and heart init/first-update observers at+100. All return nil. It records actual
+difficulty/gate, explosion flag/amount/source, fireplace identity/health and
+pickup spawner identity; it never spawns, damages, consumes RNG, supplies damage
+returns, or changes saves/config. Cleanup removes only its four exact callbacks.
+Syntax and parent local protocol checks passed for nil returns, explosion and
+provenance fields, inactive-label gating, first-update deduplication and exact
+cleanup retaining a production sentinel. No engine registration/timing/drop
+pass follows. Source SHA256
+`cd25282e07ee4dfffdee181f35a420c553f30ceafb5d1cf237f1cea6518778e7`.
+Actual production helper supplies the fireplace as Isaac.Spawn's spawner;
+the trace must observe whether fields are populated and whether a heart init
+is ordered between matching early/late real damage events. Native engine drop
+ordering is unknown; do not classify every drop as mod-created or infer a final
+drop probability from this fixture. First planned smoke uses a real fireplace
+and a real Isaac.Explode call in a fresh Hard run, with owner away from blast.
