@@ -1,5 +1,14 @@
 # Issue #3 engine validation — Repentance+ 1.9.7.17
 
+The configuration lifecycle and seven independent gate scenarios below were
+exercised with the owner on 2026-11-08/09. Results combine owner observations,
+immutable game-log captures, settings snapshots and callback traces; the Lua
+harness is separate evidence. Production files at current integrated master
+`6b0223d644df1f4f4a2a8dd53a8b9a0e3b37640e` match the tested `f1c8325` source.
+This is configuration verification, not certification of every combat, drop-rate,
+cadence, character, mode or multiplayer behavior in compatibility issue #1.
+The shared game session has returned to #1 after diagnostic callback cleanup.
+
 ## Session ownership and provenance
 
 Issue #3 owns the initial shared Mafia-Server installation and first interactive
@@ -17,7 +26,7 @@ run-state changes. One owner, one installation, one active sequence.
 - Actual installed MCM: Pure v113, source
   `a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d`; installed script declares
   `local VERSION = 113` and `ModConfigMenu.Version = VERSION`.
-  UI/input still pending owner observation.
+  Subsequent owner UI/input and saved-choice observations are recorded below.
 - Owner confirmed game closed and authorized reversible preparation.
 - No engine pass is inferred from the merged implementation or Lua harness.
 
@@ -38,19 +47,27 @@ from one random outcome. Nail and Satanic Bible remain disabled and unexposed.
 | MCM restored | Close game; restore same MCM version; controls available | pass for restore, defaults from deliberate malformed fixture | C7 MCM v113 + seven-On UI; original valid config restored separately before C8 |
 | Slot isolation | Two disposable save slots retain distinct next-run choices and Continue snapshots without Lua reload | pass, distinct-seed engine case | C8 owner outputs + one-process log + separate save2/save3 JSON |
 | Missing/malformed data | Missing/truncated JSON in-engine; unknown schema/invalid field harness coverage | pass for exercised fallback cases; no exhaustive engine claim | C6/C7 owner queries, UI, exact fixtures, generated valid data, no Lua errors |
-| Maw disabled independently | Fresh Isaac, only Maw Off; `giveitem c399`; baseline damage stays 3.5, remove restores 3.5; no pack ring drop chance; compare On and pack-disabled control | pending | |
-| Orbitals disabled independently | Fresh run only orbitals Off; `giveitem c73`; record actual size/damage and stable updates against pack-disabled control; six other gates On | pending | |
-| Stomp disabled independently | Fresh run only stomp Off; `giveitem c375` then separate `giveitem c223` setup; real stomp compared with vanilla; six other gates On | pending | |
-| Bundle disabled independently | Fresh run only Bundle Off; `giveitem c203`; naturally selected pickups compared with vanilla (forced pickup spawning is not selection evidence) | pending | |
-| Dark Bum disabled independently | Fresh Isaac only Dark Bum Off; `giveitem c278`, repeated `spawn 5.10.1` at full red health; payouts compared with vanilla | pending | |
-| Relic disabled independently | Fresh run only Relic Off; `giveitem c98`; record initial/count/payout behavior and compare vanilla | pending | |
-| Hard blue fires disabled independently | Hard fresh run only fires Off; blue/purple fires bombed; no pack-added spawn path; compare controlled engine evidence and sufficient vanilla sample | pending | |
+| Maw disabled independently | Fresh Isaac; only Maw Off/other six On, then On control; acquire/remove c399 | pass for damage gate | Shared M1: Off3.5→3.5→3.5, On3.5→4.5→3.5; actual settings/logs recorded |
+| Orbitals disabled independently | Fresh Isaac; only orbitals Off/other six On, then all-On; acquire Dagger c172 | pass for familiar field gate | Strict O1: Off damage15/size10/unprocessed; On30/13/processed |
+| Stomp disabled independently | Fresh Normal Isaac; only stomp Off/other six On, then all-On; HostHat375, actual Mom45.10 Stomp | pass for native Host Hat gate | Off crush6→4; On crush+contact grouped6→6 in later player update; ST traces |
+| Bundle disabled independently | Fresh Isaac; only Bundle Off/other six On, then all-On; c203, open ordinary chests normally | pass for native selection gate | Off single penny unchanged; On normal key/four pennies/bomb become doubles; half heart unchanged |
+| Dark Bum disabled independently | Fresh Isaac; only DarkBum Off/other six On, then all-On; c278, red hearts as food and native payouts | pass for eligible pickup gate | Off native pills unchanged; On six native pickup→soul-heart chains with spawner/phase evidence |
+| Relic disabled independently | Fresh Isaac; only Relic Off/other six On, then all-On; acquire c98 without changing room | pass for initialization gate | Off RoomClearCount0; On2, familiar/owner identities and settings recorded |
+| Hard blue fires disabled independently | Fresh Hard Isaac; only fires Off/other six On, then all-On; actual explosions on33.2/33.3 | pass for observed extra-spawn gate | Off real damage path; On soul-heart init nested between purple-fire early/late damage callbacks |
+| Diagnostic callback cleanup | Stop base probe and optional traces after final capture | pass; shared deployment retained for #1 | Owner confirms five true values; explicit session/restoration handoff |
 
 The disabled-feature rows require evidence of the affected mechanic and enabled
 controls, not merely a saved boolean or a harness return. Common Maw/fresh/Continue
 results may be reused by issue #1 only at the same deployment and settings.
 
-## First owner sequence (deployment prerequisite pending)
+These rows assess the independent configuration guards using native engine
+effects plus the seven-gate dispatch harness. They do not claim that all earlier
+proposed broader comparisons were executed: pack-disabled controls, Maw ring
+drops, every orbital/character, Relic payout cadence, Pyromaniac healing and fire
+drop rates remain in the separate compatibility matrix. Initial-item/cache
+ordering across every character is not certified by post-start item grants.
+
+## First owner sequence (historical preparation recipe)
 
 After the exact package, backups and actual MCM version are recorded, ask the
 owner to launch normally, choose a disposable fresh Isaac run, press F10 and open
@@ -63,8 +80,10 @@ without coordinating the transition.
 
 Deployment must record backups before changing the pack, MCM, diagnostic mod or
 relevant options. Preserve unrelated mods and progression. Restore each original
-file/absence from its backup manifest when validation ends; remove only the
+file/absence from its backup manifest when the shared validation ends; remove only the
 session-created diagnostic/staging deployment, not an owner's existing mod.
+Issue #1 accepted final session ownership and coordinated-restoration
+responsibility after #3's callback cleanup; do not disturb its active tests.
 
 ## Preparation evidence (2026-11-08)
 
@@ -1337,6 +1356,22 @@ probability, lethal-hit requirement, Normal-mode behavior or guaranteed payout
 for each variant is inferred. Exact BF5 0 10 6 is logged, heart uncollected.
 Final full-trace counts/hash summary still needs recording.
 
+BF-on capture final: stable source metadata/PID2272, no matching Lua errors,
+fixture/immutable-observer hashes unchanged;214 probe records and242 BF trace
+records retained. The242 include more than the20 explosion damage visits and
+two heart visits; incidental earlier damage requires a separate fact summary
+and must not count as additional explosion trials. No new game action needed
+for that read-only analysis. Artifact SHA256 values:
+
+- BF-on-batch1-log.txt:
+  `e0b644b5ab44a7fa27cb8609ef3b854dd055ab7663d1ac76cca8090ff6e3b38e`.
+- BF-on-batch1-snapshots.jsonl:
+  `032739f74a560c9c04b001e19a6e5b13c2fdb530fd7c136c27a9b678eb954c8d`.
+- BF-on-batch1-trace.jsonl:
+  `8c765183cefc3bb8e7c96f389107d483668b48dd46d437df842d7a1b38ce219b`.
+- BF-on-batch1-save2.dat:
+  `4cbbc344c73fcf56c35501a5ad3621b3aa87527235cec747f1c37a38f3e3f4eb`.
+
 ## Stomp fixture prepared locally only
 
 Primary API research confirms EntityPlayer:UseCard(Card ID,UseFlags=0) and
@@ -1368,3 +1403,166 @@ not engine callback timing/cancellation or Mom behavior. First native session
 will check actual source and later health using Host Hat Off/On with other six
 gates On, preserving gameplay criteria. Artifact is local-only until published
 and separately staged/registered; no production/immutable-observer changes.
+
+## Owner requested reuse of earlier stomp validation
+
+Before confirming ST0, owner asked whether the stomp/Pyromaniac/Host Hat
+comparison had already been verified and implemented. Yes, earlier issue2
+evidence covers the stomp fix; current #3 still needs assessment of the
+configuration-disabled case with other six enabled. Pause new stomp gameplay
+steps while auditing exact earlier builds/settings/source and reuse valid
+positive/negative evidence. ST0 is NOT yet owner-confirmed, and no new shield
+grant, trace registration, stage/card call or Mom hit is claimed in this session.
+Do not repeat the full old shield/healing matrix merely to restate that fix.
+
+Audit result: earlier Host Hat actualMom baseline is e2eb46f53ef2d70f7c1a97d173f8c867e1f8ca89,
+fileSHAfc403eb26f3e61957d2902e1b1646db042b374e3ea9eafc4a888f6cf67654678,
+seedYXZ9KTZH/log91808a3b...; earlier candidate seedNKKGR339/log82478fa5...
+preserved health6→6 and ordinary Hop6→5, but did not record MCM/gate/other-six
+settings. Candidate fileSHAacdc6bf173ce5aacc02c87bdfceb20dd2aa9b5b89a76ec051cf530c972ecc735
+differs from current integrated stomp file4193578c378c3eb5bdbc2006f6371577d3c1c61b68cab2d37fca01668aaac2e3.
+Do not claim exact candidate-byte equality or current MCMOn proof from that
+older run. Earlier Pyromaniac owner-healing observation lacks a traced hit.
+No prior evidence answers stomp MCMOff/other six On. Reuse the prior fix context
+and limit current work to one Host Hat actualMom hit in each MCMOff/On case;
+the full item/healing comparison is not repeated. Current ST0 still pending.
+
+Stomp diagnostic staging is now verified: previously absent optionalfile at
+mods/open_unnerf_validation_observer/stomp-damage-trace.lua,5,348 bytes,
+SHAa659e0d732606cd260730537cdd1549dbe4eb2ec05d72453081cd5178ad1f869,
+source d1013769f77fb88c180daebbf37711d4e41353e3; dormant/unregistered.
+Sidecar ST-trace-v1-staging.json SHA256
+`c1e7d8e4432b598ca4de9957bb7d2f3a161823f8cafc0e7fe9040292ac15acaf`.
+Immutable observer unchanged; no production/save/settings/loader changes.
+
+Read-only analysis explains all242 BF-on records:120 early+120 late damage
+visits,one heart init+one first-update. The220 non-explosion visits are110
+actual damage calls,55 per variant, amount16/flags2/source33 of the same variant,
+frames102–202 every10frames, each target's HP remains5. These incidental
+fire-to-fire events from the clustered fixture are NOT explosion trials. There
+is no heart init beforeframe202. Exactly10 unique targets receive one early
+explosion callback each, without duplicate early explosions per target. Source
+filters flags with DAMAGE_EXPLOSION; do not infer native drop rates or extra
+RNG rolls from those flags2 records. Full trace hash remains unchanged.
+
+## ST-off owner actual-Mom checkpoint
+
+Owner confirmed ST0 false,true,false,0,0, then explicitly loaded the staged
+stomp fixture and confirmed STTRACE READY. Parent recipe: StartST-off atf1c8325,
+grantHostHat375,stage6,one second updates, documented
+Isaac.GetPlayer(0):UseCard(Card.CARD_EMPEROR). Owner confirmed Mom room and
+ST1=6,1,0,6,true (red-half-hearts,HostHat,Pyromaniac,stage,boss-room).
+Boss-ready snapshot was taken. Owner then accidentally received a Mom-foot hit;
+no replay was requested. The existing event is the proposed Off test. After-hit
+snapshot/DebugStringST2=4 is owner-confirmed and console held open. Current
+health loss matches one full heart, but source/settings/grouped later-health
+evidence still requires log assessment. Do not count this as multiple losses
+if crush/contact callbacks share a frame. No new production changes or item
+comparison matrix was introduced.
+
+## ST-off actual-Mom gate case — parent trace assessment
+
+Main inspected the copied raw decisive chain. Fresh Normal0 seed1134466152,
+continued=false, MCM113; stompImmunity=false and other six=true in all three
+active/saved/run settings. HostHat375 count1, Pyromaniac223 count0.
+Atstage6/room38, Gameframe144, source45/10 seed276725052 is State7/Stomp
+animationframe27. One damage_pre seq1 records amount2/flags16777216/crush=true,
+countdown30, playerIsaac0 seed893283966 healthred6/soul0/black0, gate=false.
+Atframe145, health_after_frame seq2 references damageSequences[1], health6→4,
+redDelta-2/soulDelta0. No other hit is in this capture; this is a clean native
+Mom crush event passed with the toggle Off, not a generic or synthetic hit.
+Actual later-frame engine observation is established for this fixture case.
+ST1 6 1 0 6 true andST2 4 are present as DebugStrings. No replay of the
+owner's first accidental hit was needed. On comparison still pending.
+
+Stable capture metadata/PID2272, no matching Lua errors; diagnostic and immutable
+observer hashes unchanged. Artifacts:
+
+- ST-off-mom-log.txt:
+  `9603fce998125b13bd1e72a452fc6d198f0974f21f95316e78aa029a371d7acf`.
+- ST-off-mom-snapshots.jsonl:
+  `0c8675a5cfe5d3834976d2d9c73070de875a6c035632a7c1e09438bbf4be34f9`.
+- ST-off-mom-trace.jsonl:
+  `76ddcacd1469b69de69f379e8e432d887a63d91b9771563b60441340c708c238`.
+- ST-off-mom-save2.dat:
+  `523bb18d3bd0fe1f61910405a1b5d0b318ed0af6f38aebcd556aa80612207a75`.
+
+Next: stop only OUPProbe, enable stomp/all seven On, fresh Normal Isaac slot2,
+and confirm aggregate all7true/continuedfalse/HostHat0/Pyro0/trace registered
+before the matching one-Host-Hat native Mom case. No Pyromaniac matrix replay.
+
+## ST-on actual-Mom comparison — parent trace assessment
+
+Owner confirmed ST3 true,false,0,0,true, then repeated only the verified
+HostHat/Mom setup with labelST-on and all seven On. After one native foot
+stomp owner reported ST4=6. Main inspected the exact raw decisive chain:
+fresh Normal0 seed4022326141, continued=false, MCM113, all seven true in
+active/saved/run settings. HostHat1/Pyromaniac0, Isaac0 seed1400271130.
+Atstage6/room142/Gameframe84, source45/10 seed3874528935 is State7/Stomp.
+Seq3: amount2/flags16777216/crush=true, animationframe27, healthred6.
+Seq4: amount2/flags0/crush=false, animationframe28, healthred6. Both gate=true.
+Seq5 atframe85 groups damageSequences[3,4], health6→6/redDelta0/soulDelta0.
+No other source contacts. These are two callback events from one stomp-frame
+group, not two health losses. The pre-priority fixture observes the cancelled
+events even if later default-priority observers do not receive them.
+
+Together with the clean Off actualMom6→4 case/other six On, this completes
+the bounded independent stomp gate comparison on the current deployment.
+The earlier fix/Pyromaniac matrix was not replayed. No assertion about every
+stomp source, Pyromaniac healing or all enabled compatibility criteria follows.
+ExactST4 6 is logged. Stable capture metadata/PID2272, no matching Lua errors,
+diagnostic and immutable-observer hashes unchanged. Artifacts:
+
+- ST-on-mom-log.txt:
+  `cbe619104a9b97a1a65f6d3c958cc5ed6f08323eef4098d3a31dee58da89fe69`.
+- ST-on-mom-snapshots.jsonl:
+  `87bb4c57d52bc36093be46eda70a521ac0e1182f732be6d7524a6ba2165a8b43`.
+- ST-on-mom-trace.jsonl:
+  `c3ace7b08752c37e0bf98dbb0455e9dbadcec27648dcfbb4408a2ded53934516`.
+- ST-on-mom-save2.dat:
+  `757cc0945c51e0068fce16b2d5447ab5530eca0d9fd8cc535c3aca1e9bb95920`.
+
+All seven independent disabled-gate scenarios now have bounded owner/engine
+evidence with other six active. Configuration lifecycle/MCM present+absent,
+fallback, Continue and save-slot cases are recorded above. Remaining issue1
+native cadence/rates/DPS/other variants are distinct acceptance work. Final
+diagnostic callback cleanup, documentation/review/integration and tracker
+alignment remain before this issue's completion claim. Shared session stays
+with #3 until owner confirms cleanup; then explicit return to #1 is required.
+
+## Callback cleanup and explicit final session return
+
+Owner confirmed TEST_CLEANUP followed by five true values after
+OUPProbe.Stop()/OUPStompTrace.Stop(): base probe inactive and all four optional
+diagnostic globals nil. Earlier DB/HB/fire traces had already stopped; the last
+stomp fixture removes its own two exact callback references. Production and
+base observer are not removed or edited. Game remains paused at the console.
+
+Explicit session ownership returned #3→#1 after that confirmation. Last confirmed
+run is slot2, Normal Isaac, seed4022326141, stage6 Mom room142, HostHat1/Pyro0/
+Maw0, damage3.5, red6/soul0/black0, all seven active/saved/run On, MCM113.
+Pack/MCM/base observer and four now-dormant fixture files intentionally remain
+installed for the continuing shared issue1 tests. Existing backups and all
+evidence are preserved. No #3 shared game/deployment mutation or competing
+owner test prompt follows this handoff. The final shared-session owner must
+coordinate restoration from the recorded manifest after BOTH issues' shared
+validation ends; issue3 does not silently uninstall the ongoing issue1 build.
+
+Issue1 explicitly acknowledged ownership and began a new Normal Isaac run in
+the same slot/process to clear the Host Hat/boss fixture. That new run must not
+be mistaken for the prior Mom run. Final read-only preservation copied the log
+with stable before/after source metadata, PID2272 unchanged, race=false:
+C3-final-handoff-log.txt,3,172,646 bytes,SHA256
+`358910b4376eb64f1a45023941e05cfb59d296b67285ccc2240128f747b68496`;
+sidecar C3-final-handoff-metadata.json,SHA256
+`84f42b8e46a93924f1b03d7450ba1dff08d1e3ba6da2aa5bcf7dc8dff3405636`.
+Last prior ST-on stop snapshot atline20635 retains seed4022326141,Normal0,
+all seven active/saved/run On,red6/soul0/black0/damage3.5. It is historical
+handoff evidence, not a claim about issue1's subsequent live run or save file.
+The five cleanup booleans remain owner-reported console evidence; only the
+fixture removal metadata found in the preserved log may be called log-backed.
+
+Exact-string check of that preserved copy finds DB removal line11330,HB removal
+line17361 andST removal line20636,each once. No OUP_BFTRACE_REMOVED marker is
+present. Fire-trace cleanup therefore remains owner/global-state evidence,
+not a log-marker claim; the absence alone does not establish a live callback.
