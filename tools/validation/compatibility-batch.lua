@@ -112,7 +112,7 @@ local function report()
         cleanupErrors=state.cleanupErrors,context=state.context,mechanics=state.mechanics}
 end
 local function finish(status,message)
-    if not state then return end
+    if not state or not state.active then return end
     state.active=false
     state.status,state.error=status,message
     state.cleanupErrors=cleanup()
@@ -256,6 +256,8 @@ local function mechanicsWorker(smoke)
     waitFrames(2)
     local original=player:GetHearts()
     assert(original>=6 and player:GetMaxHearts()>=6,"Crush contract needs six red half-hearts")
+    assert(player:GetSoulHearts()==0 and player:GetBlackHearts()==0,
+        "Crush contract needs no soul or black hearts on actor zero")
     state.healthMutation={player=player,original=original}
     player:AddHearts(4-player:GetHearts())
     waitFrames(1)
@@ -454,6 +456,12 @@ function batch.Run(options)
         players[#players+1]={player=p,index=index,position=Vector(p.Position.X,p.Position.Y),health=health}
         context.players[#context.players+1]=health
     end
+    if options.mechanics then
+        local player=players[1].player
+        assert(player:GetHearts()>=6 and player:GetMaxHearts()>=6 and
+            player:GetSoulHearts()==0 and player:GetBlackHearts()==0,
+            "Mechanics needs six red half-hearts and no soul or black hearts on actor zero")
+    end
     local target,positions=chooseSetup(room,players)
     if openUnnerfPack then
         for _,k in ipairs({"mawOfTheVoid","orbitals","stompImmunity","humblingBundle","darkBum","relic","blueFires"}) do
@@ -552,7 +560,7 @@ function batch.Status()
     return result
 end
 function batch.Stop()
-    if state and state.active then finish("stopped") else cleanup() end
+    if state and state.active then finish("stopped") end
     if OUPBatch==batch then OUPBatch=nil end
 end
 print("OUP BATCH READY; explicit Run required, Stop restores owned fixture state")

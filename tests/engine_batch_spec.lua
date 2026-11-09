@@ -38,7 +38,7 @@ function player:RemoveCollectible(item) self.items[item]=math.max(0,(self.items[
 function player:GetHearts() return self.hearts end
 function player:AddHearts(amount) self.hearts=self.hearts+amount end
 function player:GetMaxHearts() return 6 end
-function player:GetSoulHearts() return 0 end
+function player:GetSoulHearts() return self.soul or 0 end
 function player:GetBlackHearts() return 0 end
 function player:GetPlayerType() return 0 end
 local room={}
@@ -123,14 +123,34 @@ assert(ambient:Exists(),"removed an unattributed ambient pickup")
 for _,e in ipairs(entities) do
     if e~=untouched and e~=ambient then assert(not e:Exists()) end
 end
+player.Position=Vector(100,200)
+OUPBatch.Stop()
+assert(player.Position.X==100 and player.Position.Y==200,"inactive Stop replayed position rollback")
+player.Position=Vector(320,380)
+dofile("tools/validation/compatibility-batch.lua")
+-- Unsupported protected health must be rejected before any fixture mutation.
+player.soul=2
+local admitted=pcall(OUPBatch.Run,{mechanics=true,trialsPerVariant=1})
+assert(not admitted,"mechanics admitted unsupported soul-heart health")
+assert(player:GetSoulHearts()==2 and player:GetHearts()==6 and #callbacks==0)
+assert(player:GetCollectibleNum(223)==0 and player.Position.X==320 and player.Position.Y==380)
+player.soul=0
 -- Stop must restore temporary items/health too, while a mechanics coroutine is
 -- suspended between native operations. This is fixture rollback, not heal proof.
 OUPBatch.Run({trialsPerVariant=1,mechanics=true,smoke=true,label="mechanics-stop"})
 for _=1,3 do tick() end
 assert(player:GetCollectibleNum(223)==1 and player:GetHearts()==4)
+local stoppedBatch=OUPBatch
 OUPBatch.Stop()
 assert(player:GetCollectibleNum(223)==0 and player:GetHearts()==6 and #callbacks==0)
 assert(OUPBatch==nil and player.Position.X==320 and player.Position.Y==380)
+player.Position=Vector(100,200)
+player:AddCollectible(223)
+stoppedBatch.Stop()
+assert(player:GetCollectibleNum(223)==1 and player.Position.X==100 and player.Position.Y==200,
+    "repeated Stop replayed completed rollback")
+player:RemoveCollectible(223)
+player.Position=Vector(320,380)
 dofile("tools/validation/compatibility-batch.lua")
 -- Removing the fireplace while its native damage stack is executing is unsafe.
 -- Observer errors must defer mutation/cleanup until the native call unwinds.

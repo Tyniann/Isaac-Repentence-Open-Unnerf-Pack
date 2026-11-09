@@ -33,7 +33,9 @@ handling has unwound. Existing pickups remain untouched. Native explosions can
 alter nearby terrain, so this is not intended for an important live run.
 Player health, room identity and actor count are checked; a mismatch aborts.
 
-With `mechanics=true`, the same runner first performs these bounded cases:
+With `mechanics=true`, actor zero must have at least six red half-hearts and no
+soul/black hearts. Unsupported health is rejected before fixture mutation; other
+actors' health remains untouched. The same runner performs these bounded cases:
 
 - A real engine crush-damage request with Pyromaniac, temporarily using four
   red half-hearts. It records before/after health and restores the original
@@ -53,6 +55,8 @@ to its original room and restores positions where available. Actual cleared map
 rooms and explosion terrain are not rolled back: use the current disposable run,
 with the coordinated original-save backups preserved. Relic navigation briefly
 protects actors with native damage cooldowns, which expire normally.
+Stop after completion or an earlier Stop only unloads the interface; it does not
+replay rollback against subsequent player actions.
 
 Only after a successful smallest engine smoke will a full batch be requested.
 Illustrative protocol, **not a current owner instruction**:
