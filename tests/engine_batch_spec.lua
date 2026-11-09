@@ -152,6 +152,22 @@ assert(player:GetCollectibleNum(223)==1 and player.Position.X==100 and player.Po
 player:RemoveCollectible(223)
 player.Position=Vector(320,380)
 dofile("tools/validation/compatibility-batch.lua")
+local crushCalls=0
+function player:TakeDamage()
+    crushCalls=crushCalls+1
+    self.soul=math.max(0,self:GetSoulHearts()-2)
+end
+OUPBatch.Run({trialsPerVariant=1,mechanics=true,smoke=true,label="protected-health-arrived"})
+for _=1,3 do tick() end
+assert(player:GetHearts()==4)
+player.soul=2 -- An existing pickup can arrive during the yielded frame.
+tick()
+assert(crushCalls==0,"crush attempted after protected health arrived")
+assert(OUPBatch.Status().status=="error" and player:GetHearts()==6 and player:GetSoulHearts()==2)
+assert(player:GetCollectibleNum(223)==0 and #callbacks==0)
+OUPBatch.Stop()
+player.soul=0
+dofile("tools/validation/compatibility-batch.lua")
 -- Removing the fireplace while its native damage stack is executing is unsafe.
 -- Observer errors must defer mutation/cleanup until the native call unwinds.
 local normalExplode,normalDebug=Isaac.Explode,Isaac.DebugString

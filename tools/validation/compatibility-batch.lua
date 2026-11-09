@@ -176,9 +176,10 @@ end
 local function checkHealth()
     for _,p in ipairs(state.players) do
         local a,b=playerContext(p.player,p.index),p.health
+        assert(a.soulHalfHearts==b.soulHalfHearts and a.blackMask==b.blackMask,
+            "Player protected health changed during fixture")
         if not state.healthMutation or state.healthMutation.player~=p.player then
-            assert(a.redHalfHearts==b.redHalfHearts and a.soulHalfHearts==b.soulHalfHearts
-                and a.blackMask==b.blackMask,"Player health changed during fixture")
+            assert(a.redHalfHearts==b.redHalfHearts,"Player red health changed during fixture")
         end
     end
 end
