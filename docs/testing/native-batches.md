@@ -9,7 +9,31 @@ reuse the recorded Maw and configuration results rather than repeating them.
 `tools/validation/compatibility-batch.lua` exposes `OUPBatch.Run(options)`,
 `Status()` and `Stop()`. Loading defines the interface but starts no tests.
 The optional file must first be reviewed and staged at a recorded hash.
-It has **not been engine verified or deployed at this checkpoint**.
+Version 1 at `a5c25f0a16f8bf31498c23816bd07a4a5a60820e` was staged as
+`compatibility-batch-v1.lua` (26,188 bytes, SHA-256
+`4057891a8ad9b864231445bc2980641100ba2fda78afbc6b2381f37e87424a68`).
+The immutable observer and production deployment remained unchanged.
+
+The first owner-run smoke, `B1-hard-on-smoke`, stopped at zero of two fire
+trials with `No clear orbital contact point` (source line 234, resumed at 376).
+The screenshot establishes a fixture setup failure, not orbital compatibility
+or a fire result. A stable two-read log capture recovered four records:
+seed `1273441713`, Hard, all gates On, Jacob/Esau, production `f1c8325`.
+The controlled Pyromaniac crush request had flags `16777216`, amount 2,
+returned false and changed red half-hearts from 4 to 6. This supports that
+synthetic engine-input contract, not a native Mom attack. The final record
+reported no cleanup errors; no contact or fire trial was completed.
+Artifacts: Windows session `evidence/B1-smoke-20261109T170743873Z/`,
+`log-full.bin` SHA-256
+`e47107f7ade8c30a443edd796380bbd6fb9377418daa0f5ef1040b0bbd6b9ae8`,
+`batch-raw.jsonl` SHA-256
+`59a1b9325c6c5f8009d22f47f5e5667ed7d20791e36e862351a4dc0174ce32be`.
+Version 2 moves the
+target outward from the familiar while retaining player clearance and checks
+the actual target footprint before native frames advance. Unavailable contact
+setup is recorded as incomplete and does not block the other mechanics phases.
+Its short-orbit placement contract passes locally; **version 2 is not yet staged
+or engine verified** at this checkpoint.
 
 Run requires a cleared disposable room and no Relic, Dark Bum, Maw or Humbling
 Bundle on any actor. It records the actual difficulty, actor types, health,

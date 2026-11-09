@@ -6,7 +6,7 @@
 assert(OUPBatch == nil, "Stop the existing OUPBatch before loading another version")
 local json = require("json")
 local mod = openUnnerfPack or RegisterMod("Open Unnerf native batch", 1)
-local batch, state, callbacks = {version=1}, nil, {}
+local batch, state, callbacks = {version=2}, nil, {}
 OUPBatch = batch
 local function pos(v) return {x=v.X,y=v.Y} end
 local function id(e)
@@ -222,20 +222,38 @@ local function orbitalContact(player,withBffs,window)
     local familiar,point
     for _=1,120 do
         familiar=findFamiliar(35,player)
-        if familiar and clearPoint(Game():GetRoom(),familiar.Position) then
+        if familiar and distance(familiar.Position,player.Position)>0 then
+            -- Put the target just outside the orbit. Its body can overlap the
+            -- dagger without requiring the familiar's center itself to clear
+            -- the player by 40 units (a short native orbit cannot do that).
+            local radial=familiar.Position-player.Position
+            local radius=distance(familiar.Position,player.Position)
+            local candidate=familiar.Position+Vector(radial.X/radius*14,radial.Y/radius*14)
             local safe=true
             for _,entry in ipairs(state.players) do
-                safe=safe and distance(entry.player.Position,familiar.Position)>=40
+                safe=safe and distance(entry.player.Position,candidate)>=40
             end
-            if safe then point=Vector(familiar.Position.X,familiar.Position.Y);break end
+            if safe and clearPoint(Game():GetRoom(),candidate) then point=candidate;break end
         end
         waitFrames(1)
     end
-    assert(familiar and point,"No clear orbital contact point")
-    local target=Isaac.Spawn(15,0,0,point,Vector(0,0),nil):ToNPC()
+    if not familiar or not point then
+        local sample={bffs=withBffs,familiar=familiarRecord(familiar),
+            status="setup_unavailable",reason="No clear orbital contact point"}
+        state.mechanics.orbital[#state.mechanics.orbital+1]=sample
+        emit("orbital_result",sample)
+        return
+    end
+    local entity=Isaac.Spawn(15,0,0,point,Vector(0,0),nil)
+    state.owned[#state.owned+1]=owned(entity)
+    local target=assert(entity:ToNPC(),"Contact target is not an NPC")
+    assert(target.Size<=16,"Contact target exceeds verified clearance footprint")
+    for _,entry in ipairs(state.players) do
+        assert(distance(entry.player.Position,point)>=entry.player.Size+target.Size+8,
+            "Contact target overlaps player safety margin")
+    end
     target.MaxHitPoints,target.HitPoints=10000,10000
     target:AddEntityFlags(EntityFlag.FLAG_FREEZE)
-    state.owned[#state.owned+1]=owned(target)
     local sample={bffs=withBffs,familiar=familiarRecord(familiar),target=id(target),
         hpBefore=target.HitPoints,events={},startFrame=Game():GetFrameCount()}
     state.orbitalSample=sample

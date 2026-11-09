@@ -31,7 +31,7 @@ local function dispatch(id,...)
     table.sort(list,function(a,b) return a.priority<b.priority end)
     for _,c in ipairs(list) do assert(c.fn(mod,...)==nil,"callback changed native dispatch") end
 end
-local player={Position=Vector(320,380),InitSeed=1,Type=1,hearts=6,items={}}
+local player={Position=Vector(320,380),InitSeed=1,Type=1,Size=10,hearts=6,items={}}
 function player:GetCollectibleNum(item) return self.items[item] or 0 end
 function player:AddCollectible(item) self.items[item]=(self.items[item] or 0)+1 end
 function player:RemoveCollectible(item) self.items[item]=math.max(0,(self.items[item] or 0)-1) end
@@ -63,7 +63,10 @@ local function entity(t,v,s,pos,spawner)
     function e:Exists() return self.exists end
     function e:IsDead() return false end
     function e:Remove() self.exists=false end
-    function e:ToNPC() if self.Type==33 then return self end end
+    function e:ToNPC() if self.Type==33 or self.Type==15 then return self end end
+    function e:ToFamiliar() return nil end
+    function e:AddEntityFlags() end
+    e.Size=13
     function e:GetSprite() return {GetAnimation=function() return self.anim end} end
     function e:GetDropRNG() error("driver consumed native drop RNG") end
     entities[#entities+1]=e
@@ -71,16 +74,28 @@ local function entity(t,v,s,pos,spawner)
 end
 local untouched=entity(5,20,1,Vector(70,70))
 local explosions,ambient=0,nil
+local contactSetup,targetSpawned=false,nil
+local dagger={Type=3,Variant=35,SubType=0,Index=900,InitSeed=900,Size=13,
+    Player=player,CollisionDamage=30,OrbitDistance=Vector(30,30)}
+function dagger:ToFamiliar() return self end
+function dagger:ToNPC() return nil end
+function dagger:GetData() return {} end
 Isaac={}
 function Isaac.GetPlayer(index) assert(index==0);return player end
 function Isaac.GetRoomEntities()
     local list={}
     for _,e in ipairs(entities) do if e.exists then list[#list+1]=e end end
+    if contactSetup and player:GetCollectibleNum(172)>0 then
+        dagger.Position=player.Position+Vector(30,0)
+        list[#list+1]=dagger
+    end
     return list
 end
 function Isaac.Spawn(t,v,s,pos,velocity,spawner)
-    assert(t==33 and (v==2 or v==3),"unexpected fixture spawn")
-    return entity(t,v,s,pos,spawner)
+    assert((t==33 and (v==2 or v==3)) or (contactSetup and t==15),"unexpected fixture spawn")
+    local e=entity(t,v,s,pos,spawner)
+    if t==15 then targetSpawned=e end
+    return e
 end
 function Isaac.DebugString(line) assert(line:find("OUP_ENGINE_BATCH ",1,true)==1) end
 function Isaac.Explode(pos,source,amount)
@@ -167,6 +182,19 @@ assert(OUPBatch.Status().status=="error" and player:GetHearts()==6 and player:Ge
 assert(player:GetCollectibleNum(223)==0 and #callbacks==0)
 OUPBatch.Stop()
 player.soul=0
+dofile("tools/validation/compatibility-batch.lua")
+-- A short native orbit must permit a safe overlapping target beyond the
+-- familiar's center, rather than require the center to be 40 units away.
+contactSetup=true
+OUPBatch.Run({trialsPerVariant=1,mechanics=true,smoke=true,label="short-orbit-placement"})
+for _=1,180 do tick(); if targetSpawned then break end end
+assert(targetSpawned,"short orbital radius prevented all contact samples")
+local gap=targetSpawned.Position.X-player.Position.X
+assert(gap>=40 and math.abs(gap-30)<dagger.Size+targetSpawned.Size,
+    "contact fixture must clear the player while overlapping the familiar")
+OUPBatch.Stop()
+assert(not targetSpawned:Exists() and player:GetCollectibleNum(172)==0 and #callbacks==0)
+contactSetup=false
 dofile("tools/validation/compatibility-batch.lua")
 -- Removing the fireplace while its native damage stack is executing is unsafe.
 -- Observer errors must defer mutation/cleanup until the native call unwinds.
