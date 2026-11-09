@@ -14,9 +14,9 @@ later actual settings/seeds supersede earlier requested or assumed setup.
   that narrower context; they are not contact-DPS measurements.
 - Full Maw ring/drop/player-isolation, orbital combat/variant coverage, other
   feature behavior and true pack-absent vanilla/stacking comparisons remain open.
-- Current session owner is #3 after #1's second explicit return. #3 is preparing
-  an independent Relic-Off batch. #1 sends no owner prompts or shared mutations
-  until another explicit handoff. No claim of complete issue acceptance.
+- Current session owner is #1 after #3's explicit final cleanup/handoff. #1 is
+  preparing remaining compatibility tests and owns eventual coordinated shared
+  deployment restoration. No claim of complete issue acceptance.
 
 ## Session ownership and provenance
 
@@ -491,6 +491,229 @@ Observer remains active with label `O1-independent-on`, latest snapshot sequence
 new test runs and menu choices were owner-controlled. No cleanup while active.
 Optional Maw ring observations are deferred to a later explicit handoff.
 
+### Relic initialization observations; shared log collection blocked
+
+During #3's exclusive session, owner completed strict initialization setup:
+Off baseline `R0 false,true,false,0` (Relic Off, other six On, fresh, zero copies),
+then observed actual Relic counter 0 after acquisition. Fresh On baseline
+`R2 true,false,0`, then observed counter 2 after acquisition. These are
+owner-reported initialization/gate observations, not cadence or payout proof.
+Current On run remains open with one Relic; #3 asked owner to stay in the room.
+
+#3 reports its remote Luna/medium capture failed BEFORE START during provider
+setup: the existing `shadow/state_5.sqlite` entry is not the expected symlink.
+No collection ran and no capture files or game/source changes resulted. Do not
+remove provider databases, substitute models, or claim a log-backed Relic pass.
+#1's latest remote collector was a completed bounded task, not a maintained live
+Windows shell; metadata-only availability check follows this report. Preserve
+the owner run/log and #3 session ownership while collection access is blocked.
+
+### Relic records recovered after provider repair (no replay)
+
+Owner repaired the Windows provider environment and #3 reports the same
+Luna/medium shell successfully recovered five existing R-off/R-on snapshots.
+The prior collection blockage is therefore historical, not current. No test
+replay, source change or synthetic payout was used to recover the evidence.
+
+- `R-final-log.txt` SHA-256:
+  `012e44e44fada520971fa62ce091185115a2913ce29516704e7f0b37a95beaf3`.
+- R snapshot JSONL SHA-256:
+  `194be4f949aef5d1a49f969a2c0b8853b3fd6c127865d3eafdd7e022a8b4e438`.
+- Captured save SHA-256:
+  `f9c2931af6613f5065861f516341cf4c1cfa18039a5fd4ebd57049ab175df807`.
+
+Strict Off seed `3124566089`: Relic false, other six true in active/saved/run
+settings; familiar variant 23, InitSeed `3779570156`, owner `2482275868`,
+RoomClearCount 0 after acquisition and at stop. On seed `3074871929`: all seven
+true; familiar InitSeed `2038030361`, owner `768699799`, counter 2. Both actual
+continued flags false, player type 0, six red half-hearts and zero Maw copies,
+MCM113, no Lua errors. #3 reports stable log/save metadata, same PID2272.
+
+**Bounded result:** independent Relic initialization/gating is owner- and
+log-corroborated. No cadence, native payout interval, reset-ordering or Continue
+counter-persistence pass follows from these initial counters. Current Relic-On
+run remains open with one Relic; #3 keeps ownership and plans a separate strict
+Dark-Bum-Off fresh setup. Any new payout trace is separate diagnostic
+instrumentation requiring explicit verification, not part of immutable observer
+deployment or production-source changes.
+
+### Dark Bum trace preparation under #3 ownership
+
+Owner confirmed strict `DB0 false,true,false,0` setup (Dark Bum Off, other six
+On, fresh, zero copies), and both `AddPriorityCallback` and `RemoveCallback`
+are functions in this engine. This establishes API availability, not trace
+registration or payout execution.
+
+#3's main Sol authored a separate read-only trace v1 at
+`tools/validation/dark-bum-pickup-trace.lua`, published commit prefix `87093f`.
+Reported syntax-checked file: 3404 bytes, SHA-256
+`f30c68cc350e3c08ed24d3baba90601da02c32f82c8103b6491380f7320a4c9b`.
+Staging provenance SHA-256:
+`356a2c4b3649add757dd84cf2ef97c44311d2f7bef87d91d0656dbb242543e33`.
+It is a dormant extra file in the observer mod directory, separately recorded
+from the original 38-file package; immutable observer `main.lua` remains
+unchanged. It is not production source and has not yet been loaded or proven
+to run in this reported checkpoint.
+
+The specified trace uses existing pack mod reference, init observers at -100
+and +100, and first-update observer +100, always returning nil. No production
+callback functions/priorities, RNG, Morph, spawn, save or config behavior is
+replaced. Separate `OUPDBTrace.Stop` removes only its own callback references.
+It logs only DB-off/DB-on while OUPProbe is active. Identity records Index and
+InitSeed separately because Morph may change the seed. Spawner presence,
+conversion and owner type are diagnostic observations, not inferred provenance.
+
+#3 owns the first registration smoke before granting a Dark Bum. Registration
+outcome and actual native payouts remain pending. #1 neither deploys nor prompts
+the owner during this session; later interpretation may reuse valid records.
+
+### Native Dark Bum observations reported; final capture review pending
+
+#3 reports a strict native payout comparison without forced RNG or synthetic
+payouts. Off fresh seed `3699682887`: only Dark Bum false, other six true;
+two familiar-attributed pills (type/variant/subtype `5/70/9` and `5/70/8`)
+remain unchanged across init-before, init-after and first-update observations.
+
+On fresh seed `3582772347`: all seven true, Dark Bum familiar variant 64,
+InitSeed `3357659119`, owner `572960397`, player type Isaac 0. Six native
+pickups at frames 223, 247, 286, 319, 349 and 383 begin with variant/subtype
+`70/11`, `70/6`, `300/15`, `10/6`, `70/6`, `70/3`; reentrant init and later
+observations report soul hearts `5/10/3`. Morph changes InitSeed and initial
+Index 0 is nonunique; neither may independently identify the full before/after
+chain. Spawner entity/familiar/owner are ready at init in these observed cases.
+Owner `DB_LEFT 0`, six soul hearts and no black hearts agree with the reported
+trace. Ten manually spawned red-heart food inputs are separate from payouts.
+
+Separate trace v1 hash remains
+`f30c68cc350e3c08ed24d3baba90601da02c32f82c8103b6491380f7320a4c9b`;
+production and immutable observer unchanged. #3 is cross-checking raw phases and
+awaiting collector final metadata; #1 does not yet mark this log-backed row
+complete. No rates, excluded-character behavior, payout cadence or general
+compatibility pass is inferred. #3 keeps exclusive ownership for remaining
+Bundle/blue-fire/stomp gate checks; #1 only prepares read-only recipe facts.
+
+### Existing issue-2 native Mom evidence (reuse with revision limits)
+
+Parent cross-checked current f1 stomp code against the checked-in
+[issue-2 validation note](../research/issue-2-stomp-validation.txt). The existing
+native fixture was console-assisted actual Mom via stage 6 and The Emperor,
+not merely a manually spawned foot. Protected-item IDs are Pyromaniac 223 and
+Host Hat 375. Broken Shovel 550 is a documented convenience candidate, but its
+attacks must not be assumed to cover every actual-Mom source/flag path.
+
+Historical baseline e2eb46f, seed `YXZ9 KTZH`: actual source `45.10.0`, state 7,
+animation Stomp frames 27/28 generated amount 2/DAMAGE_CRUSH then amount 2/flags
+0 in the same game frame 142. Original pack + Host Hat cancelled the first,
+allowed the second, and next-frame health changed from six to four half-hearts.
+The pair is one measured health transition, not two independent health losses.
+Preserved log SHA-256:
+`91808a3be8fb811e75275468be8c930e1eac3495ee57956a02784c859f26751b`.
+
+Candidate issue-2-v1, seed `NKKG R339`, stage 6/type 0/room 93: both events
+cancelled with Host Hat, health retained six half-hearts; ordinary enemy 15.0.0
+Hop/flags 0/amount 1 subsequently allowed health to fall to five. Log SHA-256:
+`82478fa50528bde63716e7cea79dff43a305c1f917319b0dfc698d168ac6156e`.
+Separate candidate Pyromaniac gain of one full red heart is owner-observed only:
+its probe produced no confirming Pyromaniac hit trace. It must not inherit the
+Host Hat trace's verification.
+
+Current f1 source retains the narrow added zero-flag source-45/variant-10/Stomp
+check behind the configuration gate. It heals two half-heart units only for
+flagged crush impacts, not extra zero-flag contact. Candidate-note evidence is
+revision-specific; it is not a new strict f1 On/Off validation or proof of every
+historical stomp report. #3 received these facts for its bounded native tests.
+Any pre-damage trace must precede cancellation to observe On events, return nil,
+and group next-frame health by player/event frame. The default observer can be
+skipped after an earlier callback returns false; absence there is not evidence
+that the native event never occurred. No #1 owner commands were issued.
+
+### Current-build Host Hat/Mom and blue-fire reports from #3
+
+#3 reports completion of seven bounded independent toggle comparisons, pending
+its final records/validation PR. It retains exclusive session ownership through
+one owner cleanup command; #1 issues no game prompts or shared mutations.
+
+Current f1 Host Hat/Mom comparison supersedes candidate-only uncertainty for
+that narrow case: Off seed `1134466152`, only stomp false and other six true,
+source 45.10/Stomp animation frame 27, flags 16777216/amount 2 at game frame 144;
+next frame 145 grouped red health six to four. On seed `4022326141`, all seven
+true, source 45.10/Stomp animation frames 27/28, crush then flags 0 at game frame
+84; next frame 85 grouped red health six to six. No other source contacts in
+either capture. This is not a Pyromaniac or all-stomp-variants pass. Exact final
+artifact hashes are to be reused from #3's configuration-results ledger.
+
+Blue-fire report: Off observes two real explosions, one each on 33.2 and 33.3,
+with no nested hearts; On observes ten unique targets with one explosion each,
+including a purple-fire-spawned soul heart between early and late callbacks.
+The 220 incidental flags-2 fire-to-fire visits are excluded from explosion
+trials. This is positive callback-path evidence, not a drop-rate estimate or
+proof about native stacking. Exact mode/settings/artifact context awaits #3's
+final ledger extraction; do not assume Hard merely from the module's scope.
+
+Current reported run: slot 2, fresh Normal Isaac, seed `4022326141`, all seven
+active/saved/run On, MCM113, stage-6 Mom room 142, Host Hat 1, Pyromaniac/Maw 0,
+damage 3.5, six red/no soul or black half-hearts. Production f1c8325 and frozen
+observer remain unchanged. Four read-only diagnostic files were added separately
+beside the observer; their callbacks have been removed as cases ended except
+the stomp trace, pending cleanup. Preserve backups and installed pack/MCM/shared
+observer for subsequent #1 tests; do not treat pending cleanup as complete or
+assume the current room is safe/empty for the next feature batch.
+
+### Final #3 cleanup and session return to #1
+
+Owner confirmed TEST_CLEANUP followed by five true values: OUPProbe inactive,
+OUPStompTrace/OUPDBTrace/OUPHBTrace/OUPFireTrace globals nil. Their own callbacks
+were removed; base observer remains installed and unchanged. Optional files
+remain dormant, not auto-loaded. #3 explicitly returned interactive ownership
+to #1 and will issue no competing game prompts/file/deployment changes. A #3
+read-only final log copy may occur with race coordination.
+
+Handed-over current run: slot 2, fresh-origin Normal Isaac seed `4022326141`,
+all seven active/saved/run On, MCM113, stage-6 Mom room 142, Host Hat 1,
+Pyromaniac/Maw 0, damage 3.5, six red/no soul or black half-hearts, paused console.
+Source remains `f1c83253af3636816c3b83c6ab28d2221ad345ea`; frozen observer hash
+unchanged. #1 must establish a new relevant baseline rather than treat this
+boss room as an empty safe test chamber. Backups and installed pack/MCM/observer
+remain in place for further validation; #1 now owns eventual restoration.
+
+New reusable #3 results: strict Relic initialization counters 0 Off / 2 On
+(no cadence); Dark Bum native unchanged pills Off / six transformation chains
+On; Bundle native single penny unchanged Off and key/four pennies/bomb converted
+On with half-heart negative control; actual Hard blue/purple explosions and one
+nested On purple soul-heart spawn (not rates); current Host Hat/actual Mom
+grouped health protection On versus loss Off. Full final setup/hash details are
+in #3's configuration-results ledger. None completes the outstanding #1 broad
+compatibility/vanilla comparisons by itself.
+
+First #1 step after accepting ownership: owner starts a NEW Normal Isaac in
+the same slot, retaining all seven On, then records M2 baseline before Maw or
+any test enemies are granted. No file/deployment changes for that transition.
+
+### #3 final repository checkpoint (configuration-only closure)
+
+#3 reports validation PR #10 merged at
+`8af78fc1349423395ebfc238e3faaf16e9532475`, with all seven issue-3 acceptance
+boxes checked and that issue closed. This is configuration closure, not #1 full
+compatibility closure. Current master includes the final
+[configuration-results ledger](configuration-results-1.9.7.17.md), four
+issue-specific diagnostic sources/hashes and the unchanged frozen observer.
+Production main/config/Mods remain identical to tested f1c8325; do not relabel
+the actual deployed runtime as 8af78fc because documentation/tools merged.
+
+- Final immutable `C3-final-handoff-log.txt` SHA-256:
+  `358910b4376eb64f1a45023941e05cfb59d296b67285ccc2240128f747b68496`.
+- Sidecar SHA-256:
+  `84f42b8e46a93924f1b03d7450ba1dff08d1e3ba6da2aa5bcf7dc8dff3405636`.
+- Reported `race=false`. ST-on stop at line 20635 belongs to Mom seed
+  `4022326141`, not the subsequent M2 new run. DB/HB/ST removal markers appear;
+  BF removal marker is absent. Owner cleanup five-true confirmation remains
+  separate evidence; marker absence does not establish live callbacks.
+
+#3 performed no further game/deployment changes and returned all ongoing
+session/restoration responsibility to #1. Its validation branch was removed and
+own worktree left clean/detached. #1 and #8 remain open. Current M2 request is
+still waiting for owner baseline; the #3 checkpoint is not an M2 outcome.
+
 ## Shared observer protocol (deployed; initial snapshot engine verified)
 
 Source: `tools/compatibility-observer.lua`, adopted unchanged by #3. It is not
@@ -570,10 +793,10 @@ requires the actual vanilla comparison arranged by the shared session owner.
 | Maw ring/black-heart drops | Pending | Observe actual ring fields and kill/drop outcomes; no nondrop inference from one trial. |
 | Orbitals/native state | Independent Dagger acquisition fields pass with owner + log evidence; doorway/BFFS/Continue fields logged under Maw-Off context | Contact/BFFS combat scaling, Meat transitions, other orbitals and pack-absent comparison remain unverified. |
 | Dark Bum/output/exclusions | Pending | Controlled red-heart feeding, record reward provenance and excluded owner cases. |
-| Relic timing | Pending | Number actual hostile clears and payouts, snapshot counters; repeat control and Continue. |
+| Relic timing | Independent initialization/gating corroborated (Off counter 0, On 2); cadence pending | Number actual hostile clears/payouts, trace native reset ordering, repeat control and Continue. |
 | Hard/Normal blue/purple fires | Pending | Record finite trials per type/mode/control, 0/1/2-drop counts and nonlethal/repeated damage separately. |
 | Humbling Bundle | Pending | Four pickup types, native reward-selection paths, existing doubles and paired control. |
-| Stomp immunity | Pending | Reuse #2 engine evidence only for matching integrated source/fixtures; preserve historical-report uncertainty. |
+| Stomp immunity | Current f1 Host Hat/actual Mom independent On/Off reported by #3; final artifact references pending | Pyromaniac healing, ordinary-damage controls and other stomp variants remain open; historical reporter case not generalized. |
 
 Preparation alone cannot justify a checkbox or issue closure. Actual commands,
 observed values, timestamps and log references above justify only the bounded
