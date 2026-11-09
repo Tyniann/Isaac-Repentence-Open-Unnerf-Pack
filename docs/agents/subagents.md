@@ -54,10 +54,13 @@ Terra.
 
 **Delegate all computer-use tasks to `gpt-6.1-terra` with reasoning effort
 `xhigh`.** This includes browser control, Playwright (including headless), desktop
-and GUI operation, and creating or inspecting screenshots, including individual
+and GUI operation, and capturing screenshots, including individual
 captures and MCP screenshots. This rule applies regardless of difficulty or
 automation level and takes precedence over the Luna rule and exceptions for the
 main agent's own checks.
+
+Inspect images or screenshots already provided in chat directly using the current
+model's image capabilities. This is not computer use and requires no delegation.
 
 Running console commands alone does not constitute computer use. Here, computer
 use means interacting with the computer's visual interface: moving the mouse,

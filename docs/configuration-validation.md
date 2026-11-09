@@ -39,22 +39,39 @@ Fixtures test all seven callback gates independently; soul-heart helper spies
 verify dispatch isolation, not the helpers' engine behavior. Existing gameplay
 bugs remain in scope for issue #1/#2, not fixed or certified by these tests.
 
-## Owner gameplay handoff (not yet performed)
+## Executed owner/engine verification
 
-The inspected Windows installation is vanilla: **the pack is not installed**.
-No mod-enabled gameplay, installation, game control, or settings/save edits were
-performed by this thread. Coordinate deployment with the owner first: record
-this PR's exact head SHA, back up the target mods directory and pack save data,
-install that revision as a separate mod folder with `main.lua` and `metadata.xml`
-at its root, enable it and only MCM Pure v113 for the present-case test. Use
-Repentance+ **1.9.7.17** and a disposable run. The owner must enable/open the
-console if needed; no agent should alter the running game or its settings.
+The [results ledger](testing/configuration-results-1.9.7.17.md) records the
+2026-11-08/09 Windows session on Repentance+ **1.9.7.17.J460**, production commit
+`f1c83253af3636816c3b83c6ab28d2221ad345ea`, and MCM Pure v113. The initial
+inspection was vanilla; the later coordinated deployment and mod-enabled tests
+are separate evidence. Package inputs, installed-file hashes, backups, settings,
+seeds, exact event values and immutable log hashes are recorded there.
+
+Configuration cases exercised: seven controls/defaults; deferred choice versus
+active run; exit/relaunch/Continue and fresh-run application; absent MCM; missing
+and truncated JSON fallback; distinct-seed save-slot isolation without Lua
+reload; and each component disabled with the other six active. Engine comparisons
+use Maw damage, Dagger fields, Relic initialization, native Dark Bum rewards,
+native chest selection, real Hard-fire explosions and actual Mom-foot damage.
+These bounded gate checks do not certify every underlying mechanic's combat,
+cadence, probability, character, mode or multiplayer behavior. That broader
+compatibility work remains in #1.
+
+For a new session, coordinate deployment with the owner before changing an active
+game. Record the production SHA and enabled mods, back up saves/mod configuration,
+and use disposable runs. The shared installation remains in use by issue #1;
+its current session owner controls further game actions and eventual restoration.
 
 [Console syntax](https://github.com/wofsauge/IsaacDocs/blob/main/docs/tutorials/DebugConsole.md)
 and [collectible IDs](https://github.com/wofsauge/IsaacDocs/blob/main/docs/enums/CollectibleType.md)
 provide console-assisted item access; no item-access seeds are claimed here.
 
-1. With pack data absent/backed up, start Isaac on Hard. Open MCM with F10.
+The following are reproduction and broader comparison recipes, not a claim that
+every variant or rate comparison below was executed. Use the ledger's actual
+conditions when reusing evidence.
+
+1. With pack data absent/backed up, start Isaac. Open MCM with F10.
    Confirm exactly seven On toggles; Nail and Satanic Bible absent. Record logs.
 2. Change one toggle Off. Confirm the current run retains its behavior. Exit,
    relaunch, Continue: confirm both the displayed Off choice and the old run's
@@ -68,9 +85,11 @@ provide console-assisted item access; no item-access seeds are claimed here.
      separate fresh runs. Off must not double damage/enlarge size. Do not infer
      restoration by toggling during the same run.
    - Stomp immunity: `giveitem c375` (Host Hat), then encounter a stomping enemy
-     such as Mom; repeat separately with `giveitem c223` (Pyromaniac). Record the
-     actual crush-hit outcome. If enabled immunity fails, report it against #2;
-     no root cause or successful immunity is assumed.
+     such as Mom. The executed gate comparison uses Host Hat, `stage 6`, then
+     `lua Isaac.GetPlayer(0):UseCard(Card.CARD_EMPEROR)` after the floor loads.
+     Verify the actual source; the recorded cases are Mom `45.10`, `Stomp`.
+     Separate Pyromaniac `giveitem c223` healing or other stomp-source checks
+     belong to broader compatibility coverage; they were not replayed for #3.
    - Humbling Bundle: `giveitem c203`. Clear rooms and inspect naturally selected
      pennies/keys/bombs/full hearts. Do not use forced pickup spawning as proof
      of the pickup-selection callback. Compare a sample against vanilla.
@@ -93,9 +112,40 @@ provide console-assisted item access; no item-access seeds are claimed here.
    its menu choices and run snapshot, then starts new runs with its own choices.
    The harness covers both equal and different seeds, with MCM present/absent.
 
-Outstanding acceptance: real MCM UI/input, engine callback ordering (particularly
-initial cache/familiar updates), exit/relaunch/Continue in-engine, absent MCM
-loading, and seven independent vanilla comparisons on 1.9.7.17. Do not close #3
-or merge claiming these are complete until evidence is recorded. Compatibility PR #6 was merged into this branch before integration. Its player
-index/cache fixes, spawner guards and blue-fire argument forwarding are retained
-alongside all configuration gates; both suites pass on the combined code.
+## Optional issue-specific diagnostics
+
+`tools/validation/build_test_package.py` prepares the pinned runtime, MCM and
+separate observer package. `deploy-test-build.ps1` records backups and verifies
+installation bytes; use its recorded parameters and hashes from the ledger.
+These are development tools, not production loaders or permission to alter a
+running game.
+
+The frozen `tools/compatibility-observer.lua` provides `OUPProbe.Start`,
+`Snapshot` and `Stop`. Supply the actual deployed SHA, not a newly committed
+documentation SHA. Its SHA label is operator provenance; installation hashes
+attest bytes. Retrieve verbose JSON from the game log when console output scrolls
+off-screen. Repeated `pickup_first_observed` rows in this observer are repeated
+updates, so count distinct entities rather than rows.
+
+Four optional files add read-only observers and are loaded explicitly with
+`luarun mods/open_unnerf_validation_observer/<file>` after coordinated staging:
+
+| File under `tools/validation/` | Active probe labels | Cleanup |
+| --- | --- | --- |
+| `dark-bum-pickup-trace.lua` | `DB-off`, `DB-on` | `OUPDBTrace.Stop()` |
+| `humbling-bundle-selection-trace.lua` | `HB-off`, `HB-on` | `OUPHBTrace.Stop()` |
+| `blue-fire-damage-trace.lua` | `BF-off`, `BF-on` | `OUPFireTrace.Stop()` |
+| `stomp-damage-trace.lua` | `ST-off`, `ST-on` | `OUPStompTrace.Stop()` |
+
+They return nil, do not grant items/change damage or RNG, and remove only their
+own callback references. Registration alone is not an engine pass. Preserve
+ordered event records: Morph can change a pickup seed, selection wrappers may
+have index/seed zero, and cancelled damage may hide later-priority observers.
+The stomp fixture groups damage events by player/game frame and waits for a
+later player-update health observation. Mixed-source frames cannot isolate a
+stomp. The blue-fire test counts animation `NoFire` separately: an extinguished
+fire can retain 1 HP and `IsDead()==false`, so HP alone miscounts it as burning.
+
+Record observations, actual settings and failures before adjusting a recipe.
+For broader statistical/native behavior still pending, see #1 and its matrix.
+The general reusable owner-assisted workflow is deferred in #8.

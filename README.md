@@ -8,6 +8,10 @@ other modes and multiplayer remain unverified. See the
 [per-feature audit and owner test matrix](docs/testing/repentance-plus-1.9.7.17.md)
 and [engine results ledger](docs/testing/issue-1-engine-results.md) for the exact
 conditions, evidence and outstanding checks.
+The optional MCM configuration has also been exercised with Pure v113 on this
+build: persistence, fallback, Continue/save-slot behavior, operation without MCM,
+and seven independent gate effects. See the [configuration results](docs/testing/configuration-results-1.9.7.17.md)
+for the tested scenarios and their limits.
 Steam Workshop link: https://steamcommunity.com/sharedfiles/filedetails/?id=2554325871
 
 # Unnerfs Currently Included
@@ -60,8 +64,9 @@ relaunching the game.
 The integration targets **MCM Pure v113**, inspected at revision
 [`a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d`](https://github.com/Zamiell/isaac-mod-config-menu/blob/a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d/scripts/modconfig.lua).
 See [configuration validation](docs/configuration-validation.md) for reproducible
-checks and outstanding Repentance+ **1.9.7.17** gameplay validation. Engine support
-is a validation target, not a result established by the Lua harness.
+checks and [owner/engine results](docs/testing/configuration-results-1.9.7.17.md)
+for the executed Repentance+ **1.9.7.17** configuration cases. Broader combat,
+drop-rate, character and mode compatibility remains tracked separately in #1.
 
 # Install for local validation
 

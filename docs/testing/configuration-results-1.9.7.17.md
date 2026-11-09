@@ -1,0 +1,1568 @@
+# Issue #3 engine validation — Repentance+ 1.9.7.17
+
+The configuration lifecycle and seven independent gate scenarios below were
+exercised with the owner on 2026-11-08/09. Results combine owner observations,
+immutable game-log captures, settings snapshots and callback traces; the Lua
+harness is separate evidence. Production files at current integrated master
+`6b0223d644df1f4f4a2a8dd53a8b9a0e3b37640e` match the tested `f1c8325` source.
+This is configuration verification, not certification of every combat, drop-rate,
+cadence, character, mode or multiplayer behavior in compatibility issue #1.
+The shared game session has returned to #1 after diagnostic callback cleanup.
+
+## Session ownership and provenance
+
+Issue #3 owns the initial shared Mafia-Server installation and first interactive
+MCM/persistence batch. Issue #1 may collect files/logs read-only and prepare its
+recipes; it receives explicit ownership before any conflicting console or
+run-state changes. One owner, one installation, one active sequence.
+
+- Source selected: integrated `f1c83253af3636816c3b83c6ab28d2221ad345ea`
+  (includes configuration PR #5, compatibility PR #6, stomp fix PR #7).
+- Deployed production SHA: `f1c83253af3636816c3b83c6ab28d2221ad345ea`;
+  setup-input commit: `98ac21c31e4cbc00c3d9b2e1ea13ed9960e76cfe`.
+  All 38 installed file hashes independently match the prepared manifest.
+- Game target: Repentance+ `1.9.7.17`; previous title screenshot and executable
+  string `1.9.7.17.J460` establish version, not mod compatibility.
+- Actual installed MCM: Pure v113, source
+  `a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d`; installed script declares
+  `local VERSION = 113` and `ModConfigMenu.Version = VERSION`.
+  Subsequent owner UI/input and saved-choice observations are recorded below.
+- Owner confirmed game closed and authorized reversible preparation.
+- No engine pass is inferred from the merged implementation or Lua harness.
+
+## Result matrix
+
+Record timestamps, seed/save slot, fresh/Continue, active and next-run choices,
+vanilla/modded state, exact commands, log artifact and owner observation per row.
+Use `pending`, `pass`, `fail`, or `inconclusive`; never infer a drop-rate result
+from one random outcome. Nail and Satanic Bible remain disabled and unexposed.
+
+| Case | Setup and required observation | Result | Evidence |
+| --- | --- | --- | --- |
+| MCM present | Recorded build + actual MCM Pure version; fresh disposable Isaac run; F10 → Open Unnerf Pack → Unnerfs; exactly seven On controls, no Nail/Bible | pass (UI/defaults only) | Owner confirmed all seven On and new-run notice; fresh C1 log loads v113 |
+| Deferred choice | Set Maw Off in MCM; current active run remains On, next-run choice is Off | pass for deferral and persisted pre-relaunch state | Owner reports `Maw active: true` after setting only Maw Off |
+| Relaunch + Continue | Exit to desktop, relaunch, Continue same seed; Maw menu Off but active run still On | pass (owner + log corroboration) | Owner confirms Maw Off and `C3 true true` after relaunch/Continue slot 2 |
+| New-run boundary | Fresh Isaac run after saved Maw Off; active Maw Off, other six On | pass (owner + saved-file/log corroboration) | Owner reports `C4 false false` in new Normal Isaac run |
+| MCM absent | Close game; reversible MCM-only disable; relaunch/new run; pack uses saved Maw Off | pass (owner + fresh log/save corroboration) | Owner reports `C5 true false false`; no MCM Lua-script execution/errors; saved choice retained |
+| MCM restored | Close game; restore same MCM version; controls available | pass for restore, defaults from deliberate malformed fixture | C7 MCM v113 + seven-On UI; original valid config restored separately before C8 |
+| Slot isolation | Two disposable save slots retain distinct next-run choices and Continue snapshots without Lua reload | pass, distinct-seed engine case | C8 owner outputs + one-process log + separate save2/save3 JSON |
+| Missing/malformed data | Missing/truncated JSON in-engine; unknown schema/invalid field harness coverage | pass for exercised fallback cases; no exhaustive engine claim | C6/C7 owner queries, UI, exact fixtures, generated valid data, no Lua errors |
+| Maw disabled independently | Fresh Isaac; only Maw Off/other six On, then On control; acquire/remove c399 | pass for damage gate | Shared M1: Off3.5→3.5→3.5, On3.5→4.5→3.5; actual settings/logs recorded |
+| Orbitals disabled independently | Fresh Isaac; only orbitals Off/other six On, then all-On; acquire Dagger c172 | pass for familiar field gate | Strict O1: Off damage15/size10/unprocessed; On30/13/processed |
+| Stomp disabled independently | Fresh Normal Isaac; only stomp Off/other six On, then all-On; HostHat375, actual Mom45.10 Stomp | pass for native Host Hat gate | Off crush6→4; On crush+contact grouped6→6 in later player update; ST traces |
+| Bundle disabled independently | Fresh Isaac; only Bundle Off/other six On, then all-On; c203, open ordinary chests normally | pass for native selection gate | Off single penny unchanged; On normal key/four pennies/bomb become doubles; half heart unchanged |
+| Dark Bum disabled independently | Fresh Isaac; only DarkBum Off/other six On, then all-On; c278, red hearts as food and native payouts | pass for eligible pickup gate | Off native pills unchanged; On six native pickup→soul-heart chains with spawner/phase evidence |
+| Relic disabled independently | Fresh Isaac; only Relic Off/other six On, then all-On; acquire c98 without changing room | pass for initialization gate | Off RoomClearCount0; On2, familiar/owner identities and settings recorded |
+| Hard blue fires disabled independently | Fresh Hard Isaac; only fires Off/other six On, then all-On; actual explosions on33.2/33.3 | pass for observed extra-spawn gate | Off real damage path; On soul-heart init nested between purple-fire early/late damage callbacks |
+| Diagnostic callback cleanup | Stop base probe and optional traces after final capture | pass; shared deployment retained for #1 | Owner confirms five true values; explicit session/restoration handoff |
+
+The disabled-feature rows require evidence of the affected mechanic and enabled
+controls, not merely a saved boolean or a harness return. Common Maw/fresh/Continue
+results may be reused by issue #1 only at the same deployment and settings.
+
+These rows assess the independent configuration guards using native engine
+effects plus the seven-gate dispatch harness. They do not claim that all earlier
+proposed broader comparisons were executed: pack-disabled controls, Maw ring
+drops, every orbital/character, Relic payout cadence, Pyromaniac healing and fire
+drop rates remain in the separate compatibility matrix. Initial-item/cache
+ordering across every character is not certified by post-start item grants.
+
+## First owner sequence (historical preparation recipe)
+
+After the exact package, backups and actual MCM version are recorded, ask the
+owner to launch normally, choose a disposable fresh Isaac run, press F10 and open
+Open Unnerf Pack → Unnerfs. Ask only whether all seven controls appear On and the
+new-run notice is visible. If missing/error, stop and collect the game log rather
+than asking the owner to reinstall or hunt items. Do not reset an active run
+without coordinating the transition.
+
+## Cleanup
+
+Deployment must record backups before changing the pack, MCM, diagnostic mod or
+relevant options. Preserve unrelated mods and progression. Restore each original
+file/absence from its backup manifest when the shared validation ends; remove only the
+session-created diagnostic/staging deployment, not an owner's existing mod.
+Issue #1 accepted final session ownership and coordinated-restoration
+responsibility after #3's callback cleanup; do not disturb its active tests.
+
+## Preparation evidence (2026-11-08)
+
+Read-only Windows inventory found no installed pack or MCM at this session's
+start; the only mod directories were `external item descriptions` and
+`Visible Tinted Rocks with yellow mark`, both with `disable.it`. Isaac was closed.
+`EnableMods=1` and `EnableDebugConsole=1`; the setup does not change them.
+
+The main Sol agent exercised `tools/validation/build_test_package.py` end-to-end
+on Linux using the shared observer from issue #1:
+
+```sh
+python3 tools/validation/build_test_package.py \
+  --observer ../issue-1-repentance-plus-compatibility/tools/compatibility-observer.lua \
+  --output /tmp/ounp-validation-f1c8325.zip
+```
+
+- 38 runtime files; every packaged byte matched the pinned source archive or
+  reviewed observer input. This checks packaging, not Isaac loading or gameplay.
+- Pack archive SHA256: `2dc39b6a1c40949e717370659abf379967364e6cd505ac1207fbc02a311f804b`.
+- MCM archive SHA256: `ca11293b13f7f8ff1bc2229a6796631005fa7fcc0141d59963d2469633cc808e`.
+- Package SHA256: `971aacb895cae5f1c08107ab07b4e33820c68ed21a7407c2d3ddf99653d0a471`.
+- Observer SHA256: `aea0ac0b0098c29aeb8c5bbe1a73447ee0fd721c085baa2dcd99cd539ec2a7db`.
+  It is a separate optional mod; it reads settings/entities and logs observations,
+  never grants items, changes stats/config, suppresses damage, or writes mod data.
+  The SHA label supplied to `OUPProbe.Start` is operator provenance, not runtime
+  cryptographic attestation. Installation hashes provide the byte evidence.
+
+The parent-authored Windows deployment recipe is
+`tools/validation/deploy-test-build.ps1`. It rejects a running game and existing
+session destination folders, verifies archives and all runtime bytes before any
+game mutation, backs up the user-data and existing mod-data directories, and
+copies only three new mod folders. Actual execution/result is recorded below
+when received. Existing mods/markers and options are left untouched.
+
+
+## Windows installation result — 2026-11-08 15:22Z
+
+The verified recipe completed successfully using local Windows PowerShell.
+Luna independently counted 38 manifest entries and rechecked all 38 installed
+hashes; observer hash matches the immutable input. Isaac remained closed.
+This is an installed-source check, **not** an engine pass.
+
+Session root:
+`C:\Users\Mario\.t3\scratch\ounp-issue3-validation-f1c8325-20261108`.
+The `installed-manifest.json` records the exact runtime file map. Backups are
+`backup/repentance-plus-user-data`, `backup/game-mod-data`, and `backup/before.json`.
+The existing two disabled mod markers retained their zero size and timestamps.
+No options or original save files were edited by deployment.
+
+Transport attempts using a cross-environment encoded payload did not execute:
+the Windows runner rejected `functions.exec` as unsupported. No game files
+changed during those attempts. The successful path downloads the same exact
+inputs by commit-pinned GitHub raw URLs and executes the parent-authored recipe.
+
+First interactive prompt issued: launch a disposable fresh Isaac run, F10 →
+Open Unnerf Pack → Unnerfs, report seven On controls/new-run notice. No setting
+change or gameplay result has yet been received. Do not reuse the predeployment
+log mentioning old `issue2_baseline`/`issue2_candidate` paths as this run's evidence.
+
+## C1 screenshot observation — owner F10 screen
+
+Owner supplied attachment
+`mcp-launch-2545dcca6e3f89e10f10418b60b03bf4e2c9385f1c81f5299e71595404d8b356-6d679ce3-db26-412d-88c3-c5d3bcdc209a.png`.
+Terra (`gpt-6.1-terra`, xhigh) inspected it under the repo's visual delegation
+rule. It shows MCM's category picker: General selected, Mod Config Menu second,
+Open Unnerf Pack third. No error text is visible. The pack's seven controls and
+new-run notice are not on the currently selected General screen; neither their
+presence nor absence is established by this image.
+
+Assessment: MCM renders and the pack category is registered in-engine. The
+full controls/defaults criterion remains pending. Next owner instruction:
+Down twice, Enter, select Unnerfs if presented, leave controls unchanged and
+report all seven states plus the new-run notice. No setting has been changed by
+an agent; no persistence or gameplay pass is inferred.
+
+
+## C1 initial UI/defaults — engine observation
+
+Owner navigated into Open Unnerf Pack → Unnerfs and explicitly confirmed:
+"Yes—all seven On and the notice is visible." This establishes the first-install
+UI/defaults on this deployed build. It does not establish change application,
+relaunch persistence, disabled mechanics, or MCM-absent behavior.
+
+The fresh log copied at 2026-11-08 15:25:15Z is
+`evidence/C1-initial-log.txt` under the Windows session root, 16,547 bytes,
+SHA256 `6672ae5357afcd230f51b8f930fda1c2799d1cf5d4663d9cdd19dd56be64e8d7`.
+It records all three deployed mod scripts and MCM v113 loaded, followed by
+`RNG Start Seed: AHF4 DXT0 (237297203) [New, 2]`. No Lua error, exception or stack
+trace appears in the copied log. The prior-run mod-state refusal messages precede
+the new run and are not a Continue result for this deployment.
+
+Pack data now exists at
+`D:\The.Binding.of.Isaac.Repentance.v4.0.2\data\open unnerf pack\save2.dat`
+(312 bytes). Slot 2 is therefore the observed pack save target. No pack data
+contents have yet been assessed. First parent-designed observer smoke command
+issued to the owner:
+
+```lua
+lua OUPProbe.Start('C1-initial','f1c83253af3636816c3b83c6ab28d2221ad345ea','fresh')
+```
+
+Expected signal is an OUP_PROBE snapshot. This tests the actual observer API path
+on the smallest case; result is pending. No toggle/item manipulation precedes it.
+
+## C1 observer smoke — pass for the read-only snapshot path
+
+The owner could not read the console because the snapshot exceeded the screen.
+Read-only log collection recovered exactly one C1-initial record (914 bytes),
+not a stream of repeated errors. There were zero subsequent C1 probe lines and
+no error/exception/stack-trace lines after it in the captured log.
+
+- Snapshot: frame 4212, seed 237297203, difficulty 0 (Normal).
+- Actual observed run-start callback: `runStartObserved=true`,
+  `continuedObserved=false`; independent of the operator's `fresh` label.
+- Player: type 0 (Isaac), damage 3.5, zero Maw copies, six red half-hearts,
+  zero soul half-hearts, black-heart mask 0; no familiars.
+- Runtime MCM: `present=true`, `Version=113`.
+- Active gates, saved next-run settings and saved run settings: all seven true.
+- Saved schema version 1; snapshot seed matches current seed 237297203.
+
+Artifacts under the Windows session's evidence directory:
+`C1-observer-start.jsonl`, `C1-observer-start-log.txt` (17,916 bytes,
+SHA256 `ed5ffc72353620f90a0bd5019ddb4055287e982aae31ea1b9ea018f47946282f`),
+and `C1-pack-save2.dat` (312 bytes,
+SHA256 `c994073bfb9002db42ecaf836667160a68fc181f2619610049853a09afbcc2b1`).
+
+Assessment: first smallest observer API path works in-engine. It establishes a
+fresh-run/default baseline and source for later comparisons, not any unnerfed
+item behavior. Future owner steps need not read verbose JSON; the agent collects
+it from the game log. A short current-state query was issued after instructing
+the owner to change only Maw's next-run choice Off:
+
+```lua
+lua print('Maw active:',openUnnerfPack.Config.IsEnabled('mawOfTheVoid'))
+```
+
+Expected true in the existing run; outcome pending. Other six choices stay On.
+
+
+## C2 deferred Maw choice — owner observation
+
+After setting only Maw of the Void Off in MCM and leaving the other six On,
+the owner reported the short query printed `Maw active: true` in the same run.
+Assessment: current-run deferral is observed in-engine. Saved next-run choice
+and continued-run preservation will be cross-checked against the pack data and
+relaunch; no disabled-Maw gameplay claim follows from this query.
+
+Owner instructed to save and exit completely, then stop before relaunch so the
+pre-relaunch log/config can be preserved without a log-overwrite race. This is
+an intentional transition of the disposable slot-2 test run, not an agent-driven
+reset of an unrelated run. Continued seed expected: 237297203.
+
+
+## C2 closed-game persistence checkpoint — confirmed state
+
+Owner confirmed normal save and exit to desktop. Luna verified no Isaac process
+and preserved separate C2 artifacts before the next launch. Actual save2 schema1:
+next-run Maw=false, run-snapshot Maw=true, all other six=true in both, seed237297203.
+This demonstrates persisted active-vs-next-run separation after exit. It does not
+yet prove reloading/Continue.
+
+`C2-pack-save2.dat`: 313 bytes, source/copy mtime 2026-11-08 15:33:13.549Z,
+SHA256 `750958afa7e06901adf8faba6c005f7cb08600a7e70aaffd6821dc7d746fbea5`.
+`C2-before-relaunch-log.txt`: 30,142 bytes, mtime 15:33:16.034Z,
+SHA256 `ccf38bb33afb328eb77f97bb3ab4823b696060a7238c0c5adc1dfad91c5aba85`.
+No Lua error/exception/stack-trace matches after the C1 snapshot. The short print
+was observed directly by the owner; it is not present in the copied log.
+
+Next instruction: relaunch, select slot2, Continue, check menu retains MawOff,
+then run the following read-only short query (expected `C3 true true`):
+
+```lua
+lua print('C3',openUnnerfPack.Config.IsEnabled('mawOfTheVoid'),OUPProbe.continuedObserved)
+```
+
+No source/mod deployment changes occur across this transition. Outcome pending.
+
+## C3 relaunch + Continue — owner-observed pass
+
+Owner relaunched, selected Continue in slot2, and explicitly reported:
+"Yes—Maw Off in menu, C3 true true." The first true is the current Maw gate;
+the second is the observer's actual continued flag. The Off preference survived
+relaunch while the matching continued-run snapshot retained MawOn. Current
+launch log/seed and absence of errors will be corroborated in the next collection;
+this observation alone is not a generic gameplay compatibility pass.
+
+Next transition is within the same process (preserving the current log): return
+to main menu and start a new Normal Isaac run in slot2. Keep only MawOff. No
+item grants or other gameplay changes precede the fresh-run boundary query:
+
+```lua
+lua print('C4',openUnnerfPack.Config.IsEnabled('mawOfTheVoid'),OUPProbe.continuedObserved)
+```
+
+Expected false,false; current outcome pending. Owner asked to leave the fresh
+run open and item-free for the shared compatibility handoff.
+
+
+## C4 fresh-run boundary — owner-observed pass
+
+Owner returned to the main menu and started a new Normal Isaac run in slot2,
+then reported `C4 false false`. The current Maw gate is false and the observer
+saw a fresh-run callback (continued=false). No items have been taken. Other six
+choices were left On throughout the sequence. A read-only combined C3/C4 log and
+pack save capture is underway to record the new seed, persisted snapshot and
+errors before handing session ownership to issue #1.
+
+Assessment: new-run application is observed, completing the initial present-MCM
+UI/defaults → deferred choice → save/exit/relaunch/Continue → new-run sequence.
+Maw-disabled item behavior, MCM absence, slot switching, malformed data and the
+remaining six disabled mechanics are still pending; no issue closure follows.
+
+## Deferred owner request — reusable validation workflow
+
+The owner explicitly liked this interactive workflow, including the question
+tool, and requested a durable context note for making it a repo workflow later.
+Generalization is deferred; the active engine validation remains the priority.
+Capture the small-step/result-choice pattern, exact console commands, automatic
+log extraction (no owner scrolling), immutable build/manifest, backups, read-only
+observer, evidence matrix, current mandatory agent roles and explicit shared
+session handoffs. Preserve the distinction between observed engine facts and
+unmet gameplay criteria. A separate deferred tracker note records the current
+proof-of-concept paths, provenance and Windows transport lessons.
+
+
+## C3/C4 corroboration and explicit session handoff
+
+The captured relaunch log records seed237297203 (`AHF4 DXT0`) `[Continue, 2]`,
+then seed3112725348 (`03XT KGK9`) `[New, 2]`. It loads the same three deployed
+mods and MCM v113. No Lua error/exception/stack-trace lines were found. Four
+informational mod-state refusal notices reference the unrelated slot-3 rerun
+state before the valid slot-2 Continue; they are not a failure of this Continue.
+The short C3/C4 prints are owner observations, not present in the log.
+
+Current saved schema1: next-run Maw=false and fresh-run snapshot Maw=false;
+other six=true in both; new seed3112725348. Combined with the owner's C3 true,true
+and C4 false,false, this corroborates the initial MCM/persistence/boundary batch.
+It does not prove affected item behavior or remaining acceptance criteria.
+
+Artifacts under the session evidence directory:
+
+- `C4-continue-and-newrun-log.txt`, 27,869 bytes, mtime2026-11-08 15:37:18.068Z,
+  SHA256 `4240614951110764275bf25b0571d04a7fe948d42928a5388406b436970e886c`.
+- `C4-pack-save2.dat`, 315 bytes, mtime15:37:01.662Z,
+  SHA256 `7739b8a81112f997bcdc673856198f7b95aba95d7102cfc469d589d43fc9890d`.
+- Installed-manifest SHA256
+  `2610e74bda40aa237d00a066f9b722e3693a34c6e0daefe7fbda7d8489c1b475`;
+  source/package/MCM/observer fingerprints remain unchanged.
+
+Explicit ownership transfer: issue #3 → issue #1 for the next bounded Maw
+acquire/remove comparison batch. Current owner state: fresh Normal Isaac,
+slot2, seed3112725348, MawOff active/next-run, other six On, no items taken;
+run remains open. Issue #3 will issue no competing game prompts or shared-file
+mutations while #1 holds ownership. #1 must return ownership explicitly before
+#3 performs MCM-absence, fallback or slot-switching tests. Backups remain intact.
+
+Deferred workflow reuse is recorded in
+[issue #8](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/8).
+This records the owner's request; no generalization work is started during the
+active validation session.
+
+## Shared M1 Maw-Off damage comparison — issue #1 owns session
+
+Issue #1 reports owner observations corroborated by corrected log extraction:
+Normal Isaac damage/Maw copies `3.5/0 → 3.5/1 → 3.5/0` across acquisition/removal.
+Active, saved next-run and saved run Maw gates are false; the other six gates
+are true. The three snapshots share actual observed seed1299135721.
+
+This seed differs from the C4 handoff seed3112725348. Treat M1 as a distinct
+observed run; do not attribute the change to a product defect, invent its cause,
+or claim C4 and M1 are the same run. The three matched M1 snapshots still support
+the narrow conclusion that the pack adds no Maw damage while its gate is Off.
+Black-heart ring behavior, vanilla control and other enabled mechanics are not
+established by this stat comparison.
+
+Artifacts under the same Windows session evidence directory:
+`M1-off-log.txt`, SHA256
+`a7d5634cf0de9949eb0a462757f4abdc5bd1c543380b736f8500c9145a79d373`;
+corrected M1 JSONL, SHA256
+`4a21fa22d8541a1a2de14fe9b9e4c76593443076b1c13303f0f74b817b983ba0`.
+The initial extraction used an incorrect label/regex; issue #1 corrected it
+against preserved log bytes without game changes. This was an extractor fault,
+not engine evidence of a product failure.
+
+Issue #1 retains ownership through the bounded On comparison: set MawOn while
+leaving the other six On (all seven On), start a new Normal Isaac run, acquire
+and remove Maw, capture matched observations, then explicitly return ownership.
+No deployment changes or competing issue #3 owner prompts are authorized while
+that batch runs.
+
+## Shared M1 Maw-On comparison and session return
+
+Issue #1 explicitly returned session ownership after preserving final evidence.
+Valid fresh On snapshots (sequence6/7/8) share seed2406764967:
+damage/Maw copies `3.5/0 → 4.5/1 → 3.5/0`, cached copies0/1/0. Combined with the
+matched Off run's `3.5/0 → 3.5/1 → 3.5/0`, the engine comparison demonstrates
+independent Maw damage gating and correct acquire/remove stat reevaluation.
+Ring/drop behavior and a pack-disabled vanilla control remain outstanding.
+
+Excluded evidence: M1-on start sequence4 was labeled before the new run, on
+old Off seed1299135721, with activeMaw=false but next-runMaw=true. It is a valid
+boundary observation but NOT an On gameplay snapshot. Use only actual active
+On sequence6/7/8 for the On comparison; no product defect is inferred from a
+premature operator label.
+
+Final artifacts under Windows session evidence:
+`M1-final-log.txt`, SHA256
+`978dbbaf40710f9dafde95808e71914f648c65ebc37c44ceaf45ab714fe2d9f2`;
+`M1-final-snapshots.jsonl`, SHA256
+`e1cdcf96892a41754ff669406863d2e7028e1e1dc20f04f87ab7c4504ca6077b`.
+Seven unique records were preserved with no source race or bounded Lua-error/
+traceback matches. Observer/package/source remained unchanged.
+
+Returned current state: fresh Normal Isaac slot2, seed2406764967, all7 active/
+saved/runOn, damage3.5, Maw count0, redhalf6, soul0, blackmask0, no familiars or
+items. Observer active labelM1-on, latest checkpointM1-on-removed sequence8/frame132.
+Issue #3 now owns the next MCM-absence/fallback/slot-isolation batch; #1 has no
+competing prompts or shared mutations. Concrete next transition: owner sets
+MawOff only (six others stay On), saves/exits and waits. Only then may the MCM
+folder's reversible disable marker be changed and recorded before a fresh run.
+
+## C5 MCM-absence protocol — setup in progress
+
+Owner set MawOff only, left the other six On, saved and fully closed Isaac.
+Issue #3 instructed Luna/medium to preserve separate C5 preabsence log/save2
+copies, verify the closed process, and create ONLY a zero-byte
+`mods/mod_config_menu_pure/disable.it` marker after asserting original absence.
+The marker's path, prior absence, timestamp and unchanged pack-save hash must be
+recorded in C5-mcm-disable-marker.json before asking for a new launch.
+
+The pack and observer remain enabled; no source, options or progression data is
+changed. The saved current run remains the preceding MawOn run; the saved
+next-run preference should be MawOff. Actual values will be recorded from the
+closed-game checkpoint, not assumed.
+
+After marker confirmation, owner will launch a NEW Normal Isaac run in slot2,
+not Continue across the intentional mod-set change. The planned short query is:
+
+```lua
+lua print('C5',ModConfigMenu==nil,openUnnerfPack.Config.IsEnabled('mawOfTheVoid'),OUPProbe.continuedObserved)
+```
+
+Expected true,false,false: MCM global absent, saved nondefault MawOff choice
+applied, new-run callback observed. Confirm the other six gates and error status
+from pack-only saved data plus fresh log. A marker/source inspection alone does
+not pass MCM absence. Restoration later removes ONLY the marker created by this
+session while the game is closed; no unrelated mod markers are touched.
+
+## C5 preabsence checkpoint and reversible marker — confirmed files
+
+Luna verified Isaac closed and preserved C5-preabsence-log.txt (71,055 bytes,
+SHA256 `5d8778b3871afaddd4b3f76c6609abed42e2339d3506234d5987379b51d5c569`)
+and C5-preabsence-save2.dat (314 bytes,
+SHA256 `a3fd3688d6abd5ed1e70bc28044092d1e388a5e8068e06b087ab1e3141597cf8`).
+Actual schema1 has next-runMaw=false, runMaw=true on seed2406764967, six others
+true in both. Pack save hash was identical before and after the marker change.
+
+MCM-only marker created at2026-11-08 16:06:44.242Z:
+`D:\\The.Binding.of.Isaac.Repentance.v4.0.2\\mods\\mod_config_menu_pure\\disable.it`,
+zero bytes, verified previously absent. Evidence C5-mcm-disable-marker.json
+records session ownership and original absence. Original other-mod markers
+retained their baseline timestamps; pack/observer have no disable markers;
+options and pack data were not changed. Game remained closed after setup.
+
+Owner will now launch a NEW Normal Isaac run in slot2 and issue the planned
+C5 short query. Actual MCM-global absence and saved-choice loading remain
+pending; file disabling alone is not acceptance evidence.
+
+
+## C5 MCM absent — owner observation
+
+Owner launched a NEW Normal Isaac run in slot2 with only the MCM disable marker
+changed and reported `C5 true false false`: ModConfigMenu is nil, the pack's
+current Maw gate is false, and the observer recorded continued=false. This
+shows that the pack's nondefault saved choice applies without MCM in-engine.
+Fresh-log/error and complete saved-state corroboration will be captured after
+normal save/exit before the next launch. No item-behavior claim follows.
+
+Next planned fallback cases are concrete pack-config fixtures, not progression
+edits: preserve C5 log and pack data; while closed move aside only pack save2.dat,
+then start a fresh run to check defaults with missing data; preserve that result,
+close, restore MCM and stage malformed JSON for the pack only; check safe default
+loading, then restore the preserved valid pack configuration. Every fixture and
+restoration must have before/after hashes and explicit run-boundary evidence.
+No file fixture is applied while Isaac runs. Existing full user-data backups
+and unrelated mods remain unchanged. Outcomes remain pending.
+
+
+## C5 corroborated; C6 missing-file fixture ready
+
+C5 absent-MCM fresh run was seed766725541 (`EKQD E0AR`) `[New, 2]`.
+Saved schema1 has Maw=false in choices and run snapshot, six others=true. Its log
+shows pack/observer Lua scripts running but no MCM main-script execution and no
+Lua error/stack trace. The MCM *content directory* still appears in loaded-mod
+content entries; that is not script/global presence. The owner's C5 query
+independently observed ModConfigMenu==nil.
+
+C5-absent-log.txt: 26,667 bytes, mtime2026-11-08 16:13:23.470Z,
+SHA256 `a613f7a087a7eda298178d651a7972318d539791a406ea073d685916381b4a98`.
+C5-absent-save2.dat: 314 bytes, mtime16:13:21.317Z,
+SHA256 `f72c90a3fee80d67bd172c6067770c3e84900eb747afe1378a3834ddb1b91cf5`.
+Unrelated slot3 rerun mod-state notices remain informational, not this new-run
+failure. Assessment: pack loads without MCM and uses the nondefault saved choice.
+
+For C6, while closed, only pack save2.dat was moved to session
+`fixtures/C6-original-save2.dat`; its hash matches that C5 baseline exactly and
+its former live path is verified absent. C6-missing-fixture.json records the
+paths/hash, sourceAbsent=true and mcmDisabled=true. This immutable valid file
+is the restoration baseline after fallback tests. No replacement was created;
+no options/progression/source changes occurred. MCM remains disabled.
+
+An unnecessary initial collector comparison to the *pre-C5* marker record's
+pack-save hash stopped before the move. That hash naturally changed when C5
+saved a new seed/snapshot; the collector instead verified the live source
+against the newly captured C5 copy before moving, as the recipe required. This
+was a collection-precondition correction, not a product failure.
+
+C6 planned command is the C5 read-only query with labelC6. Expected true,true,
+false: absent MCM, default MawOn after missing data, fresh run. Full seven-field
+defaults and the fresh log will be checked from the generated pack data afterward.
+## C6 missing-config fallback — owner observation
+
+With pack save2.dat verified absent before launch and MCM still disabled, owner
+started a new Normal Isaac run in slot2 and reported `C6 true true false`:
+MCM absent, active Maw=true (default), actual continued=false. This is the
+expected transition from C5's saved MawOff to the missing-file default MawOn.
+Complete generated settings/run JSON, fresh seed and error status will be
+corroborated from the log and new pack data after normal save/exit.
+
+Owner was asked to close before the next fixture. Planned C7 setup: preserve
+C6 artifacts and generated default file, safely remove only this session's MCM
+disable marker, and write exact truncated JSON to the pack-only save2.dat while
+closed. The immutable C5 valid configuration remains in fixtures/C6-original-
+save2.dat for later restoration. No original progression/options/unrelated mod
+is modified. C7 must show MCM restored and safe On defaults without Lua errors;
+this remains pending, not implied by the harness.
+
+## C6 corroborated; C7 malformed fixture ready
+
+C6 fresh seed2172981496 (`T3ZG 8BRJ`) `[New, 2]` generated schema1 with all seven
+choices and run-snapshot fields true. No MCM main script ran, pack/observer
+scripts ran, and no Lua errors were logged. Combined with the owner's
+C6 true,true,false, this establishes missing-file defaults with MCM absent.
+C6-generated-save2.dat: 313 bytes, SHA256
+`5a8121e312d3bbb0932320da5495a0b64aae7a2f14e7be9a85113761ab8b253f`.
+C6-missing-log.txt: 26,811 bytes, SHA256
+`063c6f37c9c0cee97a7b26c336f3ef8393dce89b9e171201b5f33a8958cb18d7`.
+
+After preserving C6, the recorded session-owned MCM marker was safely removed;
+C7-mcm-restoration.json records that reversal. While closed, the pack-only
+save2.dat was replaced with exact truncated JSON `{"version":1,"settings":`
+(24 UTF-8 bytes, no BOM), verified SHA256
+`ee5edd0fe2861e725c89e7255122181f83b426e25f8f978d96c8187fa30b3cdb`.
+C7-malformed-fixture.json records the paths/hash, sourceSHA and restored-MCM
+state. The valid immutable C5 baseline still hashes to
+`f72c90a3fee80d67bd172c6067770c3e84900eb747afe1378a3834ddb1b91cf5`.
+
+The initial setup attempt used unsupported SHA256.HashData on Windows .NET and
+stopped before any file change. The parent explicitly authorized the compatible
+SHA256.Create().ComputeHash/Get-FileHash correction; the same recipe then
+completed. This was an environment/setup API fault, not a mod error or fallback
+result. C7 engine outcome remains pending.
+
+## C7 malformed-config fallback — owner observation
+
+Starting a new Normal Isaac run in slot2 from the exact verified truncated JSON,
+with MCM restored, the owner confirmed all seven controls On and
+`C7 false true false`: MCM present, active default MawOn, actual fresh run.
+This is the expected safe fallback. The generated valid file, actual seed,
+MCM runtime version and errors will be corroborated after normal save/exit.
+No label-only/harness result is substituted for this engine observation.
+
+Next transition: owner saves/exits; preserve C7 artifacts and generated defaults,
+then restore ONLY the original valid C5 pack file from its immutable baseline
+while closed. The game will next start a new run, not Continue a mismatched
+fixture snapshot. Before slot-isolation testing the owner is asked which other
+slot (1 or3) is available for a disposable run; no automatic slot switch or
+progression mutation is authorized. Existing original pack data in that second
+slot must be backed up or its absence recorded before starting the test.
+
+## C8 slot-isolation plan — owner selected disposable slot3
+
+Owner confirmed Isaac saved/closed and explicitly selected slot3 as available
+for a disposable new run. Before testing, C7 log/generated defaults must be
+preserved, then slot2 restored from the immutable C5 valid settings (MawOff,
+other sixOn). Existing pack save3.dat, if any, must be backed up unchanged; its
+absence must be recorded otherwise. Slot3 receives a known valid schema1
+fixture with all seven choices On and no run snapshot, for a NEW run only.
+Exact slot3 fixture:150 UTF-8 bytes, SHA256
+`38f8f3f0d0cc428fac25d5934eb3dedc939f56fc17efadb701f341dcc905d7db`.
+No slot1 or progression/options/source file is edited by the fixture setup.
+
+The intended engine sequence keeps one Isaac process alive: new slot2 A(MawOff),
+new slot3 B(MawOn), Continue slot2 A(Off), Continue slot3 B(On), with no item
+acquisition. Capture owner short-query outputs, all RNG transitions in the same
+launch log, actual distinct seeds and both pack files. This exercises the real
+save-slot overwrite regression rather than emulating storage switching in a
+harness. Do not claim same-seed engine coverage; equal-seed isolation remains a
+harness case unless actually executed. Current fixture execution is pending.
+
+## C7 corroboration and C8 prepared slots
+
+C7 fresh seed3634808873 generated valid schema1 with all seven choices and run
+fields true. The log shows MCM v113, pack and observer script execution, and no
+Lua errors. Together with the owner's seven-On UI and C7 false,true,false,
+this corroborates safe recovery from the exact truncated-JSON fixture.
+C7-malformed-fallback-log.txt:28,384 bytes, mtime2026-11-08 16:42:17.351Z,
+SHA256 `17b39108f8c1a0385e2c486ab3549f550a83177cad83415f55c54bbb70e5916f`.
+C7-generated-save2.dat:313 bytes, mtime16:42:15.393Z,
+SHA256 `891aefde1a8be7cf37c35d56b64e869413d3307519d2ddd2af19a2205b2b696d`.
+Missing and truncated JSON are now engine-tested; wrong schema/individual
+malformed field cases retain harness coverage, not claimed as separate engine
+executions.
+
+While closed, slot2 was restored byte-for-byte from the immutable C5 baseline
+SHAf72c90...; Maw=false in choices/run, other six=true, old snapshot seed766725541.
+The next action MUST be a new run, not Continue this old snapshot. Slot3 pack
+data was previously absent (recorded), so no invented original backup exists.
+Its new settings-only all-On fixture is150 bytes with verified SHA38f8f3... .
+C8-slot-fixtures.json records both source paths, prior absence, hashes and
+MCM-enabled state. No progression/options/source changes were made by setup.
+
+First C8 owner step: launch NEW Normal Isaac slot2, leave settings unchanged,
+then query current Maw gate and actually observed continued flag with labelC8A.
+Expected false,false; keep this Isaac process running for every subsequent slot
+transition. Result pending.
+
+## C8A slot2 fresh Off — owner observation
+
+Owner started a new Normal Isaac run in slot2 and reported `C8A false false`:
+MawOff active, actual fresh run. Isaac remains running; no item grants or setting
+changes are part of this case. Next transition is save back to menu, select
+slot3 and start a NEW Normal Isaac run without restarting the process. Slot3's
+known next-run fixture is allOn. Expected C8B true,false; outcome pending.
+
+## C8B slot3 fresh On — owner observation
+
+Within the same running Isaac process, owner saved slot2, switched to slot3,
+started a new Normal Isaac run and reported `C8B true false`: MawOn active,
+actual fresh run. This is consistent with loading the separate known slot3
+fixture after slot2's Off configuration. Full isolation still needs returning
+Continue checks and preserved file/log corroboration. Next: save back to menu,
+select slot2 and Continue, expected C8A2 false,true; do not restart the process.
+
+## C8A2 slot2 Continue Off — owner observation
+
+Owner saved slot3, returned to slot2 and chose Continue without restarting Isaac.
+Reported `C8A2 false true`: MawOff retained and actual continued flag true.
+This supports that visiting/saving slot3 On did not overwrite slot2's Off state.
+Final transition: save to menu, slot3 Continue, expected C8B2 true,true; leave
+that run open and item-free for file/log preservation and later coordination.
+
+## C8B2 slot3 Continue On — owner observation
+
+Owner saved slot2, switched to slot3 and chose Continue in the same running
+Isaac process, then reported `C8B2 true true`: MawOn retained and actual continued
+flag true. All four intended outputs now match:
+A new Off(false,false), B new On(true,false), A Continue Off(false,true),
+B Continue On(true,true). No item grants/toggle changes occurred during C8.
+
+Final read-only collection of the same-process log and both pack files is
+underway to record actual seeds, separate snapshots/preferences and errors.
+The slot3 continued run remains open and item-free. No config fixture is restored
+or removed while Isaac runs. A handoff may follow only after this capture.
+
+
+## C8 slot isolation corroborated — pass for the executed distinct-seed case
+
+One Isaac process (PID2272, start2026-11-08 16:47:57.941Z) recorded exactly the
+intended transitions in the captured launch log:
+
+1. Slot2 NEW, seed1371597772 (`M213 JNQA`), owner C8A false,false.
+2. Slot3 NEW, seed4201988032 (`80PE ARNB`), owner C8B true,false.
+3. Slot2 Continue, same seed1371597772, owner C8A2 false,true.
+4. Slot3 Continue, same seed4201988032, owner C8B2 true,true.
+
+Saved schema1 in slot2 retains Maw=false in choices/run; slot3 retains Maw=true
+in choices/run. Other six fields are true in both slots/settings objects. Both
+snapshots retain their respective actual seeds. MCM v113, pack and observer
+scripts loaded, no Lua errors were found, known source/observer/manifest
+fingerprints match, MCM disable marker is absent and unrelated mod markers are
+unchanged. No same-seed engine claim is made (that remains a harness case).
+
+C8-slot-isolation-log.txt:54,166 bytes, mtime2026-11-08 16:52:54.038Z,
+SHA256 `d7f11ebd0258fdbc79b1cc4d30ac24dec7f711bba255b09d5c8406f6296c4ad8`.
+C8-save2.dat:315 bytes, mtime16:52:33.755Z,
+SHA256 `5545628e500a407a58f7182b9067aca2651d40a73e3e1a8b081e3468ccf880de`.
+C8-save3.dat:313 bytes, mtime16:52:37.655Z,
+SHA256 `68aaeaaa2378670fa5b1faf5041093e8b8b81b9d09aabec5866ca7881132654d`.
+The game locked the live log during an unnecessary final rehash attempt; the
+prior copied artifact and its hash were obtained successfully. No retry or
+game mutation followed. This is a capture-access limitation, not a mod fault.
+
+Assessment: the original save-slot overwrite regression is not reproduced in
+the actual distinct-seed slot switches; preferences and Continue snapshots
+remain isolated. Configuration UI, representative persisted choice, new/Continue
+boundary, optional MCM absence, missing/truncated fallback and actual slot
+switching are now supported by recorded engine evidence. Independent disabled
+mechanic gameplay comparisons remain incomplete; issue #3 stays open.
+
+## Explicit second session handoff — issue #3 → issue #1
+
+Current slot3 run is the continued seed4201988032, all seven choices/run gates On,
+actual continued=true by owner query. No items were acquired during C8; current
+health/stats/familiars were not snapshotted, so #1 must establish a fresh read-only
+baseline before gameplay assertions rather than infer them from earlier slot2.
+Pack sourcef1c8325, MCMv113, immutable observer and installation are unchanged.
+
+Issue #1 receives ownership for a bounded orbital On/Off comparison and optional
+Maw ring-field/kill observations. For independent configuration acceptance, each
+Off control must have only that component Off and the other six On; do not
+combine multiple Off gates and claim isolated coverage. #1 must record exact
+active/next-run/continued/seed state, preserve artifacts, and return ownership
+explicitly. No #3 competing game prompts or shared-state mutations while held.
+MCM/fallback fixture cleanup provenance remains preserved; slot3 pack data was
+originally absent and must not be silently removed while the game runs.
+
+## Corrected independent O1 orbital acquisition — shared engine evidence
+
+Issue #1 explicitly returned ownership after preserving corrected acquisition
+cases. Strict Off case: seed2753493845 (`ZR22 KLBA`), [New,2], baseline/Dagger
+sequence1932/1933, only orbitals=false and the other six (including Maw)=true
+in active/saved/run settings. Dagger collision-damage field15, size10,
+unprocessed; familiar1364138763, owner2795575305.
+
+Strict On case: seed711482952 (`E0DW DPJF`), [New,2], sequences1935(newrun),
+1936(baseline),1937(Dagger), all seven=true. Dagger collision-damage field30,
+size13, processed=true; familiar1909136033, owner4017206558. Exclude sequence1934:
+premature On label on the old Off run (active=false, next-run=true). The owner's
+pre-grant aggregate checks independently confirmed the six other active gates
+and fresh boundary in each corrected case.
+
+Artifacts: O1-independent-log SHA256
+`e95d7d7df2b85a9df9bde0b4a8937497fd1b50ac4b43d42c59c05ff1316831c7`;
+O1-independent JSONL SHA256
+`b5350229a71b33c294aa0dc940e3288ff0c70f4ad4aa74cdcb5f5f38b5e4e663`.
+All six raw records preserved with matching pre/post/copy hashes and no bounded
+Lua errors. Source/MCM/observer unchanged. Assessment: independent orbital field
+gating is demonstrated. Contact DPS, BFFS combat scaling, Meat transitions,
+other orbitals and a true pack-disabled vanilla control are not inferred.
+
+Earlier doorway/BFFS/Continue field observations had Maw=false in BOTH runs;
+retain those only with that actual context, not as strict six-others-On evidence.
+Their log SHA5ee0c315879717b15c1ed254c1267dad70703b827e8ae6e6d3b71d555e2acb09
+and JSONL SHA514744f70f3e2daf048787e227bfc30a63695b78c6b6a1e25288115730b95061
+remain useful lifecycle observations, not an independent acquisition pass.
+
+Returned current state: fresh Normal Isaac slot2 seed711482952, all seven On,
+Dagger1/BFFS0/Maw0, damage3.5, redhalf6, soul0, observer active
+O1-independent-on sequence1937/frame121. No implicit item cleanup. Issue #3
+owns next prompts; issue #1 sends none until another handoff. Planned next case:
+set only RelicOff, fresh Normal Isaac to clear the current Dagger test inventory,
+verify Relic=false and all other six active gates=true before any item grant.
+
+## R0/R1 independent Relic-Off setup and initialization
+
+Owner reported `R0 false true false 0` before granting anything: Relic=false,
+aggregate of the other six active gates=true, actual continued=false, Relic
+copies0 in a new Normal Isaac slot2 run. This clears the prior Dagger fixture
+via the explicit new-run transition.
+
+Owner then ran OUPProbe.Start('R-off',productionSHA,'fresh'), `giveitem c98`,
+closed the console for one second without changing rooms, and captured
+R-off-acquired. The short counter query returned0. This is owner-observed
+Relic-Off initial room-clear counter state; actual seed, familiar/owner IDs and
+complete active/saved/run fields will be extracted from the preserved log.
+No native payout cadence or room-clear behavior is inferred.
+
+Next control explicitly stops the Off probe before changing preferences/new
+run so automatic post-game-start snapshots cannot be mislabeled as Off evidence.
+Then set RelicOn (all seven On), start a new Normal Isaac slot2 run without
+restarting the app, and verify aggregate all-seven=true, actual continued=false,
+Relic copies0 using labelR2. Do not label/start the On probe or grant the item
+before the fresh-run setup check passes. Outcome pending.
+
+## R2/R3 Relic-On initialization — owner observation
+
+Owner reported `R2 true false 0` after a fresh Normal Isaac run: all seven active
+gates true, actual continued=false, Relic copies0. Only then was the On probe
+started, item98 granted, console closed one second without room traversal, and
+R-on-acquired captured. The short counter query returned `R3 2`.
+
+Together with Off's verified six-others-On setup and R1=0, this is matched
+independent initialization-gate evidence (Off initial counter0 versus On2).
+It is not payout cadence/reset ordering, a general Relic compatibility pass,
+or a guarantee about later room clears. Complete seeds/settings/familiar-owner
+identities and errors are being collected from the two labeled log snapshots.
+Current run stays open with Relic1; no implicit item cleanup or room movement.
+
+## Relic capture blocked by Windows provider bootstrap
+
+The R-final collection run failed BEFORE provider startup; no shell or copy
+operation ran. Exact failure: Codex cannot create shadow-home entry
+`state_5.sqlite` because the existing entry at
+`C:\\Users\\Mario\\.t3\\userdata\\providers\\codex\\codex_2bc57465-463e-4def-bb7d-e607a46dc4d9\\shadow\\state_5.sqlite`
+is not a symlink. Mafia-Server remains reachable and the required Luna/medium
+model is listed, but session bootstrap is blocked. Do not retry unchanged or
+delete/move provider databases as a game-test workaround.
+
+Issue #1 confirmed no live Windows Luna shell/PTY remains available; its prior
+collector had completed. No replacement provider/model was used, no provider
+DB was touched, and no game/config/source changes resulted from this failure.
+The owner-reported Relic Off0/On2 and strict setup queries remain recorded as
+OWNER-OBSERVED initialization/gate evidence; no R-final artifact/hash, exact
+Relic seeds/identities or log-error pass is claimed until captured.
+
+Issue #3 retains session ownership. Owner asked not to restart Isaac, to avoid
+overwriting the current launch log; the current On run with Relic1 remains open
+per last observation. A user-preference question offers provider restoration,
+a one-off manual log backup (only because agent access cannot perform it), or
+an explicit pause. No new gameplay steps should race the pending recovery.
+Deferred workflow issue #8 should retain this lesson: machine reachability and
+model catalog availability do not prove provider bootstrap or shell access.
+
+## Owner-requested collection retry — same bootstrap blocker
+
+Owner reported both machines online/paired/full-access and explicitly asked to
+retry. Parent confirmed Mafia-Server reachable/full-access, resumed the same
+Luna/medium collector, and observed the same pre-start shadow state_5.sqlite
+non-symlink failure. A separate fresh delegated startup smoke with the SAME
+provider/model/effort also failed before Get-Location could execute. This rules
+out an old-thread-only problem; pairing and remote API access work, while Codex
+provider bootstrap is blocked. No provider DB edits, model substitution, game
+commands or file collection occurred in either attempt. Preserve current game
+log; Relic exact artifact verification remains pending, with owner observations
+unchanged. Stop unchanged retries until an actual provider-state change or
+explicit recovery action is available.
+
+## Windows recovery and Relic snapshot corroboration
+
+After owner-reported infrastructure fixes, the same Windows Codex Luna/medium
+provider successfully started and executed Get-Location. The collector recovered
+the existing launch log without asking the owner to repeat any game step. PID2272
+remained open; source log/save metadata were unchanged during capture. Earlier
+startup failures were infrastructure-only; no provider DB repairs/model switch
+or game mutations were performed by issue #3.
+
+Five exact-label snapshots were preserved: R-off start/acquired/stop and R-on
+start/acquired. All report actual continued=false, MCM113, one type0 player,
+six red half-hearts and zero Maw copies. All six non-Relic gates are true in
+active/saved/run settings throughout. Relic is false in all three settings
+objects Off and true in all three On.
+
+- Off seed3124566089; baseline no familiar. Acquired/stop Relic variant23,
+  type3, familiar seed3779570156, owner seed2482275868, room-clear counter0.
+- On seed3074871929; baseline no familiar. Acquired Relic variant23, type3,
+  familiar seed2038030361, owner seed768699799, room-clear counter2.
+- Current pack schema1 has all seven choices/run settings true, seed3074871929.
+
+Artifacts: R-final-log.txt (578,425 bytes), SHA256
+`012e44e44fada520971fa62ce091185115a2913ce29516704e7f0b37a95beaf3`;
+R-final-snapshots.jsonl (five raw records), SHA256
+`194be4f949aef5d1a49f969a2c0b8853b3fd6c127865d3eafdd7e022a8b4e438`;
+R-final-save2.dat (313 bytes), SHA256
+`f9c2931af6613f5065861f516341cf4c1cfa18039a5fd4ebd57049ab175df807`.
+No matching Lua error/stack-trace lines. Assessment: independent Relic
+initialization-gate effect is now corroborated in-engine. No native payout
+cadence, reset-ordering or general compatibility conclusion is inferred.
+
+Current run remains On with Relic1. Next proposed case explicitly stops this
+probe, sets only DarkBumOff with other six On, and starts a fresh Normal Isaac
+slot2 run to clear the Relic fixture. A pre-grant aggregate check must pass
+before adding Dark Bum or feeding hearts. Any pickup tracing must remain
+read-only and distinguish native payout behavior from a synthetic callback case.
+
+## DB0 / DBAPI preparation
+
+Owner reported `DB0 false true false 0` in a fresh Normal Isaac slot2 run:
+DarkBum=false, aggregate other six active gates=true, actual continued=false,
+Dark Bum copies0. No item has been granted yet. The installed API check returned
+`DBAPI function function` for AddPriorityCallback and RemoveCallback.
+
+The main agent authored `tools/validation/dark-bum-pickup-trace.lua`, version1,
+and syntax-checked it. It is a separate optional diagnostic, not a change to the
+immutable observer or production functions. Planned registration: pickup-init
+observers at priorities-100/+100 around the existing default-priority production
+callback, plus a first-update observer at+100. Each observer returns nil and
+only logs state; no Morph, spawn, RNG, config, reward or save writes are present.
+It records pickup index AND InitSeed because Morph may change identity fields;
+matching must inspect actual before/after/first-update records, not assume seeds
+stay unchanged. Spawner presence/conversion and owner type are explicit fields.
+
+Only labels DB-off/DB-on with an active existing probe enable logging. Stop()
+disables logging and removes only the diagnostic's own exact callback function
+references. Installation source hash and registered callback metadata must be
+recorded separately. The file is not auto-loaded; first engine registration and
+native-payout observations remain pending. No synthetic payout/RNG forcing is
+part of the planned native feeding test. This is an issue-specific fixture,
+not implementation of the deferred general workflow in issue #8.
+
+## Dark Bum tracer v1 staged, registration still pending
+
+Published fixture commit87093f3249f5c80ff47ee0798fd91ee357f53eca, version1,
+3,404 bytes, SHA256
+`f30c68cc350e3c08ed24d3baba90601da02c32f82c8103b6491380f7320a4c9b`.
+Windows Luna downloaded the exact commit-pinned raw file and added only
+`mods/open_unnerf_validation_observer/dark-bum-pickup-trace.lua`, verified
+previously absent and byte-identical. Immutable observer main.lua still hashes
+to aea0ac0b...; production source/save/options/markers were not changed.
+PID2272 remained open. The added file is dormant, not main.lua or required by
+any loader, and has not executed.
+
+Staging provenance: evidence/DB-trace-v1-staging.json, SHA256
+`356a2c4b3649add757dd84cf2ef97c44311d2f7bef87d91d0656dbb242543e33`.
+Owner will explicitly load the file with luarun to smoke-check actual callback
+registration. Expected DBTRACE READY only means all three diagnostic callbacks
+registered without an error; it does not establish pickup timing/conversion.
+No Dark Bum/item/heart grant precedes successful registration.
+
+## DB trace registration smoke — owner confirmed
+
+Owner explicitly loaded the staged version1 file via luarun and reported
+DBTRACE READY. This verifies actual AddPriorityCallback registration of the
+three read-only fixture callbacks; native pickup timing/conversion remains
+untested at this point. No production function or immutable observer was
+replaced, and no Dark Bum grant had occurred before registration.
+
+Next main-designed smallest native feeding case uses strict DB-off setup from
+DB0: Start labelDB-off only after the fresh setup, grant c278, spawn ten full
+red hearts as FOOD (`spawn 5.10.1` plus repeat9), then let native familiar AI
+consume them and generate its own rewards. This is not a synthetic payout or
+forced payout RNG. Manual food pickups and native familiar rewards must remain
+separate in trace interpretation. Stay in the room; actual native spiders may
+be hostile and are not pickup-conversion evidence.
+
+After feeding, owner captures DB-off-fed and reports the count of remaining
+full-red-heart pickups with labelDB_LEFT; full trace records come from the game
+log. Keep the console open after the query to freeze the capture point. No
+chance/rate or conversion pass is implied by food consumption alone.
+
+## DB-off native payout capture
+
+Owner reported DB_LEFT0 and held the console open. Windows Luna captured stable
+log/save metadata with the same Isaac PID2272; no game commands were issued by
+the collector. Main cross-checked the captured snapshot and event table in the
+collector's actual PowerShell output. Seed3699682887, actual continued=false,
+Isaac type0, red-half-hearts6, damage3.5, no baseline familiar. DarkBum=false
+and other six=true in both snapshots' active/saved/run settings.
+
+After feeding, Dark Bum is familiar variant64, seed2534023003,
+owner4027424614. Two native pickup seeds2910244689 and1677691434 have that
+spawner, type5/variant70/subtypes9 and8. Their init-before/init-after/first-update
+phases retain their respective variant/subtype/seed, with spawner type3,
+variant64, familiar conversion=true and owner type0 present. Frames are
+224/224/225 and407/407/408; indices0/0/25 and0/0/90. Initial index0 is therefore
+not a unique pickup identity. The observed presence/conversion/owner fields
+provide the relevant readiness evidence; there is no separate readiness flag.
+Neither native pickup was converted with DarkBumOff. This is bounded native
+pickup-gate evidence, not payout-rate coverage or an On-case pass.
+
+The tracer has36 events (12 pickups ×3 phases): ten manual food pickups with
+no familiar provenance, plus the two familiar-attributed native pickups. The
+immutable observer additionally logs repeated pickup_first_observed events
+across frames:1,668 records cover12 distinct pickup seeds, not1,668 rewards.
+Retain that known diagnostic limitation when counting evidence; do not change
+the frozen observer during this comparison. Two other familiars variant73 are
+present after feeding; no inference about their origin is needed here.
+
+Artifacts under the existing session evidence directory:
+
+- DB-off-log.txt,978,597 bytes, SHA256
+  `151066598ca450bb1bb4c1bd0c51e595aefa0b1f7efecba765501e80d478d3df`.
+- DB-off-snapshots.jsonl,1,670 exact-label records (two snapshots plus repeated
+  pickup records), SHA256
+  `87b7eb4317b8548bb711d35e897b2d7eb8e20d7ac7ca99359d947417d1b63c50`.
+- DB-off-trace.jsonl,36 records, SHA256
+  `c6570a1fcb69fe457d9e42cdc3f26b09d67972bcc7b80d1a0ca021b2226eb779`.
+- DB-off-save2.dat, SHA256
+  `5e3a17825e96d3a2f07d1b5f6df7933473767a47d094c92c360f5a9065545949`.
+
+No matching Lua error/stack-trace lines were found. Tracer and immutable observer
+file hashes still match their recorded values. Source remains f1c8325/MCM113.
+Next: stop only OUPProbe, enable DarkBum (all seven On), start a new Normal
+Isaac run in slot2 without relaunching, and check all seven active gates,
+continued=false, Dark Bum copies0 and tracer registered before the On grant.
+
+## DB-on owner checkpoint, trace assessment pending
+
+Owner confirmed DB1 true,false,0,true after stopping OUPProbe, enabling DarkBum
+(all seven On), and starting a new Normal Isaac run in slot2 without relaunch.
+The separate tracer remains registered. Only after that check, owner started
+DB-on, granted c278 and supplied the same ten manual full-red-heart food
+pickups. After native feeding, owner reported DB_LEFT0 and six soul hearts,
+no dark hearts. This is the owner's observation, not six independently counted
+native payout events. The console remains open while the log is captured;
+native before/after conversion and actual seed/settings still require trace
+assessment. No additional item/RNG/provenance manipulation was requested.
+
+## DB-on captured native conversion comparison
+
+Main cross-checked the collector's actual PowerShell snapshot and phase output.
+Seed3582772347, continued=false, run-start observed, all seven active/saved/run
+settings true, fresh Isaac type0/red-half-hearts6/soul-half-hearts0/damage3.5.
+No baseline familiar; after feeding Dark Bum variant64 seed3357659119,
+owner572960397. The observed pickups remained on the floor rather than adding
+six soul hearts to player health.
+
+Six native pickup chains have spawner type3/variant64/seed3357659119, owner
+present/type0 and gate=true. Their init-before entity values and frames are:
+5/70/11 at223,5/70/6 at247,5/300/15 at286,5/10/6 at319,5/70/6 at349,
+5/70/3 at383. Each is immediately followed at the same frame by reentrant
+init-before and two init-after records of5/10/3, then first-update5/10/3 one
+frame later. Pickup seeds change on Morph; the ordered chains, spawner identity,
+frame and first-update evidence must be retained rather than joining solely by
+InitSeed or initial Index0. The final first-update indices are26,29,32,35,38,41.
+This corroborates the owner's six-soul-heart observation without counting
+recursive initialization as additional payouts. The source emits60 tracer
+records:30 manual food records plus30 native/reentrant records;22 init-before,
+22 init-after and16 first-update records. The immutable observer's2,668 pickup
+records are repeated observations, not2,668 distinct rewards.
+
+Compared with Off's two unchanged native pills, this independently supports
+the Dark Bum gate for eligible Isaac/native pickup cases with the other six
+gates On. It does not establish native reward probabilities, excluded-character
+behavior, or all familiar payout variants. File/log capture metadata remained
+stable with PID2272. Collector's final bounded error/hash review is pending.
+
+Collector's completed error/hash check found no Lua error/stack-trace markers
+after DB-on start, and both diagnostic file hashes unchanged. The emitted
+presence/conversion/owner fields are observed readiness evidence only; they do
+not imply a separate readiness API was checked. The Morph-chain interpretation
+is an inference combining ordered same-frame/spawner records, recursive init
+shape, final pickup values and the production helper's Morph call. Different
+seeds/initial Index0 alone cannot establish same-entity continuity.
+
+Captured artifacts:
+
+- DB-on-log.txt,1,654,169 bytes, SHA256
+  `56eb03c505cd8cb1741bdd404a7fb9f0c3bfe1f32b82af70b69319d0486dff0d`.
+- DB-on-snapshots.jsonl,2,670 records, SHA256
+  `c6fdf6db1bd557fc141fc31edae18aac85800916e0eec45ef8e27efd017b7206`.
+- DB-on-trace.jsonl,60 records, SHA256
+  `5edcf550c1f9cbaddb35fc09bb1ced53685757bd62185a3349159e142ac4f759`.
+- DB-on-save2.dat,313 bytes, SHA256
+  `4316453c7d1f1781b4339d8747bbff6f9fef6ccc7dfbfdbe32b14efa3ddffcd3`.
+
+Next owner transition stops OUPProbe and removes only OUPDBTrace's own exact
+callbacks, sets only Humbling Bundle Off, and starts a new Normal Isaac run in
+slot2. Its pre-grant check must confirm Bundle=false/other six=true/fresh/item203
+copies0. No Bundle behavior result is implied by that setup check.
+
+## Humbling Bundle native-selection fixture prepared
+
+Primary API research confirms MC_POST_PICKUP_SELECTION receives a mostly empty
+EntityPickup wrapper plus selected Variant/Subtype and permits nil or a
+replacement table. Selection also occurs on room entry/already selected pickups
+and dropped cards, so callback visits alone do not prove a random reward.
+Neither explicit Spawn nor Morph is documented as guaranteeing this hook.
+Sources: https://wofsauge.github.io/IsaacDocs/rep/enums/ModCallbacks.html#mc_post_pickup_selection
+and https://wofsauge.github.io/IsaacDocs/rep/EntityPickup.html#void-morph-int-type-int-variant-int-subtype-boolean-keepprice-false-boolean-keepseed-false-boolean-ignoremodifiers-false
+(the latter link describes Morph, not a native-selection guarantee).
+
+Main authored a separate optional read-only fixture,
+tools/validation/humbling-bundle-selection-trace.lua version1. It logs selection
+arguments at priorities-100/+100 and actual pickup init/first-update at+100,
+with gate, per-player Bundle count and explicit entity/provenance fields.
+All observers return nil; no replacement table, RNG manipulation, production
+callback replacement, spawn or save/config mutation. Stop removes only its own
+four exact function references. Missing late-selection callbacks are not proof
+of override: runtime return/priority propagation requires actual observations.
+Selection wrapper index/seed are not a reliable join key; correlate ordered
+events with actual native contents and retain uncertain cases as uncertain.
+
+Syntax and a parent-owned local protocol smoke passed: all four callbacks
+return nil, selected arguments are recorded, inactive labels emit nothing,
+first-update duplicates are suppressed, and cleanup retains a production
+sentinel callback. These are fixture checks, not game-engine verification.
+Engine registration and native chest-content selection remain pending.
+
+Planned smallest native route: place a single ordinary chest as a container,
+then have the owner open it normally while holding Bundle. Contents must be
+selected by the game's chest logic, not spawned as already-selected rewards.
+The trace must first demonstrate a real selection hook and resulting pickup;
+no assumption that every chest/open path invokes it. Additional containers
+require a bounded reason if the first contents provide no eligible observation.
+Other six gates must be confirmed On before any item grant in each fresh case.
+
+## Humbling Bundle fixture staged, HB0 pending
+
+Fixture published at ef33e9243cc2ffd3081ae1507edcdcb784650ee1,3,946 bytes,
+SHA256 `622242a2507e26bf6dd6f3a59d00d3c067febf89119ed7cb31f2b9142d7507a1`.
+Windows Luna added only the previously absent dormant file
+mods/open_unnerf_validation_observer/humbling-bundle-selection-trace.lua.
+Observer main.lua and Dark Bum tracer remain byte-identical; PID2272 is still
+open. No loader, production source, save, options, mod marker or unrelated mod
+was changed. Sidecar evidence/HB-trace-v1-staging.json SHA256
+`3b121b4e15df5190ebe46acde46410f6bf076abecb951dc907454ae0af0aa0a8`.
+The file has not executed or registered. Owner HB0 confirmation remains pending;
+no Bundle item grant or behavior test has been requested yet.
+
+## HB0 and first native-chest smoke — owner checkpoints
+
+Owner confirmed HB0 false,true,false,0 (only Bundle Off/other six On/actual
+fresh/Bundle copies0), then explicitly
+loaded the staged fixture and confirmed HBTRACE READY. Main then requested
+the smallest native-content case: Start HB-off at runtime f1c8325, giveitem c203,
+spawn5.50.0 as one container, close console and walk into that brown chest to
+open it normally. Owner confirmed chest opened and the post-open snapshot
+HB-off-chest-1/HB1 captured. Console held open for collection. Callback visit,
+native-content provenance, actual selected/final values and gate settings still
+require log assessment; no Bundle behavior pass follows from these confirmations.
+
+## HB-off first native chest — parent trace assessment
+
+Main inspected actual captured raw HB trace lines. Seed598256705,
+continued=false, run-start observed; only humblingBundle=false with other six
+true in both snapshots' active/saved/run settings. Every trace event reports
+Bundle copies[1]. Manual container spawn is frame23: early/late selection50/1,
+init5/50/1 seed1518017777 and first-update frame24/index2. The selection wrapper
+is mostly empty (type/variant/index/seed0); wrapper entityFrame is game frame,
+not reliable lifetime/provenance. No chestSeed field is emitted.
+
+After the owner's normal chest opening, frame99 contains these ordered chains:
+
+- seq5/6 early/late selection20/1, seq7 init5/20/1 seed2087185463, seq8
+  first-update5/20/1 same seed/index8. A single penny stays single with Off.
+- seq9/10 early/late selection40/2, seq11 init5/40/2 seed3405511951, seq12
+  first-update5/40/2 same seed/index9. Already doubled bomb remains unchanged;
+  native doubling while the mod gate is Off is not evidence of a gate failure.
+
+Thus this smallest test establishes actual native chest-content hook activity
+and a bounded eligible unchanged Off result. The container's console-spawn
+events are separate from its native content events. No per-source spawner
+provenance is present; the owner's isolated opening and ordered frame99 events
+support the chest-content interpretation. Missing/no-op generic-spawn cases
+are not being substituted for native selection. On comparison remains pending.
+
+Artifacts captured with stable pre/post source metadata and same PID2272:
+
+- HB-off-chest1-log.txt,1,802,323 bytes, SHA256
+  `e8dae31f7e891ccbcf0534520af96f09f646764acd7b3cc2cd8d1e7d9d105a81`.
+- HB-off-chest1-snapshots.jsonl,632 records(two snapshots plus630 repeated
+  pickup events), SHA256
+  `98e52cc9957e3e920737f73cf3165e58d5a3142edd1cc8c28b27d3da18431270`.
+- HB-off-chest1-trace.jsonl,12 records, SHA256
+  `d84cbb91d1faa66e5345b7ed351c7d83ef2ec3244acd20f797b4b90ce7fd1432`.
+- HB-off-chest1-save2.dat,314 bytes, SHA256
+  `54e95993e6812d0bef65a7c1ec9db85b509869643312880c8d80482f467b3e75`.
+
+Next: stop only OUPProbe (keep HB fixture), enable Bundle/all seven On and
+start fresh Normal Isaac slot2; confirm all seven active=true/continued=false/
+Bundle copies0/fixture registered before grant. Captured immutable Off files
+are already preserved; final collector error/hash summary may finish while
+the owner prepares this new run.
+
+## HB-on first chest — valid setup, ineligible content sample
+
+Owner confirmed HB2 true,false,0,true, then the same single-container protocol
+with labelHB-on and snapshotHB-on-chest-1. Owner observed double bomb and5cents.
+Main inspected raw copied trace: seed2293994026, fresh/continued=false,
+all seven active/saved/run=true, Bundle copies[1]. Container seq13–16 atframe11
+is5/50/1 seed155842265. Native contents atframe72:
+seq17/18 selection20/2 (nickel), seq19/20 init/first-update20/2 seed2503434379;
+seq21/22 selection40/2 (already double bomb), seq23/24 init/first-update40/2
+seed3174444321. Both are outside the helper's eligible SINGLE pickup cases.
+No On single-to-double conversion is established and no product failure follows
+from this ineligible random sample. Next bounded sample opens three additional
+ordinary chests normally in this SAME run, retaining settings/item/trace.
+
+Off collector final: no bounded Lua/stack errors, fixture and immutable observer
+hashes unchanged. On first chest: same no-error result, stable pre/post metadata,
+same PID2272; two snapshots plus819 repeated pickup observations,12 HB records.
+Artifacts:
+
+- HB-on-chest1-log.txt,1,987,191 bytes, SHA256
+  `03e05fd292c46cb6fd5074c02187b645029161a83309e06b97c1d9a9eb867a8d`.
+- HB-on-chest1-snapshots.jsonl, SHA256
+  `ddd4867a0d1b2c0fffbda7abb7ec93743a310309992856497258962d8141fa32`.
+- HB-on-chest1-trace.jsonl, SHA256
+  `79c759a85b7b937bcb1f413bb426cad9d61320088c273508a72c3a8395c41e5e`.
+- HB-on-chest1-save2.dat,313 bytes, SHA256
+  `b27b68b63da1ba342d8210d4bbeda685df1ef72109791098bdb623d39a8ca815`.
+
+## Blue-fire fixture prepared locally only
+
+Main authored tools/validation/blue-fire-damage-trace.lua version1. It adds only
+read-only damage observers at priorities-100/+100 for fireplace variants2/3
+and heart init/first-update observers at+100. All return nil. It records actual
+difficulty/gate, explosion flag/amount/source, fireplace identity/health and
+pickup spawner identity; it never spawns, damages, consumes RNG, supplies damage
+returns, or changes saves/config. Cleanup removes only its four exact callbacks.
+Syntax and parent local protocol checks passed for nil returns, explosion and
+provenance fields, inactive-label gating, first-update deduplication and exact
+cleanup retaining a production sentinel. No engine registration/timing/drop
+pass follows. Source SHA256
+`cd25282e07ee4dfffdee181f35a420c553f30ceafb5d1cf237f1cea6518778e7`.
+Actual production helper supplies the fireplace as Isaac.Spawn's spawner;
+the trace must observe whether fields are populated and whether a heart init
+is ordered between matching early/late real damage events. Native engine drop
+ordering is unknown; do not classify every drop as mod-created or infer a final
+drop probability from this fixture. First planned smoke uses a real fireplace
+and a real Isaac.Explode call in a fresh Hard run, with owner away from blast.
+
+## HB-on bounded additional native sample — independent gate effect
+
+Owner opened three additional brown chests normally in the same run and
+captured HB-on-chests-2-to-4. Main inspected the collector's actual raw trace.
+All seven active/saved/run settings remain true, seed2293994026, continued=false,
+Bundle copies[1] throughout. Containers seq25–36 are separate from contents.
+Native ordered early-selection -> init/first-update chains include:
+
+- frame346,seq41→42/43: normal key30/1 becomes double key30/3,
+  pickup seed1450155434,index24.
+- frame419,seq52→53/54,55→56/57,58→59/60,61→62/63: four single pennies20/1
+  become20/4; seeds3359300636,1970191824,3824850840,2213316639,
+  first-update indices31–34.
+- frame477,seq72→73/74: normal bomb40/1 becomes40/2,
+  seed2113269919,index47.
+- frame477,seq68/69→70/71: half heart10/2 stays10/2,
+  seed3755223066,index46. This is outside the full-red-heart eligibility rule.
+
+The six eligible conversions have no late-selection event; ineligible/already
+double items have early+late visits with unchanged arguments. The missing late
+event alone is not the evidence: each has actual matching ordered same-frame
+init/first-update final subtype. These observations are consistent with a
+production non-nil selection return stopping later observers in this runtime.
+No synthetic selection callback or forced reward RNG was used. Together with
+Off's unchanged single penny/other six gates On, this supports the independent
+Bundle gate. Full-red-heart conversion, every reward source, co-op and a pack-
+disabled vanilla control remain untested here; no broader behavior is claimed.
+
+Captured artifacts (stable pre/post metadata, same PID2272):
+
+- HB-on-chests4-log.txt,2,789,559 bytes, SHA256
+  `6004bbca3cc57e0aa1c7b3ad92728f24c8dc888a9385ed59a3832bbcf75b3ff5`.
+- HB-on-chests4-snapshots.jsonl,4,663 records(three snapshots plus4,660 repeated
+  pickup events), SHA256
+  `8fb3f49c7f073c59da5f7ec6df37bc34477cc0b6c66d13fe028679e476f0163b`.
+- HB-on-chests4-trace.jsonl,62 records(50 new), SHA256
+  `30e87680ad86b3f993724b9adf927331c5e79bda8f663702527370f06e1ed7d7`.
+- HB-on-chests4-save2.dat,313 bytes, unchanged SHA256
+  `b27b68b63da1ba342d8210d4bbeda685df1ef72109791098bdb623d39a8ca815`.
+
+No bounded Lua/stack errors in the collector's captured output. Next transition
+stops probe and HB fixture only, sets only BlueFiresOff/other six On, and starts
+a new Hard Isaac slot2 run. BF0 must confirm blueFires=false,other six=true,
+Hard=true,actual continued=false before any explosion setup. Blue-fire fixture
+is published at b8270707763c33ddce0f039ffa78916ddcadcaff; staging is queued,
+not yet evidence of installation or registration.
+
+## BF0 confirmed and blue-fire fixture staged
+
+Owner confirmed BF0 false,true,true,false: blueFires Off, other six On, actual
+Hard difficulty and fresh (continued=false), after stopping the probe and HB
+fixture and starting a new Hard Isaac slot2 run. No fire/explosion requested yet.
+
+Main checked the Windows staging command's actual output: the previously absent
+blue-fire-damage-trace.lua is now dormant alongside the immutable observer,
+4,027 bytes, SHA256cd25282e07ee4dfffdee181f35a420c553f30ceafb5d1cf237f1cea6518778e7,
+source commitb8270707763c33ddce0f039ffa78916ddcadcaff. Original observer hash
+unchanged, PID2272 still open. Sidecar evidence/BF-trace-v1-staging.json SHA256
+`2c8934bf19676ddad174d5534315dbeec34c5157d993d6957b5cba39dca347e9`.
+Only the new diagnostic file was added; no loader/runtime/source/save/options
+changes. Registration and actual native explosion/drop observations remain
+pending. Owner will load explicitly before any target creation.
+
+## BF-off first explosion — counter fault preserved
+
+Owner confirmed BFTRACE READY, then the parent-designed smallest real-engine
+case: start BF-off, create one33/2/0 at room bottom-right minusVector80/80,
+allow one second of updates, Isaac.Explode(same position,player0,100), allow two
+seconds and snapshotBF-off-first-explosion. Owner reported BF1=1,6 and visually
+exploded fire/no drops. The original counter counted Type33 variants2/3 with
+HP>0 and incorrectly expected0. Preserve that failed verifier result; no
+production change, extra explosion or replay was requested.
+
+Read-only BF_STATE was supplied as screenshot. Mandatory Terra xhigh inspected
+it and read exactly `BF_STATE 4082058775 2 1.0 false NoFire 14`; no BF1 line
+was visible. Attachment suffix2e4b7f34-6577-4931-bb3a-42c3e4c3559e.png.
+This directly shows the extinguished NoFire entity retains1HP and IsDead=false;
+HP>0 is not a valid burning-fire predicate for this case. The verifier is being
+corrected to report NoFire and non-NoFire counts separately, without repeating
+the explosion. Corrected query must be verified on this same retained object.
+
+Collector's initial actual output corroborates one real explosion atframe171,
+fire33/2 seed4082058775, amount100, sourceplayer1/0 seed790376512, both early
+and late HP5/explosion=true. Fresh seed1196611030, Hard difficulty1,
+blueFires=false/other six=true, Isaac health6 red-half-hearts/no soul/black.
+No heart init/update events, stable log/save metadata, PID2272; no bounded
+Lua/stack errors. Console print BF_STATE/BF1 is absent from the game log, so
+the screenshot/owner response is its separate evidence. Future short diagnostic
+lines should also use Isaac.DebugString when a durable log copy is needed.
+Final raw flags/run-settings/hash summary remains to be cross-checked.
+
+Owner confirmed corrected BF2=0,1,6 on the SAME retained object: zero
+non-NoFire blue/purple entities, one NoFire entity, six red half-hearts. The
+read-only corrected query also DebugStrings its short result for later capture.
+This verifies the changed counter on the original failure case, without any
+new explosion or production change. Next bounded Off case uses one purple
+fire at top-right (separate from the spent bottom-right blue fire), preserving
+run/settings/probe and player at upper-left. No-fire entities must not be
+treated as new living targets or independent drop trials.
+
+## BF-off both variants — native damage path corroborated
+
+Owner reported BF3=0,2,6 and no drops. Main inspected the actual raw copied
+trace and snapshots: same seed1196611030, difficulty1/Hard, continued=false,
+MCM113, blueFires=false and other six=true in active/saved/run settings.
+Isaac type0 remains6 red-half-hearts/0 soul/black/damage3.5, no familiars.
+Blue33/2 seed4082058775,index25 has exactly one early/late pair atframe171;
+purple33/3 seed277918510,index39 has exactly one atframe295. All four records
+amount100,flags4/explosion=true, sourceplayer1/0 seed790376512, pre/lateHP5.
+The second explosion did not generate another damage record for the spent
+blue target. No heart init/first-update events. DebugStrings match BF2 0 1 6
+and BF3 0 2 6. This validates the real explosion/damage recipe and corrected
+counter for both target variants; no rate or full independent-gate proof is
+inferred from these two no-drop outcomes. On comparison still required.
+
+BF-off-first artifacts (retain original counter-fault capture): log SHA256
+`65da79daf891fab50f36eed24e5324f52c04ed60e911bb7e2179bc02b1dc2c8f`,
+snapshots `f48d69d7d95df7895b36a605a2d7b449842172da489ba5878c5c7933ee076d0d`,
+trace `ea4b6cc409ded557f6e64f575e7fd564120368523454b7cea88f0e9876b1d3e0`,
+save2 `82efbd2921e3f7df86219d49c2aa5f9981e221e8dee42d2aac28ef38f10d6ee4`.
+
+New BF-off-both artifacts:
+
+- log.txt,2,807,397 bytes, SHA256
+  `9496b82136989a207f57df595a28f8d69d871501b81af16c982242495116a338`.
+- snapshots.jsonl,five records(three snapshots/two damage events), SHA256
+  `0b23f8745ee87c73a0c20b2b67d87ce6e40b3d78260895678bf3bad45818d756`.
+- trace.jsonl,four records, SHA256
+  `e02738c2263ef2b94602b83565c9a72bfd61f4e456044343a41586d016d1a33d`.
+- save2.dat,315 bytes, unchanged SHA25682efbd2921e3f7df86219d49c2aa5f9981e221e8dee42d2aac28ef38f10d6ee4.
+
+Stable source metadata, same PID2272, no matching Lua/stack errors, diagnostic
+and immutable observer hashes unchanged. Next: stop only OUPProbe, enable blue
+fires/all seven On, fresh Hard Isaac slot2; verify all seven active, Hard,
+continued=false and fixture registered before bounded On targets. The first
+On batch may scale the verified real-target/explosion recipe to five distinct
+blue and five purple entities clustered within each proven blast location.
+Trace must confirm unique target seeds/one damage event each; NoFire remnants
+and repeated callbacks must not inflate the sample. This is an effect witness,
+not a final drop-rate estimate, and no RNG is forced.
+
+## BF-on first bounded batch — owner checkpoint
+
+Owner confirmed BF4 true,true,false,true: all seven active On, Hard difficulty,
+fresh/continued=false and fixture registered. After StartBF-on, parent recipe
+created five blue targets clustered at bottom-right and five purple at top-right
+(x offsets-32,-16,0,16,32 around each proven blast center). After one second
+of updates, two real Isaac.Explode100 calls hit those centers, then two seconds
+of updates and snapshotBF-on-batch-1. Owner reported BF5=0,10,6 and one soul
+heart, left uncollected, console held open. The short counter DebugStrings the
+same result. Trace must verify distinct fire identities and event ordering;
+one visible heart alone cannot distinguish mod extra drop from native drop.
+No rates or blue-fire gate-effect pass is claimed from the owner count alone.
+
+## BF-on native extra-spawn witness — parent phase assessment
+
+Main inspected the collector's actual raw decisive chain. Fresh seed2231620276,
+Hard1, continued=false, all seven active/saved/run settings true; Isaac red6,
+soul0/black0/damage3.5. Atframe202, ten distinct fires(five33/2,five33/3)
+each receive one early/late explosion pair amount100/flags4/sourceplayer1/0
+seed2947567635,HP5. Parent will retain any earlier non-explosion events in the
+full trace rather than count them as extra native trials.
+
+The decisive chain atframe202 is seq243 damage_early for purple33/3
+seed3189282251,index28; seq244 pickup_init5/10/3 seed394267365 with spawner
+entity present/type33/variant3/seed3189282251; seq245 matching damage_late.
+Seq246 first-update atframe203 retains the same heart/spawner identity,
+index180. Gate=true/Hard1 throughout. This is a heart initialization inside
+the matching early/late callback interval, with the exact fireplace spawner
+used by the production helper's Isaac.Spawn. Combined with the unchanged
+production source and isolated enabled mods, the mod-extra-spawn attribution
+is an inference from direct ordering/provenance evidence, not the floor count
+alone. The two Off native callbacks had no nested heart spawns. This supports
+the independent blue-fire gate for the observed Hard explosion path; no final
+probability, lethal-hit requirement, Normal-mode behavior or guaranteed payout
+for each variant is inferred. Exact BF5 0 10 6 is logged, heart uncollected.
+Final full-trace counts/hash summary still needs recording.
+
+BF-on capture final: stable source metadata/PID2272, no matching Lua errors,
+fixture/immutable-observer hashes unchanged;214 probe records and242 BF trace
+records retained. The242 include more than the20 explosion damage visits and
+two heart visits; incidental earlier damage requires a separate fact summary
+and must not count as additional explosion trials. No new game action needed
+for that read-only analysis. Artifact SHA256 values:
+
+- BF-on-batch1-log.txt:
+  `e0b644b5ab44a7fa27cb8609ef3b854dd055ab7663d1ac76cca8090ff6e3b38e`.
+- BF-on-batch1-snapshots.jsonl:
+  `032739f74a560c9c04b001e19a6e5b13c2fdb530fd7c136c27a9b678eb954c8d`.
+- BF-on-batch1-trace.jsonl:
+  `8c765183cefc3bb8e7c96f389107d483668b48dd46d437df842d7a1b38ce219b`.
+- BF-on-batch1-save2.dat:
+  `4cbbc344c73fcf56c35501a5ad3621b3aa87527235cec747f1c37a38f3e3f4eb`.
+
+## Stomp fixture prepared locally only
+
+Primary API research confirms EntityPlayer:UseCard(Card ID,UseFlags=0) and
+Card.CARD_EMPEROR=5; the symbolic Lua call is documented, not yet engine-tested
+in this session. MC_POST_PLAYER_UPDATE takes EntityPlayer at60Hz, without a
+documented ordering guarantee relative to damage. Sources:
+https://wofsauge.github.io/IsaacDocs/rep/EntityPlayer.html
+https://wofsauge.github.io/IsaacDocs/rep/enums/Card.html
+https://wofsauge.github.io/IsaacDocs/rep/enums/ModCallbacks.html
+Existing issue2's stage6/Emperor actualMom evidence is a setup reference only;
+new current-build events must establish actual source45/10/Stomp and settings.
+
+Main authored tools/validation/stomp-damage-trace.lua version1,5,348 bytes,
+SHA256a659e0d732606cd260730537cdd1549dbe4eb2ec05d72453081cd5178ad1f869.
+Read-only damage observer priority-100 logs all player damage before production
+can cancel it, including shield counts, gate/health/source type/variant/seed,
+animation/frame/state, room/stage and crush flag. A player-update observer at
+priority100 waits until Game frame exceeds the damage frame, then logs one
+health outcome grouping all events for that player/frame. Mixed-source frames
+cannot isolate a stomp, and multiple events are not multiple health losses.
+Run/label changes discard pending groups explicitly. Both callbacks return nil;
+no damage forwarding, item grant, health mutation or config/save writes.
+
+Syntax and parent-owned local protocol smoke passed: nil returns, same-frame
+two-event grouping into one health delta, no premature same-frame outcome,
+later-frame observation, duplicate suppression, stale-context discard, exact
+cleanup preserving a production sentinel. This validates fixture protocol only,
+not engine callback timing/cancellation or Mom behavior. First native session
+will check actual source and later health using Host Hat Off/On with other six
+gates On, preserving gameplay criteria. Artifact is local-only until published
+and separately staged/registered; no production/immutable-observer changes.
+
+## Owner requested reuse of earlier stomp validation
+
+Before confirming ST0, owner asked whether the stomp/Pyromaniac/Host Hat
+comparison had already been verified and implemented. Yes, earlier issue2
+evidence covers the stomp fix; current #3 still needs assessment of the
+configuration-disabled case with other six enabled. Pause new stomp gameplay
+steps while auditing exact earlier builds/settings/source and reuse valid
+positive/negative evidence. ST0 is NOT yet owner-confirmed, and no new shield
+grant, trace registration, stage/card call or Mom hit is claimed in this session.
+Do not repeat the full old shield/healing matrix merely to restate that fix.
+
+Audit result: earlier Host Hat actualMom baseline is e2eb46f53ef2d70f7c1a97d173f8c867e1f8ca89,
+fileSHAfc403eb26f3e61957d2902e1b1646db042b374e3ea9eafc4a888f6cf67654678,
+seedYXZ9KTZH/log91808a3b...; earlier candidate seedNKKGR339/log82478fa5...
+preserved health6→6 and ordinary Hop6→5, but did not record MCM/gate/other-six
+settings. Candidate fileSHAacdc6bf173ce5aacc02c87bdfceb20dd2aa9b5b89a76ec051cf530c972ecc735
+differs from current integrated stomp file4193578c378c3eb5bdbc2006f6371577d3c1c61b68cab2d37fca01668aaac2e3.
+Do not claim exact candidate-byte equality or current MCMOn proof from that
+older run. Earlier Pyromaniac owner-healing observation lacks a traced hit.
+No prior evidence answers stomp MCMOff/other six On. Reuse the prior fix context
+and limit current work to one Host Hat actualMom hit in each MCMOff/On case;
+the full item/healing comparison is not repeated. Current ST0 still pending.
+
+Stomp diagnostic staging is now verified: previously absent optionalfile at
+mods/open_unnerf_validation_observer/stomp-damage-trace.lua,5,348 bytes,
+SHAa659e0d732606cd260730537cdd1549dbe4eb2ec05d72453081cd5178ad1f869,
+source d1013769f77fb88c180daebbf37711d4e41353e3; dormant/unregistered.
+Sidecar ST-trace-v1-staging.json SHA256
+`c1e7d8e4432b598ca4de9957bb7d2f3a161823f8cafc0e7fe9040292ac15acaf`.
+Immutable observer unchanged; no production/save/settings/loader changes.
+
+Read-only analysis explains all242 BF-on records:120 early+120 late damage
+visits,one heart init+one first-update. The220 non-explosion visits are110
+actual damage calls,55 per variant, amount16/flags2/source33 of the same variant,
+frames102–202 every10frames, each target's HP remains5. These incidental
+fire-to-fire events from the clustered fixture are NOT explosion trials. There
+is no heart init beforeframe202. Exactly10 unique targets receive one early
+explosion callback each, without duplicate early explosions per target. Source
+filters flags with DAMAGE_EXPLOSION; do not infer native drop rates or extra
+RNG rolls from those flags2 records. Full trace hash remains unchanged.
+
+## ST-off owner actual-Mom checkpoint
+
+Owner confirmed ST0 false,true,false,0,0, then explicitly loaded the staged
+stomp fixture and confirmed STTRACE READY. Parent recipe: StartST-off atf1c8325,
+grantHostHat375,stage6,one second updates, documented
+Isaac.GetPlayer(0):UseCard(Card.CARD_EMPEROR). Owner confirmed Mom room and
+ST1=6,1,0,6,true (red-half-hearts,HostHat,Pyromaniac,stage,boss-room).
+Boss-ready snapshot was taken. Owner then accidentally received a Mom-foot hit;
+no replay was requested. The existing event is the proposed Off test. After-hit
+snapshot/DebugStringST2=4 is owner-confirmed and console held open. Current
+health loss matches one full heart, but source/settings/grouped later-health
+evidence still requires log assessment. Do not count this as multiple losses
+if crush/contact callbacks share a frame. No new production changes or item
+comparison matrix was introduced.
+
+## ST-off actual-Mom gate case — parent trace assessment
+
+Main inspected the copied raw decisive chain. Fresh Normal0 seed1134466152,
+continued=false, MCM113; stompImmunity=false and other six=true in all three
+active/saved/run settings. HostHat375 count1, Pyromaniac223 count0.
+Atstage6/room38, Gameframe144, source45/10 seed276725052 is State7/Stomp
+animationframe27. One damage_pre seq1 records amount2/flags16777216/crush=true,
+countdown30, playerIsaac0 seed893283966 healthred6/soul0/black0, gate=false.
+Atframe145, health_after_frame seq2 references damageSequences[1], health6→4,
+redDelta-2/soulDelta0. No other hit is in this capture; this is a clean native
+Mom crush event passed with the toggle Off, not a generic or synthetic hit.
+Actual later-frame engine observation is established for this fixture case.
+ST1 6 1 0 6 true andST2 4 are present as DebugStrings. No replay of the
+owner's first accidental hit was needed. On comparison still pending.
+
+Stable capture metadata/PID2272, no matching Lua errors; diagnostic and immutable
+observer hashes unchanged. Artifacts:
+
+- ST-off-mom-log.txt:
+  `9603fce998125b13bd1e72a452fc6d198f0974f21f95316e78aa029a371d7acf`.
+- ST-off-mom-snapshots.jsonl:
+  `0c8675a5cfe5d3834976d2d9c73070de875a6c035632a7c1e09438bbf4be34f9`.
+- ST-off-mom-trace.jsonl:
+  `76ddcacd1469b69de69f379e8e432d887a63d91b9771563b60441340c708c238`.
+- ST-off-mom-save2.dat:
+  `523bb18d3bd0fe1f61910405a1b5d0b318ed0af6f38aebcd556aa80612207a75`.
+
+Next: stop only OUPProbe, enable stomp/all seven On, fresh Normal Isaac slot2,
+and confirm aggregate all7true/continuedfalse/HostHat0/Pyro0/trace registered
+before the matching one-Host-Hat native Mom case. No Pyromaniac matrix replay.
+
+## ST-on actual-Mom comparison — parent trace assessment
+
+Owner confirmed ST3 true,false,0,0,true, then repeated only the verified
+HostHat/Mom setup with labelST-on and all seven On. After one native foot
+stomp owner reported ST4=6. Main inspected the exact raw decisive chain:
+fresh Normal0 seed4022326141, continued=false, MCM113, all seven true in
+active/saved/run settings. HostHat1/Pyromaniac0, Isaac0 seed1400271130.
+Atstage6/room142/Gameframe84, source45/10 seed3874528935 is State7/Stomp.
+Seq3: amount2/flags16777216/crush=true, animationframe27, healthred6.
+Seq4: amount2/flags0/crush=false, animationframe28, healthred6. Both gate=true.
+Seq5 atframe85 groups damageSequences[3,4], health6→6/redDelta0/soulDelta0.
+No other source contacts. These are two callback events from one stomp-frame
+group, not two health losses. The pre-priority fixture observes the cancelled
+events even if later default-priority observers do not receive them.
+
+Together with the clean Off actualMom6→4 case/other six On, this completes
+the bounded independent stomp gate comparison on the current deployment.
+The earlier fix/Pyromaniac matrix was not replayed. No assertion about every
+stomp source, Pyromaniac healing or all enabled compatibility criteria follows.
+ExactST4 6 is logged. Stable capture metadata/PID2272, no matching Lua errors,
+diagnostic and immutable-observer hashes unchanged. Artifacts:
+
+- ST-on-mom-log.txt:
+  `cbe619104a9b97a1a65f6d3c958cc5ed6f08323eef4098d3a31dee58da89fe69`.
+- ST-on-mom-snapshots.jsonl:
+  `87bb4c57d52bc36093be46eda70a521ac0e1182f732be6d7524a6ba2165a8b43`.
+- ST-on-mom-trace.jsonl:
+  `c3ace7b08752c37e0bf98dbb0455e9dbadcec27648dcfbb4408a2ded53934516`.
+- ST-on-mom-save2.dat:
+  `757cc0945c51e0068fce16b2d5447ab5530eca0d9fd8cc535c3aca1e9bb95920`.
+
+All seven independent disabled-gate scenarios now have bounded owner/engine
+evidence with other six active. Configuration lifecycle/MCM present+absent,
+fallback, Continue and save-slot cases are recorded above. Remaining issue1
+native cadence/rates/DPS/other variants are distinct acceptance work. Final
+diagnostic callback cleanup, documentation/review/integration and tracker
+alignment remain before this issue's completion claim. Shared session stays
+with #3 until owner confirms cleanup; then explicit return to #1 is required.
+
+## Callback cleanup and explicit final session return
+
+Owner confirmed TEST_CLEANUP followed by five true values after
+OUPProbe.Stop()/OUPStompTrace.Stop(): base probe inactive and all four optional
+diagnostic globals nil. Earlier DB/HB/fire traces had already stopped; the last
+stomp fixture removes its own two exact callback references. Production and
+base observer are not removed or edited. Game remains paused at the console.
+
+Explicit session ownership returned #3→#1 after that confirmation. Last confirmed
+run is slot2, Normal Isaac, seed4022326141, stage6 Mom room142, HostHat1/Pyro0/
+Maw0, damage3.5, red6/soul0/black0, all seven active/saved/run On, MCM113.
+Pack/MCM/base observer and four now-dormant fixture files intentionally remain
+installed for the continuing shared issue1 tests. Existing backups and all
+evidence are preserved. No #3 shared game/deployment mutation or competing
+owner test prompt follows this handoff. The final shared-session owner must
+coordinate restoration from the recorded manifest after BOTH issues' shared
+validation ends; issue3 does not silently uninstall the ongoing issue1 build.
+
+Issue1 explicitly acknowledged ownership and began a new Normal Isaac run in
+the same slot/process to clear the Host Hat/boss fixture. That new run must not
+be mistaken for the prior Mom run. Final read-only preservation copied the log
+with stable before/after source metadata, PID2272 unchanged, race=false:
+C3-final-handoff-log.txt,3,172,646 bytes,SHA256
+`358910b4376eb64f1a45023941e05cfb59d296b67285ccc2240128f747b68496`;
+sidecar C3-final-handoff-metadata.json,SHA256
+`84f42b8e46a93924f1b03d7450ba1dff08d1e3ba6da2aa5bcf7dc8dff3405636`.
+Last prior ST-on stop snapshot atline20635 retains seed4022326141,Normal0,
+all seven active/saved/run On,red6/soul0/black0/damage3.5. It is historical
+handoff evidence, not a claim about issue1's subsequent live run or save file.
+The five cleanup booleans remain owner-reported console evidence; only the
+fixture removal metadata found in the preserved log may be called log-backed.
+
+Exact-string check of that preserved copy finds DB removal line11330,HB removal
+line17361 andST removal line20636,each once. No OUP_BFTRACE_REMOVED marker is
+present. Fire-trace cleanup therefore remains owner/global-state evidence,
+not a log-marker claim; the absence alone does not establish a live callback.
