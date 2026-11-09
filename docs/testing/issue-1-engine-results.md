@@ -11,12 +11,15 @@ later actual settings/seeds supersede earlier requested or assumed setup.
   independent Maw On/Off controls.
 - M2 additionally corroborates two-copy damage and removal of one copy, plus
   native ring fields of 0.05 with Maw On and 0 with only Maw Off. Actual
-  black-heart drops and distinct-player isolation remain unverified.
+  black-heart output is now observed in the controlled one-Clotty v2 pilot;
+  distinct-player isolation and pack-absent comparison remain unverified.
 - Independent Sacrificial Dagger field processing is corroborated. Earlier
   doorway/BFFS/Continue field observations were made with Maw Off and retain
   that narrower context; they are not contact-DPS measurements.
 - Full Maw ring/drop/player-isolation, orbital combat/variant coverage, other
   feature behavior and true pack-absent vanilla/stacking comparisons remain open.
+  Held-Maw Continue and subsequent removal are now corroborated in M3; the
+  outstanding Maw scope includes distinct players and pack-absent comparison.
 - Current session owner is #1 after #3's explicit final cleanup/handoff. #1 is
   preparing remaining compatibility tests and owns eventual coordinated shared
   deployment restoration. No claim of complete issue acceptance.
@@ -972,6 +975,151 @@ LuaDocs declare `Room:GetGridCollisionAtPos(Vector)`. They do not certify target
 transformation behavior or the proposed placement recipe. Verify that smallest
 engine case before increasing the sample.
 
+### M2 version-2 staging checkpoint
+
+Both adversarial Sol 6.1/high review axes returned zero actionable findings for
+`4e6944b...eec4724716f754d7756ac62e44404f55ef856b85`. The parent verified the
+published raw bytes against the local source and a no-overwrite copy. Luna then
+staged the exact 8,653-byte file under the new, dormant filename
+`mods/open_unnerf_validation_observer/maw-ring-kill-trace-v2.lua`, SHA-256
+`23e63c7f9d9e98b9ac47c0daf1b321be446e2ad54299a0865a97e137a51150f3`.
+The existing version-1 file remains intact. Frozen observer `main.lua` matched
+its recorded SHA-256 before and after. Scratch `maw-trace-v2/staging-manifest.json`
+has SHA-256 `c0c4e067a4369cdf23ad642eaa05d121cb50cfa3b2d31eaac67ad27bf87130da`.
+Production remains f1c8325. Staging does not execute the diagnostic. The next
+owner step stops v1's own callbacks and loads v2, whose five callbacks should
+report `M2TRACE READY 5 v2`; engine registration and target checks are pending.
+
+The owner subsequently confirmed `M2TRACE READY 5 v2` and state
+`2 true false 4.5 1 3259019300` (fixture version, Maw gate, actual continued,
+damage, Maw copies, seed). The new phase is `M2-ring-on-v2`. The owner charged
+Maw normally and ran the single-Clotty setup: find a native ring, select its
+first clear radial point among 72 candidates, check center and four offsets of
+16 units with inside-room margin 0 and grid collision 0, remove loose tears,
+spawn type 15/0/0 with one HP and freeze, and record that NPC via `RecordTargets`.
+After one second without movement/shooting, the owner reported summary
+`1 0 1 0` and visually confirmed a black-heart drop. That is owner-observed
+output after one recorded target; raw target/death/heart provenance is being
+collected before a stronger attribution or acceptance claim. No drop-rate
+estimate follows from this single outcome.
+
+### M2 version-2 one-Clotty engine evidence
+
+The raw records corroborate the owner observation on seed 3259019300, Normal,
+MCM v113. All seven active, saved and run settings are On. The phase-start
+snapshot at frame 378 records damage 4.5, one Maw, cached count 1, six red
+half-hearts, no soul hearts and black mask 0, with actual continued false.
+
+- Requested target: type 15/0/0, index 704, seed 3905726384, position (400,380),
+  size 13 and HP 1. First NPC observation at frame 545 records type 15,
+  state 4, HP 1 and max HP 15.
+- At frame 545, its one observed damage attempt has amount 4.5 and flags
+  8388616, source player type 1/index 0/seed 1070000335 at (320,380).
+  Native death at frame 546 matches the target and previous damage one frame
+  earlier. Per-type death count is `{"15":1}`.
+- At frame 546 a black-heart pickup (type 5, variant 10, subtype 6, seed
+  3972237172) initializes at (400,380); first update at 547 observes the same
+  identity. Spawner type/variant are 0/0; no usable direct spawner identity is
+  established. Repeated observations are one pickup, not additional drops.
+- Native Dark Ring observations record sprite
+  `gfx/007.001.003_Dark Ring.anm2` and drop field 0.050000000745058. Summary is
+  one damage event, one death, one black-heart init and no soul-heart inits.
+
+Installed `resources/scripts/enums.lua:1079` defines
+`DAMAGE_SPAWN_BLACK_HEART = 1<<23` with the lethal-black-heart meaning. Recorded
+flags 8388616 equal that bit (8388608) plus `DAMAGE_LASER` (8). The lethal
+damage flags, matching requested target/death, matching pickup position/frame,
+native ring observations and owner-visible output support the native Maw
+kill/drop path in this controlled setup. This is not a universal source
+classifier or an empirical drop-rate estimate. Literal direct-laser attribution
+remains false because the callback source is the player; that counter's zero
+does not erase the separately recorded native flags and output.
+
+Evidence directory under the session root:
+`evidence/M2-v2-clotty-black-20261109T045954147Z/`:
+
+- `log-fullcopy.bin`: 3,310,358 bytes, SHA-256
+  `30f6ef68ee8b57c8d280d2a6d43c7a8c5606dfb852d25df1f06e04550e821804`.
+- `phase-raw-jsonl.jsonl`: SHA-256
+  `5f4ec9a317063d0ded2a4c69bb69d5ac3865e16659ce56029fb6bdd06e60f50d`;
+  the 301-record selection includes historical snapshots and v1 cleanup as
+  context. Select label `M2-ring-on-v2` and fixture version 2 for native events.
+- `exact-raw-jsonl.jsonl` and `verification-metadata-final.json` contain the
+  detailed selection/verification. The earlier zero-byte
+  `verification-metadata.json` is an invalid artifact from a locked-file hash
+  attempt and must not be used.
+- Three shared-read captures match the full-copy hash/length, with source mtime
+  2026-11-09T04:53:48.3807974Z. No diagnostic error, Lua error or traceback was
+  found in the scanned span. Locked-file hashing used the already matching
+  shared-read bytes, not an assumed success from `Get-FileHash`.
+
+Before continuing this saved run, stop the native trace so reinitialized room
+pickups cannot be counted as new drops. Continue/item-cache checks remain a
+separate phase; the black heart is left uncollected at this checkpoint.
+
+### M3 held-Maw Continue and removal (owner observed)
+
+After stopping the native trace, the owner saved to the main menu and continued
+the same run. The phase `M3-maw-continue` printed
+`true true 4.5 1 1 3259019300`: actual continued true, Maw gate true, damage 4.5,
+one Maw, cached count 1 and unchanged seed. The owner then called
+`Isaac.GetPlayer(0):RemoveCollectible(399)`, allowed update frames and reported
+`M3 REMOVED 3.5 0 0` (damage, copies, cached count). Matching log preservation is
+pending. The native kill trace was stopped before Continue, so reconstructed
+room pickups are not new reward trials. This records held-item continuation and
+removal for this local Normal Isaac; distinct-player and pack-absent checks
+remain separate.
+
+M3 log corroboration: snapshot `start` at frame 622 / sequence 12694 records
+damage 4.5, copies/cached copies 1/1; `M3-maw-removed` at frame 694 / sequence
+12767 records damage 3.5, copies/cached copies 0/0. Both have seed 3259019300,
+difficulty 0, observed continued true, MCM 113, six red half-hearts, zero soul
+half-hearts and black mask 0. All seven saved run settings are true. A matching
+`[Continue, 2]` seed entry and game version J460 appear in the log. The expected
+separate automatic `post_game_started` record was not present in the extracted
+probes; the snapshots' observed-continued field and native Continue entry are
+the available evidence. No bounded Lua error/traceback/diagnostic error was found.
+
+Evidence directory under the session root:
+`evidence/M3-continue-remove-20261109T062404Z/`:
+
+- `log-full.txt`: 3,352,642 bytes, SHA-256
+  `b997d1f8dfbe099da0b6021b094725481dabeb02c18c9dca988818510a0f1e8b`.
+- `M3-probe-payloads.jsonl`: 74 labeled records including both snapshots,
+  SHA-256 `d911d46ad419b7cf7d0205add17a9a78ae5bc7ef23e6fe49a0fa9aa2efb09df9`.
+- `metadata.json`: shared-read capture details. Both full reads matched length,
+  mtime and hash. Evidence stops at the removed snapshot; later actions require
+  their own observations.
+
+### M4 two-actor Maw isolation (owner observed, Hard)
+
+The owner initially stopped at the locked Jacob & Esau menu entry without
+running the console command. Trying documented `restart 19` directly then
+produced two actual players, types 19 and 20. The first grant setup stopped
+before granting anything because the run's difficulty was 1 (Hard), whereas the
+proposed guard expected Normal. Read-only preflight confirmed difficulty 1,
+Maw On, and zero Maw copies for both actors. The isolation check continued in
+that observed Hard mode; no difficulty/unlock/save-file edit was performed.
+
+The revised setup recorded each actor's actual damage as `OUPMawBase[0/1]`,
+started probe `M4-maw-players` and added one Maw to Jacob using
+`Isaac.GetPlayer(0):AddCollectible(399,0,false)`. Each transition allowed one
+second of native updates before Snapshot. Owner-reported results:
+
+| Checkpoint | Jacob / Esau damage delta | Maw copies | Cached copies |
+| --- | --- | --- | --- |
+| baseline | 0 / 0 | 0 / 0 | log corroboration pending |
+| M4-jacob-only | 1 / 0 | 1 / 0 | 1 / 0 |
+| M4-both | 1 / 1 | 1 / 1 | 1 / 1 |
+| M4-esau-only | 0 / 1 | 0 / 1 | 0 / 1 |
+| M4-cleared | 0 / 0 | 0 / 0 | 0 / 0 |
+
+The sequence used explicit player-index grants/removals and supports isolation
+between these local Jacob & Esau actors. It is not a general network/local
+co-op certification. Matching raw log, actor baselines, seed and all gates are
+being preserved before another feature is granted. The run remains open with
+both Maw copies removed; the numeric baseline helper is diagnostic state only.
+
 ## Shared observer protocol (deployed; initial snapshot engine verified)
 
 Source: `tools/compatibility-observer.lua`, adopted unchanged by #3. It is not
@@ -1048,7 +1196,7 @@ requires the actual vanilla comparison arranged by the shared session owner.
 | --- | --- | --- |
 | Fresh and continued load | Pass for recorded local Normal runs C1/C3/C4 | Matched owner observations, source/manifest, seeds, fresh/Continue log and no Lua errors. Other modes unverified. |
 | Maw cache/damage and per-player isolation | Single-copy acquisition/removal On/Off plus two-copy acquisition and one-copy removal corroborated | Distinct-player isolation and pack-absent control remain unverified. |
-| Maw ring/black-heart drops | Native ring field 0.05 On / 0 Off corroborated | Actual kills/drops, final probability and pack-absent control remain unverified. |
+| Maw ring/black-heart drops | Native ring field 0.05 On / 0 Off and one controlled one-Clotty native black-heart output corroborated | Pack-absent comparison remains open; the single output is not an empirical probability estimate. |
 | Orbitals/native state | Independent Dagger acquisition fields pass with owner + log evidence; doorway/BFFS/Continue fields logged under Maw-Off context | Contact/BFFS combat scaling, Meat transitions, other orbitals and pack-absent comparison remain unverified. |
 | Dark Bum/output/exclusions | Pending | Controlled red-heart feeding, record reward provenance and excluded owner cases. |
 | Relic timing | Independent initialization/gating corroborated (Off counter 0, On 2); cadence pending | Number actual hostile clears/payouts, trace native reset ordering, repeat control and Continue. |
@@ -1073,6 +1221,31 @@ be committed as a divergent duplicate by #1. Results documents are #1-owned.
 
 These are proposed recipes, not executed tests. Do not send the whole list as an
 owner sequence. Establish each smallest case in-engine before broader execution.
+
+- **M4 distinct-player Maw cache (prepared, not executed):** after preserving M3,
+  the owner reported Jacob & Esau are not unlocked, so this route has no
+  validated actor baseline. Whether the console command itself was attempted
+  or refused is being clarified; no unlock/progression change is authorized.
+  A native temporary-companion alternative is being researched separately.
+  The following remains a proposed route, not an engine result:
+  a new disposable normal Jacob & Esau run can provide two local actors. Installed
+  enums identify Jacob 19 and Esau 20. The primary
+  [IsaacDocs console reference](https://wofsauge.github.io/IsaacDocs/rep/tutorials/DebugConsole.html)
+  documents `restart` with an optional character number, and its
+  [PlayerType enum](https://wofsauge.github.io/IsaacDocs/rep/enums/PlayerType.html)
+  corroborates those IDs. This supports proposing `restart 19`, not claiming it
+  was executed on the target build. The smallest engine check must verify two
+  players, actual types 19/20, Normal difficulty, all gates On, and no Maw copies
+  before accessing index 1 or granting anything. If prerequisites differ, stop;
+  do not modify unlock/progression data. Record each actor's actual damage
+  baseline rather than assuming character stats. The installed player API
+  declares `AddCollectible(Type, Charge, AddConsumables)`; use all three arguments
+  explicitly, such as `Isaac.GetPlayer(0):AddCollectible(399,0,false)`. Verify the
+  count sequence (0,0) → (1,0) → (1,1) → (0,1) → (0,0), with respective damage
+  deltas (0,0) → (1,0) → (1,1) → (0,1) → (0,0), after actual update frames. Match
+  snapshots/cached counts to each index and type. This tests these local actors;
+  it does not certify local/network co-op generally. The native kill trace stays
+  stopped throughout this cache-only phase.
 
 - **O1 orbital state:** fresh Isaac, `giveitem c172` (Sacrificial Dagger), allow
   one second, snapshot; walk to an adjacent room and snapshot the same familiar;
