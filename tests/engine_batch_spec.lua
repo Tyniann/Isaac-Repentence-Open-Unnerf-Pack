@@ -6,9 +6,10 @@ vectorMT.__sub = function(a,b) return Vector(a.X-b.X,a.Y-b.Y) end
 vectorMT.__mul = function(a,b) return Vector(a.X*b,a.Y*b) end
 Vector = function(x,y) return setmetatable({X=x,Y=y},vectorMT) end
 ModCallbacks = {MC_POST_UPDATE=1,MC_POST_NEW_ROOM=18,MC_ENTITY_TAKE_DMG=11,
-    MC_POST_PICKUP_INIT=34,MC_POST_PICKUP_UPDATE=35}
+    MC_POST_PICKUP_INIT=34,MC_POST_PICKUP_UPDATE=35,
+    MC_PRE_NPC_UPDATE=1000} -- Arbitrary test-double ID, not an SDK declaration.
 DamageFlag={DAMAGE_CRUSH=16777216}
-EntityFlag={FLAG_FREEZE=32}
+EntityFlag={FLAG_FREEZE=32,FLAG_NO_KNOCKBACK=1<<26,FLAG_NO_PHYSICS_KNOCKBACK=1<<30}
 EntityRef=function(entity) return {Entity=entity} end
 local mod = {Config={IsEnabled=function() return true end}}
 function mod:AddPriorityCallback(id,priority,fn)
@@ -29,7 +30,14 @@ local function dispatch(id,...)
     local list={}
     for _,c in ipairs(callbacks) do if c.id==id then list[#list+1]=c end end
     table.sort(list,function(a,b) return a.priority<b.priority end)
-    for _,c in ipairs(list) do assert(c.fn(mod,...)==nil,"callback changed native dispatch") end
+    for _,c in ipairs(list) do
+        local result=c.fn(mod,...)
+        if id==ModCallbacks.MC_PRE_NPC_UPDATE and result~=nil then
+            assert(result==true,"target controller returned an unsupported value")
+            return true
+        end
+        assert(result==nil,"observer changed native dispatch")
+    end
 end
 local player={Position=Vector(320,380),InitSeed=1,Type=1,Size=10,hearts=6,items={}}
 function player:GetCollectibleNum(item) return self.items[item] or 0 end
@@ -41,6 +49,7 @@ function player:GetMaxHearts() return 6 end
 function player:GetSoulHearts() return self.soul or 0 end
 function player:GetBlackHearts() return 0 end
 function player:GetPlayerType() return 0 end
+function player:SetMinDamageCooldown(n) self.fixtureCooldown=n end
 local room={}
 function room:IsClear() return true end
 function room:GetAliveEnemiesCount() return 0 end
@@ -120,6 +129,12 @@ end
 local function tick()
     frame=frame+1
     for _,e in ipairs(entities) do
+        if contactSetup and e.exists and e.Type==15 then
+            if not dispatch(ModCallbacks.MC_PRE_NPC_UPDATE,e) then
+                e.Position=e.Position+Vector(20,0) -- Native AI can outlive freeze.
+                e.attackAttempts=(e.attackAttempts or 0)+1
+            end
+        end
         if e.exists and e.Type==5 then dispatch(35,e) end
     end
     dispatch(1)
@@ -153,7 +168,7 @@ player.soul=0
 -- Stop must restore temporary items/health too, while a mechanics coroutine is
 -- suspended between native operations. This is fixture rollback, not heal proof.
 OUPBatch.Run({trialsPerVariant=1,mechanics=true,smoke=true,label="mechanics-stop"})
-for _=1,3 do tick() end
+for _=1,98 do tick() end
 assert(player:GetCollectibleNum(223)==1 and player:GetHearts()==4)
 local stoppedBatch=OUPBatch
 OUPBatch.Stop()
@@ -173,7 +188,7 @@ function player:TakeDamage()
     self.soul=math.max(0,self:GetSoulHearts()-2)
 end
 OUPBatch.Run({trialsPerVariant=1,mechanics=true,smoke=true,label="protected-health-arrived"})
-for _=1,3 do tick() end
+for _=1,98 do tick() end
 assert(player:GetHearts()==4)
 player.soul=2 -- An existing pickup can arrive during the yielded frame.
 tick()
@@ -192,8 +207,26 @@ assert(targetSpawned,"short orbital radius prevented all contact samples")
 local gap=targetSpawned.Position.X-player.Position.X
 assert(gap>=40 and math.abs(gap-30)<dagger.Size+targetSpawned.Size,
     "contact fixture must clear the player while overlapping the familiar")
+local anchor=Vector(targetSpawned.Position.X,targetSpawned.Position.Y)
+targetSpawned.Position=targetSpawned.Position+Vector(40,0)
+targetSpawned.Velocity=Vector(20,0) -- Simulate damage knockback/status loss.
+tick()
+assert(targetSpawned.Position.X==anchor.X and targetSpawned.Position.Y==anchor.Y,
+    "contact target escaped after knockback/freeze loss")
+assert(targetSpawned.Velocity.X==0 and targetSpawned.Velocity.Y==0)
+assert(not targetSpawned.attackAttempts,"owned contact target ran native AI")
+assert(player.fixtureCooldown==90,"active contact fixture did not protect players")
+local foreign=entity(15,0,0,Vector(600,300))
+assert(dispatch(ModCallbacks.MC_PRE_NPC_UPDATE,foreign)==nil,
+    "fixture controlled an unrelated native NPC")
+targetSpawned.Position=nil -- A controller API failure must still suppress AI.
+assert(dispatch(ModCallbacks.MC_PRE_NPC_UPDATE,targetSpawned)==true)
+tick()
+assert(OUPBatch.Status().status=="error" and foreign:Exists(),
+    "controller error did not defer owned-only cleanup")
 OUPBatch.Stop()
 assert(not targetSpawned:Exists() and player:GetCollectibleNum(172)==0 and #callbacks==0)
+foreign:Remove()
 contactSetup=false
 dofile("tools/validation/compatibility-batch.lua")
 -- Removing the fireplace while its native damage stack is executing is unsafe.

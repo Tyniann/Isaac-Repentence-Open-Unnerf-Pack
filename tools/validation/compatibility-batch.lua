@@ -6,7 +6,8 @@
 assert(OUPBatch == nil, "Stop the existing OUPBatch before loading another version")
 local json = require("json")
 local mod = openUnnerfPack or RegisterMod("Open Unnerf native batch", 1)
-local batch, state, callbacks = {version=2}, nil, {}
+local batch, state, callbacks = {version=3}, nil, {}
+local playerContext
 OUPBatch = batch
 local function pos(v) return {x=v.X,y=v.Y} end
 local function id(e)
@@ -109,16 +110,53 @@ local function report()
     if not state then return {status="idle",version=batch.version} end
     return {status=state.status,label=state.label,completed=state.completed,
         total=state.total,groups=state.groups,error=state.error,
-        cleanupErrors=state.cleanupErrors,context=state.context,mechanics=state.mechanics}
+        cleanupErrors=state.cleanupErrors,afterCleanup=state.afterCleanup,
+        context=state.context,mechanics=state.mechanics}
 end
 local function finish(status,message)
     if not state or not state.active then return end
     state.active=false
     state.status,state.error=status,message
     state.cleanupErrors=cleanup()
+    local observed,after=pcall(function()
+        local out={room=Game():GetLevel():GetCurrentRoomIndex(),players={},managedItems={}}
+        for _,entry in ipairs(state.players) do
+            out.players[#out.players+1]=playerContext(entry.player,entry.index)
+        end
+        for _,entry in ipairs(state.managedItems) do
+            out.managedItems[#out.managedItems+1]={item=entry.item,
+                expected=entry.count,actual=entry.player:GetCollectibleNum(entry.item)}
+        end
+        return out
+    end)
+    if observed then state.afterCleanup=after else
+        state.cleanupErrors[#state.cleanupErrors+1]=tostring(after)
+    end
     if #state.cleanupErrors>0 then state.status="error" end
     pcall(emit,"complete",report())
     pcall(print,"OUP BATCH "..string.upper(state.status),state.completed,state.total)
+end
+local function registerContactController()
+    local which=ModCallbacks.MC_PRE_NPC_UPDATE
+    local function callback(_,npc)
+        if not state or not state.active then return nil end
+        local control=state.contactTarget
+        if not control or npc.Index~=control.index or npc.InitSeed~=control.seed then return nil end
+        local ok,message=pcall(function()
+            local drift=distance(npc.Position,control.position)
+            control.stats.maxObservedDrift=math.max(control.stats.maxObservedDrift,drift)
+            npc.Position=Vector(control.position.X,control.position.Y)
+            npc.Velocity=Vector(0,0)
+            control.stats.aiSuppressedFrames=control.stats.aiSuppressedFrames+1
+        end)
+        if not ok then state.pendingError=tostring(message) end
+        -- Installed enums.lua:89: true skips internal AI. This is an active
+        -- fixture controller, exclusively for the exact owned contact target.
+        -- Suppress AI even on a controller error until POST_UPDATE cleans up.
+        return true
+    end
+    mod:AddPriorityCallback(which,-100,callback)
+    callbacks[#callbacks+1]={id=which,fn=callback}
 end
 local function register(which,priority,fn)
     local function callback(...)
@@ -166,7 +204,7 @@ local function chooseSetup(room,players)
     end
     error("No clear isolated fire-test area in this room")
 end
-local function playerContext(player,index)
+playerContext=function(player,index)
     return {index=index,type=player:GetPlayerType(),redHalfHearts=player:GetHearts(),
         soulHalfHearts=player:GetSoulHearts(),blackMask=player:GetBlackHearts(),
         damage=player.Damage,luck=player.Luck,position=pos(player.Position),conflictingItems={
@@ -253,23 +291,30 @@ local function orbitalContact(player,withBffs,window)
             "Contact target overlaps player safety margin")
     end
     target.MaxHitPoints,target.HitPoints=10000,10000
-    target:AddEntityFlags(EntityFlag.FLAG_FREEZE)
+    target:AddEntityFlags(EntityFlag.FLAG_NO_KNOCKBACK | EntityFlag.FLAG_NO_PHYSICS_KNOCKBACK)
     local sample={bffs=withBffs,familiar=familiarRecord(familiar),target=id(target),
-        hpBefore=target.HitPoints,events={},startFrame=Game():GetFrameCount()}
+        hpBefore=target.HitPoints,events={},startFrame=Game():GetFrameCount(),
+        targetControl={anchor=pos(point),aiSuppressedFrames=0,maxObservedDrift=0}}
+    state.contactTarget={index=target.Index,seed=target.InitSeed,position=point,stats=sample.targetControl}
     state.orbitalSample=sample
     waitFrames(window)
     sample.endFrame=Game():GetFrameCount()
     sample.hpAfter=target:Exists() and target.HitPoints or nil
     sample.familiarAfter=familiarRecord(findFamiliar(35,player))
+    sample.targetAtEnd=target:Exists() and id(target) or nil
     sample.status=#sample.events>0 and "observed" or "no_contact_observed"
     state.mechanics.orbital[#state.mechanics.orbital+1]=sample
     emit("orbital_result",sample)
     state.orbitalSample=nil
+    state.contactTarget=nil
     removeOwned(owned(target))
     waitFrames(3)
 end
 local function mechanicsWorker(smoke)
     local player=state.players[1].player
+    -- Let this fixture's previous <=90-frame protection expire before the
+    -- controlled crush input. Do not mistake invulnerability for an unnerf.
+    waitFrames(95)
     -- Real engine damage request, not evidence of a native Mom attack.
     addItem(player,223)
     waitFrames(2)
@@ -291,14 +336,16 @@ local function mechanicsWorker(smoke)
     player:AddHearts(original-player:GetHearts())
     state.healthMutation=nil
     removeItem(player,223)
+    state.protectActors=true
+    protectPlayers()
     waitFrames(30)
 
     addItem(player,172)
     waitFrames(20)
-    orbitalContact(player,false,smoke and 60 or 180)
+    orbitalContact(player,false,180)
     addItem(player,247)
     waitFrames(20)
-    orbitalContact(player,true,smoke and 60 or 180)
+    orbitalContact(player,true,180)
     removeItem(player,172)
     removeItem(player,247)
     waitFrames(5)
@@ -383,6 +430,7 @@ local function trialPickups(trial)
 end
 local function advance()
     assert(Game():GetNumPlayers()==#state.players,"Player count changed during batch")
+    if state.protectActors then protectPlayers() end
     checkHealth()
     local frame=Game():GetFrameCount()
     for _,entry in ipairs(state.owned) do
@@ -476,6 +524,7 @@ function batch.Run(options)
         context.players[#context.players+1]=health
     end
     if options.mechanics then
+        assert(type(ModCallbacks.MC_PRE_NPC_UPDATE)=="number","Native target controller API unavailable")
         local player=players[1].player
         assert(player:GetHearts()>=6 and player:GetMaxHearts()>=6 and
             player:GetSoulHearts()==0 and player:GetBlackHearts()==0,
@@ -491,6 +540,7 @@ function batch.Run(options)
         context=context,roomIndex=game:GetLevel():GetCurrentRoomIndex(),targetPosition=target,
         completed=0,total=n*2,perVariant=n,owned={},managedItems={},managedKeys={},
         fixturePositions=positions,step="spawn",
+        protectActors=not options.mechanics,
         groups={["2"]={valid=0,histogram={},subtypes={}},
             ["3"]={valid=0,histogram={},subtypes={}}}}
     if options.mechanics then
@@ -498,6 +548,7 @@ function batch.Run(options)
         state.worker=coroutine.create(function() mechanicsWorker(options.smoke==true) end)
     end
     local ok,message=pcall(function()
+        if options.mechanics then registerContactController() end
         register(ModCallbacks.MC_ENTITY_TAKE_DMG,-100,function(_,e,amount,flags,source)
             if state.crushActive and e.Type==1 then
                 emit("crush_requested_damage",{target=id(e),amount=amount,flags=flags,
@@ -564,6 +615,7 @@ function batch.Run(options)
                 if state.relicActive then protectPlayers() end
             end)
         end
+        if state.protectActors then protectPlayers() end
         for i,entry in ipairs(players) do entry.player.Position=positions[i] end
         local fixturePositions={}
         for i,v in ipairs(positions) do fixturePositions[i]=pos(v) end
