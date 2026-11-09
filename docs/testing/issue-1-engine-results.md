@@ -16,10 +16,9 @@ later actual settings/seeds supersede earlier requested or assumed setup.
 - Independent Sacrificial Dagger field processing is corroborated. Earlier
   doorway/BFFS/Continue field observations were made with Maw Off and retain
   that narrower context; they are not contact-DPS measurements.
-- Full Maw ring/drop/player-isolation, orbital combat/variant coverage, other
-  feature behavior and true pack-absent vanilla/stacking comparisons remain open.
-  Held-Maw Continue and subsequent removal are now corroborated in M3; the
-  outstanding Maw scope includes distinct players and pack-absent comparison.
+- Held-Maw Continue/removal and Hard Jacob/Esau cache isolation are corroborated.
+  Maw's pack-absent comparison, orbital combat/lifecycle behavior, Relic cadence,
+  fire stacking/probability and other outstanding matrix rows remain open.
 - Current session owner is #1 after #3's explicit final cleanup/handoff. #1 is
   preparing remaining compatibility tests and owns eventual coordinated shared
   deployment restoration. No claim of complete issue acceptance.
@@ -1120,6 +1119,42 @@ co-op certification. Matching raw log, actor baselines, seed and all gates are
 being preserved before another feature is granted. The run remains open with
 both Maw copies removed; the numeric baseline helper is diagnostic state only.
 
+M4 raw corroboration: seed 1273441713, difficulty 1, observed continued false,
+MCM 113; all seven active/saved/run settings agree and are On. Jacob (index 0,
+type 19) has baseline damage 2.75 and health 6 red/0 soul half-hearts. Esau
+(index 1, type 20) has baseline damage 3.75 and health 2 red/2 soul half-hearts.
+Health and black masks remain unchanged throughout the cache sequence.
+
+| Checkpoint | Sequence / frame | Jacob / Esau damage | Maw / cached counts by actor |
+| --- | --- | --- | --- |
+| preflight | 12812 / 358 | 2.75 / 3.75 | 0/0 and 0/0 |
+| Jacob only | 12814 / 412 | 3.75 / 3.75 | 1/1 and 0/0 |
+| both | 12815 / 484 | 3.75 / 4.75 | 1/1 and 1/1 |
+| Esau only | 12816 / 523 | 2.75 / 4.75 | 0/0 and 1/1 |
+| cleared | 12817 / 562 | 2.75 / 3.75 | 0/0 and 0/0 |
+
+Evidence under `evidence/M4-two-actors-20261109T145514952Z/`:
+
+- `log-full-copy.bin`: 3,383,620 bytes, SHA-256
+  `da953d3781021a9323ea7fb3b21fad8e867a6698276bd81bf1ef2999dbbcbb9c`.
+- `probe-objects.raw.jsonl`: SHA-256
+  `e7359281185e5e288404ed3fbb5bc7578dc412ef88d2f162cd22b12ec11df519`.
+  This is the full 12,817-object extraction, with zero exact duplicates; filter
+  by the M4 labels and actual seed for the checkpoint subset.
+- `metadata.json`: SHA-256
+  `775c0bf2d329a07f6aee4c4b45aff957a6e016188726f1c103aae3c3bdaa8c40`.
+- Both shared reads matched length, mtime and hash. No bounded Lua error,
+  traceback or diagnostic error was found. Automatic `post_game_started`
+  sequence 12811/frame 0 retains the prior M3 label but has the new M4 seed,
+  Hard difficulty and observed continued false; it is context, not a continued
+  M3 result. Historical Maw kill-trace entries are not M4 events.
+
+The owner requested a sensible test budget rather than individual prompts for
+every case. Remaining work will reuse this Maw evidence and #3's native gate
+comparisons, with short automated engine batches for unresolved high-risk
+orbital behavior, Relic cadence and fire stacking/probability. Unexecuted edge
+cases remain explicitly unverified rather than becoming manual prerequisites.
+
 ## Shared observer protocol (deployed; initial snapshot engine verified)
 
 Source: `tools/compatibility-observer.lua`, adopted unchanged by #3. It is not
@@ -1195,7 +1230,7 @@ requires the actual vanilla comparison arranged by the shared session owner.
 | Criterion | Current engine status | Next bounded evidence |
 | --- | --- | --- |
 | Fresh and continued load | Pass for recorded local Normal runs C1/C3/C4 | Matched owner observations, source/manifest, seeds, fresh/Continue log and no Lua errors. Other modes unverified. |
-| Maw cache/damage and per-player isolation | Single-copy acquisition/removal On/Off plus two-copy acquisition and one-copy removal corroborated | Distinct-player isolation and pack-absent control remain unverified. |
+| Maw cache/damage and per-player isolation | Single-copy On/Off, two-copy handling, held-item Continue/removal and Hard Jacob/Esau isolation corroborated | Pack-absent comparison remains open; local/network co-op generally is not certified. |
 | Maw ring/black-heart drops | Native ring field 0.05 On / 0 Off and one controlled one-Clotty native black-heart output corroborated | Pack-absent comparison remains open; the single output is not an empirical probability estimate. |
 | Orbitals/native state | Independent Dagger acquisition fields pass with owner + log evidence; doorway/BFFS/Continue fields logged under Maw-Off context | Contact/BFFS combat scaling, Meat transitions, other orbitals and pack-absent comparison remain unverified. |
 | Dark Bum/output/exclusions | Pending | Controlled red-heart feeding, record reward provenance and excluded owner cases. |
