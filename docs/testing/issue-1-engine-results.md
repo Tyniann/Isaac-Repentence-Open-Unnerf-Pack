@@ -915,7 +915,7 @@ Evidence files under the session `evidence` directory:
 The owner confirmed a fresh Normal Isaac baseline with all seven On, actual
 continued false, damage 3.5, zero Maw, six red half-hearts and no soul hearts.
 The new seed was printed but not transcribed; matching log collection remains
-pending. After one Maw and a native charge/release, the initial 20-point setup
+was later recovered as 3259019300. After one Maw and a native charge/release, the initial 20-point setup
 stopped at its room-boundary assertion before spawning anything. A revised
 inside-room-only setup reported 13 requested frozen, one-HP Gapers. The owner
 reported summary `6 0 0 0`. After two more seconds without movement/shooting,
@@ -926,7 +926,29 @@ The version-1 observer records damage/death only while NPC type equals Gaper
 (10). Type transitions, removals or placement could explain the mismatch; none
 is established as the cause. Do not count it as 13 eligible reward trials or a
 failed black-heart mechanic. Preserve six as the owner-reported traced deaths,
-with final raw-event reconciliation pending.
+with full eligible-target reconciliation still pending.
+
+The subsequent stable log capture records 13 distinct type-10 damage attempts
+at frame 181, target indices 27–39, all flags 8 and source entity type 1. Six
+type-10 death callbacks follow at frame 182. Summaries at frames 231, 305 and
+378 retain 13 damage events, six deaths and no black/soul-heart inits. Setup
+reports radius 80 and drop field 0.050000000745058. Thus the evidence includes
+laser-damage attempts for all requested targets; it does not establish the
+unobserved targets' later types or a complete death count. The starting snapshot
+records seed 3259019300, difficulty 0, actual continued false, six red half-hearts,
+no soul hearts and zero Maw; saved/run settings are all On, corroborating the
+owner's aggregate active-gate baseline check.
+
+Under session `evidence`:
+
+- `M2-on-incomplete-20261109T042538477Z-full.log`: 3,284,974 bytes, SHA-256
+  `3cc6a77abb54f51c3e1695b68bb8eefe112a543d1a7c9c81e443033a32a85d71`.
+- `M2-on-incomplete-20261109T042538477Z-raw.jsonl`: 24 selected records
+  (two snapshots, 13 damage attempts, six deaths, three summaries).
+- `M2-on-incomplete-20261109T042538477Z-metadata.json`: capture metadata and
+  snapshots. Two shared reads matched, with stable length/timestamp. The bounded
+  log scan found no matching Lua-error/traceback line; the earlier boundary
+  assertion is separately preserved as an owner-reported console error.
 
 Diagnostic version 2 observes all NPC damage/death plus first NPC updates and
 records explicit target requests with identity/position. It retains literal
