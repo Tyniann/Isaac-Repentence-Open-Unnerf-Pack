@@ -6,7 +6,7 @@
 assert(OUPBatch == nil, "Stop the existing OUPBatch before loading another version")
 local json = require("json")
 local mod = openUnnerfPack or RegisterMod("Open Unnerf native batch", 1)
-local batch, state, callbacks = {version=3}, nil, {}
+local batch, state, callbacks = {version=4}, nil, {}
 local playerContext
 OUPBatch = batch
 local function pos(v) return {x=v.X,y=v.Y} end
@@ -133,7 +133,15 @@ local function finish(status,message)
         state.cleanupErrors[#state.cleanupErrors+1]=tostring(after)
     end
     if #state.cleanupErrors>0 then state.status="error" end
-    pcall(emit,"complete",report())
+    local terminal=report()
+    if state.mechanics then
+        local m=state.mechanics
+        terminal.mechanics={orbitalSamples=#m.orbital,meatStateObserved=m.meat~=nil,
+            crushContract=m.crushContract,relicStatus=m.relic.status,
+            relicClearCount=#m.relic.clears,relicPayoutCount=#m.relic.payouts,
+            relicUnresolvedRooms=#(m.relic.skippedRooms or {})}
+    end
+    pcall(emit,"complete",terminal)
     pcall(print,"OUP BATCH "..string.upper(state.status),state.completed,state.total)
 end
 local function registerContactController()
@@ -304,7 +312,10 @@ local function orbitalContact(player,withBffs,window)
     sample.targetAtEnd=target:Exists() and id(target) or nil
     sample.status=#sample.events>0 and "observed" or "no_contact_observed"
     state.mechanics.orbital[#state.mechanics.orbital+1]=sample
-    emit("orbital_result",sample)
+    local logged={}
+    for field,value in pairs(sample) do if field~="events" then logged[field]=value end end
+    logged.damageEventCount=#sample.events
+    emit("orbital_result",logged) -- Individual native damage records were already emitted.
     state.orbitalSample=nil
     state.contactTarget=nil
     removeOwned(owned(target))
@@ -375,13 +386,14 @@ local function mechanicsWorker(smoke)
     local relic=findFamiliar(23,player)
     assert(relic,"Relic familiar did not appear")
     state.mechanics.relic.initial=familiarRecord(relic)
+    state.mechanics.relic.skippedRooms={}
     state.relicActive=true
     local rooms=Game():GetLevel():GetRooms()
     assert(type(rooms.Size)=="number" and type(rooms.Get)=="function","Room list interface unavailable")
     local candidates={}
     for i=0,rooms.Size-1 do
         local desc=rooms:Get(i)
-        if desc.Data and desc.Data.Type==1 and desc.VisitedCount==0 and
+        if #candidates<12 and desc.Data and desc.Data.Type==1 and desc.VisitedCount==0 and
             desc.SafeGridIndex~=state.roomIndex then candidates[#candidates+1]=desc.SafeGridIndex end
     end
     local cleared,limit=0,smoke and 1 or 8
@@ -395,22 +407,38 @@ local function mechanicsWorker(smoke)
             state.relicClearOrdinal=cleared+1
             local beforeCount=findFamiliar(23,player)
             local before=familiarRecord(beforeCount)
-            for _,e in ipairs(Isaac.GetRoomEntities()) do
-                local npc=e:ToNPC()
-                if npc and npc.Type~=33 then npc:Kill() end
+            -- Native deaths can leave children or later waves alive. Retry
+            -- living NPCs across real updates, without writing clear flags.
+            for _=1,8 do
+                if room:IsClear() then break end
+                for _,e in ipairs(Isaac.GetRoomEntities()) do
+                    local npc=e:ToNPC()
+                    if npc and npc.Type~=33 and not npc:IsDead() then npc:Kill() end
+                end
+                waitFrames(15)
             end
-            waitFrames(45)
-            assert(room:IsClear(),"Native hostile room did not clear")
-            cleared=cleared+1
-            local result={ordinal=cleared,room=index,before=before,
-                after=familiarRecord(findFamiliar(23,player))}
-            state.mechanics.relic.clears[#state.mechanics.relic.clears+1]=result
-            emit("relic_native_clear",result)
+            if room:IsClear() then
+                waitFrames(90) -- Let native familiar payout animation settle.
+                cleared=cleared+1
+                local result={ordinal=cleared,room=index,before=before,
+                    after=familiarRecord(findFamiliar(23,player))}
+                state.mechanics.relic.clears[#state.mechanics.relic.clears+1]=result
+                emit("relic_native_clear",result)
+            else
+                local unresolved={room=index,aliveEnemies=room:GetAliveEnemiesCount(),
+                    before=before,after=familiarRecord(findFamiliar(23,player)),
+                    reason="Native hostile room did not clear within bounded retries"}
+                state.mechanics.relic.skippedRooms[#state.mechanics.relic.skippedRooms+1]=unresolved
+                emit("relic_unresolved_room",unresolved)
+            end
         end
     end
     state.mechanics.relic.clearCount=cleared
-    state.mechanics.relic.status=cleared>0 and "native_clears_observed" or "no_hostile_rooms_available"
-    emit("relic_result",state.mechanics.relic)
+    state.mechanics.relic.status=cleared>0 and "native_clears_observed" or
+        (#state.mechanics.relic.skippedRooms>0 and "native_clears_unresolved" or "no_hostile_rooms_available")
+    emit("relic_result",{initial=state.mechanics.relic.initial,clearCount=cleared,
+        payoutCount=#state.mechanics.relic.payouts,
+        unresolvedCount=#state.mechanics.relic.skippedRooms,status=state.mechanics.relic.status})
     state.relicActive=false
     removeItem(player,98)
     waitFrames(5)
@@ -557,7 +585,7 @@ function batch.Run(options)
             local sample=state.orbitalSample
             if sample and key(e)==tostring(sample.target.index)..":"..tostring(sample.target.seed) then
                 local event={frame=Game():GetFrameCount(),amount=amount,flags=flags,
-                    hpBefore=e.HitPoints,source=id(source and source.Entity)}
+                    hpBefore=e.HitPoints,source=id(source and source.Entity),target=id(e),bffs=sample.bffs}
                 sample.events[#sample.events+1]=event
                 emit("orbital_damage",event)
             end

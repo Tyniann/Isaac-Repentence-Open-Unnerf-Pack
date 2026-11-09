@@ -78,7 +78,7 @@ Stable evidence: Windows session
 seven-record `batch-raw.jsonl` SHA-256
 `1fd6fbe8fb053334a1def831453ecac48b150251d5b73f60fa596d61ce520931`.
 
-Version 3 is a pending fixture correction, not yet staged or engine verified:
+Version 3 corrects the fixture containment:
 
 - The installed `resources/scripts/enums.lua:89` documents
   `MC_PRE_NPC_UPDATE = 69`: returning true suppresses internal AI. The active
@@ -87,7 +87,7 @@ Version 3 is a pending fixture correction, not yet staged or engine verified:
   Other NPCs return nil. Observational callbacks still always return nil.
 - Native no-knockback flags replace reliance on the freezing status. Familiar
   collision and damage remain native; neither target HP nor damage events are
-  manufactured after initial setup. This still requires a fresh engine smoke.
+  manufactured after initial setup. This required a fresh engine smoke.
 - Actors receive renewed 90-frame native protection after the synthetic crush
   phase and throughout the remaining fixture. A 95-frame initial wait lets
   this fixture's protection from an earlier run expire before a new crush
@@ -101,6 +101,114 @@ Local Run/Stop contracts verify re-anchoring after simulated knockback,
 suppression of owned-target AI, exclusion of foreign NPCs, deferred cleanup
 after a controller error, and player protection. These are fixture-contract
 tests, not proof of native engine containment.
+
+Version 3 at `bec58129343216e09ff449398c1181cf3899317a` passed both Sol/high
+review axes with zero actionable findings and was staged as
+`compatibility-batch-v3.lua`, 29,938 bytes, SHA-256
+`ad0db77bbaa0c99466a47ac641348e9aa8b1cd2fe660d823e9c7bc1f7aaae35c`.
+The frozen observer hash remained unchanged. The staging manifest SHA-256 is
+`4c3a8764337a716faf91f2bc970527783939e535145b5b615b5ae848b30fb7af`.
+
+The owner reported `B4-hard-on-smoke` complete 2/2 in about 15 seconds and
+stationary targets. Valid per-phase records confirm native target HP loss:
+10000→9670 without BFFS (12 damage attempts of 30) and 10000→9400 with BFFS
+(10 attempts of 60). Attempts are pre-damage observations; their sum is not
+assumed to equal applied HP loss. Both controls recorded 157 AI-suppressed
+frames, zero observed drift, and identical anchor/end positions. The targets
+were not invulnerable. Initial health confirms the repair restored Esau to
+2 red / 2 soul half-hearts; Jacob remained at 6 red / 0 soul. One native Relic
+clear and two extinguishing fire hits were observed; neither fire dropped a
+heart. Cadence and probability remain pending.
+
+The large terminal JSON was truncated/interleaved and is **not** counted as a
+valid complete record; post-cleanup state is not recoverable from that line.
+Owner-reported completion remains separate evidence. Tolerant recovery retained
+36 valid records plus the malformed payload, without replaying the engine test.
+Windows session `evidence/B4-recovery-20261109T184131575Z/`: log 3,442,935 bytes,
+SHA-256 `8fc7cfc2054c566653a463838c66418c58797bc81ab5e9288dbe7cbb7ace3ad6`;
+valid JSONL SHA-256
+`28a99be636f33a446df5631d3513ffdba06480b9cb19b4ee2f01c4f4439db0a2`;
+malformed file (10,234 bytes) SHA-256
+`0e0cc3442ffabbc26aed578b3d6172364ce2841c257c3dc7414438d4778fae6c`.
+Recovery metadata writing hit a PowerShell argument error after these files
+were preserved. The missing sidecar was subsequently repaired after checking
+all three preserved file hashes, SHA-256
+`cc50a4223838f4a94e1025c569871d270260537c9373955149a893672a2d3219`.
+No game or live-log access was involved in that repair. Future terminal captures omit the
+large, redundant mechanics arrays; individual mechanic events remain intact.
+
+`B5-hard-on-full` did not reach fire sampling: the owner's screenshot shows
+`error 0 400`, source line 403 `Native hostile room did not clear` (resumed at
+442). This is an unresolved fixture room-clear setup, not evidence of a pack
+failure. Recovered valid records show two native clears (rooms 98 and 111),
+counter 2→3→4, with no payout. The compact terminal record confirms all five
+temporary item counts returned to zero, original health/positions restored,
+room 84 restored and no cleanup errors. This is not a completed cadence test.
+The first
+collection attempt failed during JavaScript command preparation before
+PowerShell started, without a capture or file changes. A subsequent one-line
+`exec_command` probe succeeded. Collection scripts must avoid PowerShell
+backticks in JavaScript template literals and use `.ToArray()` rather than
+wrapping generic collections in PowerShell array expressions for metadata.
+
+### B6: completed Hard fire sample, production unchanged
+
+`B6-hard-on-fires` completed 400/400 with `mechanics=false`, same seed
+`1273441713`, difficulty 1, Jacob/Esau, all seven gates On, and production
+`f1c8325`. Both actors retained their initial health/positions; room 84 was
+restored, no managed items remained and cleanup reported no errors.
+
+| Fireplace variant | Unique eligible trials | Zero hearts | One heart | Two hearts | Soul hearts total |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Blue (2) | 200 | 151 | 45 | 4 | 53 |
+| Purple (3) | 200 | 149 | 49 | 2 | 53 |
+
+Independent extraction matches the helper's groups: 400 unique fireplace
+identities, no duplicate trial records and no non-explosion damage events.
+Each eligible trial had exactly one observed explosion and an extinguished
+fireplace. All recorded hearts were subtype 3. These are observed outcomes,
+not proof of an exact theoretical rate or a completed vanilla comparison.
+
+There is actual stacking of the extra roll and another fire reward in this
+sample. For trial 24, fire seed `3591451838`, heart seed `3519502515` initialized
+in `damage_callbacks` at frame 7206 with that fire as spawner; a different heart,
+seed `1015785060`, initialized after the explosion at frame 7207 without a
+spawner. Both updated with distinct entity indices and survived into the
+trial result. This is two pickups, not duplicated observations of one pickup.
+It does not by itself prove a compatibility defect: the existing helper
+deliberately adds a separate 0.17 roll. Native controls and intended behavior
+must be assessed before changing that balance behavior.
+
+Stable artifact directory: Windows session
+`evidence/B5-B6-20261109T225254861Z/`, full log 3,958,014 bytes, SHA-256
+`70c003b5cdc297e38c5fe606c5225c6245c398184d19a84b7ee1b6d7cd38aca9`.
+The installed v3 helper hash was checked before/after capture. B5 has 28 valid
+records, one compact end and one preserved malformed line. B6 has 1,414 valid
+records, no malformed lines and two compact snapshots (initially running, then
+complete); those are not two independent runs. B6 valid JSONL SHA-256
+`d079410d8920e345a63b0e701d0150f66b78e61abe02b08a98a1d1400f9c21ff`;
+compact ends SHA-256
+`862ac7296df8e892f1547cd8df56621f44df2f7ffa57081bd145139bc38795e8`.
+B5 compact end SHA-256
+`90d13607e6aadec7332a70dd7d86beca339161b48a59aa6e23dfe26500309d5c`.
+
+### Version 4: pending control-fixture improvements
+
+Local version 4 does not change the production pack or fire-trial algorithm.
+The Relic fixture retries living NPC kills over up to eight 15-frame intervals,
+then observes 90 frames after a real clear for native payout animation. It
+considers at most 12 unvisited default-room candidates. Unresolved rooms are
+recorded separately, never counted as clears, and do not block unrelated fire
+sampling. This addresses a fixture assumption; B5's exact native cause is not
+established. No room-clear flags or familiar counters are written by the fixture.
+
+Logs emit bounded phase/terminal summaries; individual damage, clear and payout
+records retain the detailed data. `Status()` still retains full mechanics data.
+Local public-interface regressions saw RED/GREEN for a child left by a native
+kill and oversized duplicate logging, then verified that an unresolved room
+stays incomplete while fire sampling/cleanup finish and foreign NPCs remain.
+These are driver contracts, not native engine proof. Version 4 is not yet
+reviewed, staged or engine verified at this checkpoint.
 
 Run requires a cleared disposable room and no Relic, Dark Bum, Maw or Humbling
 Bundle on any actor. It records the actual difficulty, actor types, health,

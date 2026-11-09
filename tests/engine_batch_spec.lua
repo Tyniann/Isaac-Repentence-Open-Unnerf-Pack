@@ -51,28 +51,45 @@ function player:GetBlackHearts() return 0 end
 function player:GetPlayerType() return 0 end
 function player:SetMinDamageCooldown(n) self.fixtureCooldown=n end
 local room={}
-function room:IsClear() return true end
-function room:GetAliveEnemiesCount() return 0 end
+local roomScenario,currentRoomIndex,hostileClear=false,84,false
+local pendingRoomChild,roomKillHook
+function room:IsClear() return not roomScenario or currentRoomIndex==84 or hostileClear end
+function room:GetAliveEnemiesCount()
+    local n=0
+    for _,e in ipairs(entities) do
+        if e.exists and e.Type==10 and e.room==currentRoomIndex then n=n+1 end
+    end
+    return n
+end
 function room:GetCenterPos() return Vector(320,280) end
 function room:IsPositionInRoom() return true end
 function room:GetGridCollisionAtPos() return 0 end
-local level={GetCurrentRoomIndex=function() return 84 end}
+local level={GetCurrentRoomIndex=function() return currentRoomIndex end}
+function level:GetRooms()
+    return {Size=2,Get=function(_,i)
+        return {Data={Type=1},VisitedCount=i==0 and 1 or 0,Clear=i==0,
+            SafeGridIndex=i==0 and 84 or 86}
+    end}
+end
 local game={Difficulty=1}
 function game:GetNumPlayers() return 1 end
 function game:GetFrameCount() return frame end
 function game:GetRoom() return room end
 function game:GetLevel() return level end
 function game:GetSeeds() return {GetStartSeed=function() return 42 end} end
+function game:ChangeRoom(index) currentRoomIndex=index; dispatch(ModCallbacks.MC_POST_NEW_ROOM) end
 Game=function() return game end
 local function entity(t,v,s,pos,spawner)
     seed=seed+1
     local e={Type=t,Variant=v,SubType=s,Position=pos,Index=seed,
         InitSeed=seed,SpawnerEntity=spawner,SpawnerType=spawner and spawner.Type or 0,
-        SpawnerVariant=spawner and spawner.Variant or 0,exists=true,HitPoints=1,anim="Flickering"}
+        SpawnerVariant=spawner and spawner.Variant or 0,exists=true,HitPoints=1,
+        anim="Flickering",room=currentRoomIndex}
     function e:Exists() return self.exists end
-    function e:IsDead() return false end
+    function e:IsDead() return not self.exists end
     function e:Remove() self.exists=false end
-    function e:ToNPC() if self.Type==33 or self.Type==15 then return self end end
+    function e:Kill() self.exists=false; if roomKillHook then roomKillHook(self) end end
+    function e:ToNPC() if self.Type==33 or self.Type==15 or self.Type==10 then return self end end
     function e:ToFamiliar() return nil end
     function e:AddEntityFlags() end
     e.Size=13
@@ -89,14 +106,25 @@ local dagger={Type=3,Variant=35,SubType=0,Index=900,InitSeed=900,Size=13,
 function dagger:ToFamiliar() return self end
 function dagger:ToNPC() return nil end
 function dagger:GetData() return {} end
+local relic={Type=3,Variant=23,SubType=0,Index=901,InitSeed=901,Size=13,
+    Player=player,CollisionDamage=0,OrbitDistance=Vector(0,0),RoomClearCount=2}
+function relic:ToFamiliar() return self end
+function relic:ToNPC() return nil end
+function relic:GetData() return {} end
 Isaac={}
 function Isaac.GetPlayer(index) assert(index==0);return player end
 function Isaac.GetRoomEntities()
     local list={}
-    for _,e in ipairs(entities) do if e.exists then list[#list+1]=e end end
+    for _,e in ipairs(entities) do
+        if e.exists and (not roomScenario or e.room==currentRoomIndex) then list[#list+1]=e end
+    end
     if contactSetup and player:GetCollectibleNum(172)>0 then
         dagger.Position=player.Position+Vector(30,0)
         list[#list+1]=dagger
+    end
+    if roomScenario and player:GetCollectibleNum(98)>0 then
+        relic.Position=player.Position
+        list[#list+1]=relic
     end
     return list
 end
@@ -128,11 +156,17 @@ function Isaac.Explode(pos,source,amount)
 end
 local function tick()
     frame=frame+1
+    if pendingRoomChild then local spawn=pendingRoomChild;pendingRoomChild=nil;spawn() end
     for _,e in ipairs(entities) do
         if contactSetup and e.exists and e.Type==15 then
             if not dispatch(ModCallbacks.MC_PRE_NPC_UPDATE,e) then
                 e.Position=e.Position+Vector(20,0) -- Native AI can outlive freeze.
                 e.attackAttempts=(e.attackAttempts or 0)+1
+            end
+            if roomScenario and not e.loggedContact then
+                e.loggedContact=true
+                dispatch(11,e,13,0,{Entity=dagger},0)
+                e.HitPoints=e.HitPoints-13
             end
         end
         if e.exists and e.Type==5 then dispatch(35,e) end
@@ -259,4 +293,50 @@ assert(OUPBatch.Status().status=="error" and #callbacks==0)
 assert(player.Position.X==320 and player.Position.Y==380 and untouched:Exists())
 OUPBatch.Stop()
 assert(OUPBatch==nil and #callbacks==0)
+-- A native death may leave a child alive on a later update. The driver must
+-- wait for and clear it; these doubles test room orchestration, not cadence.
+Isaac.Explode,Isaac.DebugString=normalExplode,normalDebug
+contactSetup,roomScenario=true,true
+local parent=entity(10,0,0,Vector(320,280));parent.room=86
+roomKillHook=function(npc)
+    if npc==parent then
+        pendingRoomChild=function() entity(10,1,0,Vector(320,280)) end
+    elseif npc.Type==10 then hostileClear=true;relic.RoomClearCount=relic.RoomClearCount+1 end
+end
+dofile("tools/validation/compatibility-batch.lua")
+local firstRoomRecord=#records+1
+OUPBatch.Run({trialsPerVariant=1,mechanics=true,label="native-room-child"})
+for _=1,1100 do tick() end
+local roomResult=OUPBatch.Status()
+assert(roomResult.status=="complete" and roomResult.completed==2,
+    "child left by native kill blocked the remaining fixture")
+assert(roomResult.mechanics.relic.clearCount==1 and hostileClear)
+assert(roomResult.mechanics.relic.clears[1].after.roomClearCount==3)
+assert(currentRoomIndex==84 and player:GetCollectibleNum(98)==0 and #callbacks==0)
+assert(#roomResult.mechanics.orbital[1].events==1,"detailed Status lost event data")
+for i=firstRoomRecord,#records do
+    local record=records[i]
+    if record.kind=="orbital_result" then
+        assert(record.events==nil and record.damageEventCount==1,
+            "phase log duplicated the unbounded native event array")
+    end
+end
+assert(records[#records].mechanics.orbitalSamples==2 and records[#records].mechanics.orbital==nil,
+    "terminal log duplicated detailed mechanics instead of bounded counts")
+OUPBatch.Stop()
+-- A room which remains unresolved must be reported incomplete, preserve its
+-- foreign NPC, and allow unrelated fire sampling and fixture cleanup to finish.
+roomKillHook=nil;hostileClear=false;relic.RoomClearCount=2
+local immortal=entity(10,2,0,Vector(320,280));immortal.room=86
+function immortal:Kill() end
+dofile("tools/validation/compatibility-batch.lua")
+OUPBatch.Run({trialsPerVariant=1,mechanics=true,label="unresolved-room"})
+for _=1,1300 do tick() end
+local unresolved=OUPBatch.Status()
+assert(unresolved.status=="complete" and unresolved.completed==2)
+assert(unresolved.mechanics.relic.status=="native_clears_unresolved" and
+    unresolved.mechanics.relic.clearCount==0 and #unresolved.mechanics.relic.skippedRooms==1)
+assert(immortal:Exists() and currentRoomIndex==84 and #callbacks==0)
+assert(player:GetCollectibleNum(98)==0 and player:GetHearts()==6)
+OUPBatch.Stop();immortal:Remove();contactSetup,roomScenario=false,false
 print("PASS batch accounting/cleanup contracts; NOT native fire probability evidence")
