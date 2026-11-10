@@ -28,11 +28,13 @@ actor context is recorded in the linked ledgers):
   controls. Observed rates are finite samples, not theoretical guarantees.
 
 Subsequent enabled Normal batches recorded a native Relic payout/reset and
-200 fire trials per variant. These are bounded results, not full compatibility
-acceptance. Whole-pack-absent comparisons for Maw, Dark Bum and Bundle remain
-open, alongside the per-feature limits in the current matrix. Historical pending
-cells below must be read alongside the current ledger; a config-Off run is not
-a pack-absent vanilla run. Issue #1 remains open.
+200 fire trials per variant. Acceptance is complete for the representative
+local setups recorded in the current matrix. The isolated feature-Off controls
+for Maw, Dark Bum and Bundle establish their native behavior without claiming
+that the entire pack was absent. Whole-pack-absent repeats and the other
+unexecuted cases remain optional confidence checks, not passes or additional
+requirements of issue #1. Historical pending cells below must be read alongside
+the current ledger and its acceptance assessment.
 
 ## Evidence boundary (2026-11-08)
 
