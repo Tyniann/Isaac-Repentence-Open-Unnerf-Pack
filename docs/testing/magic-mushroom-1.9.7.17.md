@@ -1,8 +1,8 @@
 # Magic Mushroom: validation ledger
 
 Issue [#4](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/4)
-remains open. A helper-backed implementation is now in development; no
-modified-pool engine pass or release is claimed. The required change is one normal Boss entry and an update to the
+remains open. A helper-backed implementation has native weight and controlled
+availability passes below; full acceptance and release remain pending. The required change is one normal Boss entry and an update to the
 existing normal Treasure entry for collectible 12, both at Weight 1,
 DecreaseBy 1 and RemoveOn 0.1. Other entries/pools/effects stay intact. The
 independent persistent toggle is required now that configuration issue #3 has
@@ -481,7 +481,7 @@ log SHA256 `8868facded155aa82863578f8edb19f8ba3dd35ea161fa3be8399502031805d6`,
 record SHA256 `0684d7a5d6f1e59fa888fa1d97524b44246f82c825748390be6cbde96ab65665`.
 No actual Magic Mushroom was granted during these pool checks.
 
-### Full process boundary verified; reload check pending
+### Full process boundary verified; reload assertion failed
 
 After changing only the next-run Magic Mushroom choice to Off and saving,
 the owner fully closed Isaac. Read-only process verification at
@@ -489,8 +489,8 @@ the owner fully closed Isaac. Read-only process verification at
 and the executable hash unchanged. Proof:
 `C:\Users\Mario\.t3\scratch\2026-11-10-act-as-the-test-sub-a4d07916\shutdown-proof.json`.
 
-`tools/validation/pool-reload-check.lua` will Continue this On snapshot and
-require next-run Off, matching metadata and zero owned real/helper copies.
+`tools/validation/pool-reload-check.lua` was run after Continue of this On snapshot. It
+requires next-run Off, matching metadata and zero owned real/helper copies.
 It re-excludes **only non-target IDs**, leaving both 12 and the helper
 untouched. Thus it does not depend on serialization of the diagnostic's other
 bulk exclusions, and cannot itself hide a reappearing original or reset a
@@ -499,7 +499,42 @@ Boss to return 12 from raw helper once, then 668. The early callback captures
 all three identities and is removed on pass/failure. Local contracts cover
 reset-helper, reappearing-original, missing-Boss and ownership-confound failures;
 syntax passes and focused review found zero findings. Native execution after
-reopening the application remains pending.
+reopening the application failed its Boss assertion. **The premise that Boss
+was unspent before saving was not measured. Do not rerun this historical
+recipe or treat that assertion alone as a production failure.**
+
+Stable capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T181438156Z-4ff29c54`,
+log SHA256 `33fa33c1e3de96f10a03fd6fe9ec3c677c8e1be132282f6ad63c1bcbdf1a1a48`,
+records SHA256 `ddc3273c52064f3c55cb88c37186150eafb6bb9af70223ba82c71e9d174c5802`.
+No malformed records. New PID 34156 was created at `2026-11-10T18:08:17Z`,
+after the verified shutdown; old PID 31116 is absent. Executable hash still
+matches, and 41/42 manifest files match with only the previously recorded
+observer metadata-format difference.
+
+State at frame 964 is observed Continue, active/snapshot On and next-run Off,
+seed `2299138499`, MCM 113, helper 733 with matching metadata, zero actual
+real/helper copies. Raw Treasure query (decrease false) returned 668;
+raw Boss query (decrease true) also returned 668. The result is `pass=false`,
+error `previously unspent Boss target unavailable`, with two native repick
+warnings. It passed the spent-Treasure assertion but cannot distinguish loss
+of an unspent entry from depletion before saving without a prior measurement.
+
+The only rule trace in this boot is
+`enabled=true metadata=true excluded=12 removed=false phase=game_started seed=2299138499 frame=709`.
+There is no pre-generation trace or pre-start selection record in this log;
+it provides no evidence that early Continue selected the wrong choice.
+The configured On snapshot itself survived the full process boundary.
+
+`tools/validation/pool-cross-depletion.lua` prepares the next bounded native
+measurement: in a fresh On Normal Isaac run with zero owned copies, exclude
+only non-target IDs, query all five target pools without depletion, draw once
+from Treasure, then query those five again without depletion. Both target
+identities remain untouched by exclusion. It records raw identities and both
+vectors, without assuming Boss or the other pools remain available. Local
+contracts exercise both per-pool and shared-depletion models, missing initial
+availability, and callback cleanup; these are not native evidence. First engine
+execution is pending. The XML/API references do not settle cross-pool mutation.
 
 ### Actual-grant fixture prepared: engine pending
 

@@ -1,3 +1,5 @@
+-- HISTORICAL FAILED RECIPE: do not run again without a measured Boss baseline.
+-- The assumption that Boss was unspent before saving was not established.
 -- Continue the previously tested On run after a verified full process exit.
 -- Re-isolate NON-target identities only. Neither Magic Mushroom identity is
 -- removed, added or reset, so both saved depletion and an unspent entry matter.
