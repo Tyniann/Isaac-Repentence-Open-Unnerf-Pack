@@ -1,0 +1,6 @@
+interface:
+  display_name: "Changelog Rules"
+  short_description: "Record user-visible changes and release history"
+
+policy:
+  allow_implicit_invocation: true

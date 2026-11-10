@@ -1,0 +1,6 @@
+interface:
+  display_name: "Documentation Rules"
+  short_description: "Maintain player and technical documentation"
+
+policy:
+  allow_implicit_invocation: true

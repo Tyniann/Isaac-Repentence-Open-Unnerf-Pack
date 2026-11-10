@@ -44,7 +44,9 @@ behavior, configuration, or instructions it describes.
 
 Existing validation guides and evidence in `docs/testing/`, `docs/research/`,
 and `docs/configuration-validation.md` retain their established paths and are
-linked from the technical index.
+linked from the technical index. Reusable agent workflows are packaged as
+`.agents/skills/<skill-name>/SKILL.md` and linked from that index rather than
+duplicating their instructions in `docs/agents/`.
 
 Use kebab-case filenames matching the feature or workflow name, for example:
 
@@ -169,7 +171,7 @@ completely removed from the mod or replaced by a different implementation.
 1. Delete, update, or replace its page under `docs/features/` or `docs/agents/`.
 2. Update the corresponding index and affected cross-links.
 3. Record user-visible removals under `Removed` in `docs/CHANGELOG.md`, following
-   [changelog rules](changelog-rules.md). Historical validation records remain
+   [changelog rules](../changelog-rules/SKILL.md). Historical validation records remain
    evidence of the versions they describe.
 
 ## 6. Documentation Indexes
@@ -186,7 +188,8 @@ When implementing a feature that requires documentation:
 2. Create or update its user and/or technical documentation using the relevant
    template.
 3. Update the corresponding documentation indexes.
-4. Add the appropriate `docs/CHANGELOG.md` entry under the
-   [changelog rules](changelog-rules.md); development-only changes are excluded.
+4. Apply the [changelog-rules skill](../changelog-rules/SKILL.md) and add a
+   `docs/CHANGELOG.md` entry when the change qualifies; development-only changes
+   are excluded.
 5. Keep implementation and documentation in the same change set; create branches
    or commits only when explicitly requested.

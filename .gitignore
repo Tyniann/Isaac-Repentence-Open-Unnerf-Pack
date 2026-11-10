@@ -1,1 +1,4 @@
-/.agents/skills/
+# Keep the local skill catalog ignored except for shared documentation workflows.
+/.agents/skills/*
+!/.agents/skills/documentation-rules/
+!/.agents/skills/changelog-rules/

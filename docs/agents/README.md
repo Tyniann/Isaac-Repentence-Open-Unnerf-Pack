@@ -2,7 +2,8 @@
 
 Start here for tools, development workflows, validation procedures, and project
 rules. New technical guides belong in this directory. Existing validation guides
-and evidence are linked below at their current paths.
+and evidence are linked below at their current paths. Reusable agent workflows
+live under `.agents/skills/`; the links below lead to their authoritative files.
 
 For player-facing behavior and configuration, see the [feature
 reference](../features/README.md). For installation and the project overview,
@@ -16,8 +17,9 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 - [GitHub issue workflow](issue-tracker.md)
 - [Triage labels](triage-labels.md)
 - [Domain documentation](domain.md)
-- [Changelog rules](changelog-rules.md)
-- [Documentation rules](documentation-rules.md): creation/update/removal triggers,
+- [Changelog rules skill](../../.agents/skills/changelog-rules/SKILL.md): entry
+  eligibility, formatting, and release history.
+- [Documentation rules skill](../../.agents/skills/documentation-rules/SKILL.md): creation/update/removal triggers,
   templates, and indexes for player and technical documentation.
 
 ## Tools and validation
