@@ -4,7 +4,7 @@ local json = require("json")
 
 local function run(enabled, fault)
     local target, callback, removed, records = enabled and 733 or 12, nil, {}, {}
-    local queries, weights, spent = 0, 0, false
+    local queries, weights, highSeeds, spent = 0, 0, 0, false
     OUPPoolProbe = {State = function(label)
         return {label = label, enabled = enabled, helper = 733, continued = false,
             helperQuality = 4, realQuality = 4, helperTags = 17826048,
@@ -22,7 +22,7 @@ local function run(enabled, fault)
     local pool = {RemoveCollectible = function(_, id) removed[id] = true end}
     function pool:GetCollectible(_, decrease, seed, fallback)
         queries = queries + 1
-        assert(seed > 0 and seed < 2147483648 and fallback == 668)
+        assert(seed > 0 and seed <= 4294967295 and fallback == 668)
         local selected
         if fault == "unexpected" then selected = 668
         elseif removed[4] then
@@ -31,7 +31,9 @@ local function run(enabled, fault)
         else
             assert(not decrease, "weight sampling must not consume entries")
             weights = weights + 1
-            selected = weights % (enabled and 2 or 3) == 0 and target or 4
+            if seed >= 2147483648 then highSeeds = highSeeds + 1 end
+            selected = fault == "wrong_rate" and target
+                or (weights % (enabled and 2 or 3) == 0 and target or 4)
         end
         if callback then callback(nil, selected, 0, decrease, seed) end
         return selected == 733 and 12 or selected
@@ -56,6 +58,10 @@ local function run(enabled, fault)
     assert(callback == nil, "diagnostic callback must be removed on pass and failure")
     if fault == "metadata" then
         assert(not ok and next(removed) == nil and queries == 0)
+    elseif fault == "wrong_rate" then
+        assert(not ok and queries == 4096 and not removed[4])
+        assert(records[#records].pass == false and records[#records].targetCount == 4096)
+        assert(tostring(message):find("relative weighting differs", 1, true))
     elseif fault then
         assert(not ok and queries == 1 and records[#records].pass == false, tostring(message))
     else
@@ -65,6 +71,7 @@ local function run(enabled, fault)
         assert(result.output == 12 and result.samples == 4096)
         assert(result.nativeIdentity == target and result.nativeOther == 0)
         assert(result.nativeTarget == result.targetCount)
+        assert(highSeeds == 2048, "sample both halves of the native 32-bit seed domain")
         assert(queries == 4098 and removed[4] and not removed[target])
         assert(removed[enabled and 12 or 733], "only the selected identity remains")
     end
@@ -74,4 +81,5 @@ run(false)
 run(true)
 run(false, "metadata")
 run(true, "unexpected")
+run(false, "wrong_rate")
 print("treasure weight fixture contracts passed (native weighting remains separate)")

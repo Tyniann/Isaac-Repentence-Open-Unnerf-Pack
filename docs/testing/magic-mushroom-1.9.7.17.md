@@ -303,7 +303,7 @@ changes the ID filters. Result SHA256:
 
 `tools/validation/treasure-weight-probe.lua` leaves only that Weight-1 reference
 and the active Magic Mushroom identity. It makes 4,096 nondecreasing queries
-with fixed positive 31-bit seeds. Its bounded rate assertion expects 1:1 On
+with fixed seeds paired across both halves of the 32-bit domain. Its bounded rate assertion expects 1:1 On
 or 0.5:1 Off, with a three-percentage-point window. An early callback counts
 native identities before translation, rejecting unexpected identities. It
 then removes the reference and expects exactly one Magic Mushroom draw followed
@@ -317,6 +317,30 @@ cleanup after query failure; Lua syntax passes. Focused review found zero
 findings. No native result is claimed yet. The fixture stages outside the
 game directory and neither installs content nor starts a run. The owner opted
 to keep manual fresh runs, so no restart automation is added.
+
+The first native Off weight run **fails** the original lower-half-only fixture.
+Its stable capture is
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T135036474Z-48fb10a0`:
+log SHA256 `d8d39e790ac34772bb05dfa082747af8a68cd2377f7bc388a4d70bd15da88a7f`,
+record SHA256 `1c342cc7b28db6d09b893ad0ec7a5ae7c66c638670be1c0544605d60f5a62f55`,
+capture SHA256 `36264f85e710d5cabed24eed34396a13fb7d0f0991a04e9f767634ad5cd4854e`.
+It is an observed fresh Normal run: a frame-zero game-start event follows the
+previous Off Boss result, then the weight state appears at frame 46. No run
+reuse is inferred. Native and returned counts agree: 2,781 Magic Mushroom / 1,315
+Cricket's Head, no unexpected identities, rate 0.678955078125 versus expected
+one third. The assertion stops before removing the reference or consuming
+either remaining identity. The diagnostic callback is removed on this path.
+
+The original test covered only the lower half of the 32-bit seed domain. The
+corrected fixture pairs 2,048 lower-half seeds with upper-half counterparts and
+records each half's counts separately. Expectation, sample count and tolerance
+are unchanged. Local coverage now rejects incomplete seed-domain sampling and
+verifies that a rate failure stops before depletion. Whether seed-domain bias
+explains the native failure is **unverified** until the next native check. No
+production code was changed. The immediate bounded diagnostic may reuse the
+already isolated two-entry state because the failed check consumed neither;
+ordinary subsequent pool checks still require fresh runs. A new label suffix
+`_U32` separates the next records from the original failed evidence.
 
 ### Historical environment and native API research
 

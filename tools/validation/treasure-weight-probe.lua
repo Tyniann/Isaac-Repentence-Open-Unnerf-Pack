@@ -6,7 +6,7 @@
 local json = require("json")
 assert(OUPPoolProbe, "load the maintained pool observer first")
 local enabled = openUnnerfPack.Config.IsEnabled("magicMushroom")
-local label = enabled and "MM_ON_TREASURE_WEIGHT" or "MM_OFF_TREASURE_WEIGHT"
+local label = enabled and "MM_ON_TREASURE_WEIGHT_U32" or "MM_OFF_TREASURE_WEIGHT_U32"
 local state = OUPPoolProbe.State(label)
 local game, reference, samples = Game(), 4, 4096
 local fallback = CollectibleType.COLLECTIBLE_DADS_NOTE
@@ -54,23 +54,35 @@ local function nativePick(_, selected, selectedPool, decrease, seed)
 end
 mod:AddPriorityCallback(ModCallbacks.MC_POST_GET_COLLECTIBLE, CallbackPriority.EARLY, nativePick)
 local targetCount, referenceCount, output, after = 0, 0, nil, nil
+local lowerTarget, lowerReference, upperTarget, upperReference = 0, 0, 0, 0
 local expectedRate = enabled and 0.5 or 1 / 3
 local tolerance = 0.03
 local ok, failure = pcall(function()
-    for index = 1, samples do
-        -- Fixed, widely spaced positive 31-bit seeds; exact integer arithmetic
-        -- in Lua 5.3/5.4. This is a deterministic fixture, not random loot play.
-        local seed = (index * 2654435761) % 2147483647 + 1
-        local selected = pool:GetCollectible(ItemPoolType.POOL_TREASURE, false, seed, fallback)
-        assert(selected == 12 or selected == reference, "unexpected item; preserve log and stop")
-        if selected == 12 then targetCount = targetCount + 1 else referenceCount = referenceCount + 1 end
+    for index = 1, samples / 2 do
+        -- Pair each fixed lower-half seed with its upper-half counterpart.
+        -- Sampling only positive signed-32-bit seeds leaves half the native
+        -- seed domain untested. Zero is excluded because it requests a seed.
+        local base = (index * 2654435761) % 2147483647 + 1
+        for _, seed in ipairs({base, base + 2147483648}) do
+            local selected = pool:GetCollectible(ItemPoolType.POOL_TREASURE, false, seed, fallback)
+            assert(selected == 12 or selected == reference, "unexpected item; preserve log and stop")
+            if selected == 12 then
+                targetCount = targetCount + 1
+                if seed < 2147483648 then lowerTarget = lowerTarget + 1 else upperTarget = upperTarget + 1 end
+            else
+                referenceCount = referenceCount + 1
+                if seed < 2147483648 then lowerReference = lowerReference + 1 else upperReference = upperReference + 1 end
+            end
+        end
     end
     local observedRate = targetCount / samples
     record("weight_sample", {samples = samples, reference = reference, nativeIdentity = target,
         targetCount = targetCount, referenceCount = referenceCount,
         expectedRate = expectedRate, observedRate = observedRate, tolerance = tolerance,
         declaredTargetWeight = enabled and 1 or 0.5, referenceWeight = 1,
-        nativeTarget = nativeTarget, nativeReference = nativeReference, nativeOther = nativeOther})
+        nativeTarget = nativeTarget, nativeReference = nativeReference, nativeOther = nativeOther,
+        seedDomain = "paired_uint32_halves", lowerTarget = lowerTarget, lowerReference = lowerReference,
+        upperTarget = upperTarget, upperReference = upperReference})
     assert(nativeOther == 0 and nativeTarget == targetCount and nativeReference == referenceCount,
         "native identities do not match the two-entry fixture")
     assert(math.abs(observedRate - expectedRate) <= tolerance,
@@ -85,7 +97,9 @@ mod:RemoveCallback(ModCallbacks.MC_POST_GET_COLLECTIBLE, nativePick)
 record("weight_result", {pass = ok, error = failure, samples = samples, targetCount = targetCount,
     referenceCount = referenceCount, expectedRate = expectedRate, tolerance = tolerance,
     nativeIdentity = target, nativeTarget = nativeTarget, nativeOther = nativeOther,
-    output = output, after = after, fallback = fallback})
+    output = output, after = after, fallback = fallback, seedDomain = "paired_uint32_halves",
+    lowerTarget = lowerTarget, lowerReference = lowerReference,
+    upperTarget = upperTarget, upperReference = upperReference})
 assert(ok, failure)
 print("MM_WEIGHT_PASS", enabled and "On" or "Off", targetCount, referenceCount, output, after)
 -- All other entries were removed. Use a fresh run before any next pool check.
