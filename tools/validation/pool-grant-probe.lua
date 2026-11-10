@@ -1,6 +1,8 @@
 -- Explicit disposable-run grants. No saves/settings, pool edits or restarts.
 -- Loading starts one actual helper-copy pilot. Close the console to advance;
 -- Status reports completion. A later Start can test two copies plus a modifier.
+-- Removing a forced item-wisp entity can retain its virtual item count. Report
+-- conversion and cleanup separately; discard that disposable run if retained.
 assert(OUPPoolGrantProbe == nil, "grant probe loaded; use Start or Status")
 assert(OUPPoolProbe, "load the maintained pool observer first")
 assert(CallbackPriority and type(CallbackPriority.LATE) == "number" and CallbackPriority.LATE > 0,
@@ -29,11 +31,17 @@ local function finish(ok, failure)
     mod:RemoveCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, tick)
     if a.wisp and a.wisp:Exists() then a.wisp:Remove() end -- Only this fixture's entity.
     local final = counts(a)
-    final.pass, final.error = ok, failure
+    final.conversionVerified = a.conversionVerified == true
+    final.cleanupComplete = not final.actorMissing and final.helperFull == 0
+    final.discardRunRequired = not final.cleanupComplete
+    local ownedIntact = final.realTrue == a.expected and final.helperTrue == 0
+    final.pass = ok and final.cleanupComplete and ownedIntact
+    final.error = failure or (not final.cleanupComplete and "fixture modifier retained; discard disposable run" or nil)
+        or (not ownedIntact and "fixture cleanup changed owned counts" or nil)
     final.beforeReal, final.copies, final.expectedReal = a.beforeReal, a.copies, a.expected
     final.withModifier, final.helper = a.withModifier, a.helper
     record(a, "grant_result", final)
-    result = {label = a.label, pass = ok, counts = final}
+    result = {label = a.label, pass = final.pass, counts = final}
 end
 local function addCopies(a)
     for _ = 1, a.copies do a.player:AddCollectible(a.helper) end
@@ -77,15 +85,10 @@ tick = function(_, player)
                 if a.stable >= 2 then
                     assert(state.helperFull == (a.withModifier and 1 or 0), "temporary modifier count changed")
                     record(a, "converted", state)
-                    if a.withModifier then
-                        a.wisp:Remove()
-                        a.phase = "cleanup"
-                    else finish(true) end
+                    a.conversionVerified = true
+                    finish(true)
                 end
             else a.stable = 0 end
-        elseif a.phase == "cleanup" and state.helperFull == 0 then
-            assert(state.realTrue == a.expected and state.helperTrue == 0, "modifier cleanup changed owned counts")
-            finish(true)
         end
     end)
     if not ok and active then finish(false, failure) end
@@ -128,7 +131,11 @@ end
 function probe.Status()
     if active then print("MM_GRANT_PENDING", active.label)
     elseif result then
-        print(result.pass and "MM_GRANT_PASS" or "MM_GRANT_FAIL", result.label,
+        local status = result.pass and "MM_GRANT_PASS" or "MM_GRANT_FAIL"
+        if result.counts.conversionVerified and result.counts.discardRunRequired then
+            status = "MM_CONVERSION_PASS_DISCARD_RUN"
+        end
+        print(status, result.label,
             result.counts.realTrue, result.counts.helperTrue, result.counts.helperFull)
     else print("MM_GRANT_IDLE") end
 end

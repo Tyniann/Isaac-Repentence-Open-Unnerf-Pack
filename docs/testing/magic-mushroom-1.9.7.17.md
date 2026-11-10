@@ -8,6 +8,15 @@ DecreaseBy 1 and RemoveOn 0.1. Other entries/pools/effects stay intact. The
 independent persistent toggle is required now that configuration issue #3 has
 landed, including its next-new-run and Continue semantics.
 
+Current evidence: native intact-pool Treasure rates pass On/Off, Boss and
+Treasure availability/depletion pass, all five helper pools survive an anchored
+full-process Continue, and the saved On snapshot stays independent of next-run
+Off. Actual grants convert one and two owned helper copies correctly while a
+forced helper wisp remains a modifier. The forced-wisp fixture's cleanup fails;
+that failure is preserved separately below. Final review and disposal/removal
+of the diagnostic session remain pending. Early starting-item generation and
+separate Greed/Ultra Secret exhaustion recipes have not been engine-tested.
+
 ## Owner-approved helper implementation
 
 The owner explicitly approved helper-backed behavior if exact weighting,
@@ -601,8 +610,48 @@ Anchor evidence:
 records SHA256 `e2b23b494663eb34984024c867f1f0bec02913a9c914d89108fa748b7f81fac8`.
 The raw log is preserved alongside the records. Pre-shutdown process anchor
 is PID 34156, creation `2026-11-10T18:08:17Z`, at the tested executable path.
-The owner has not yet changed the next-run choice, saved or exited for this
-new anchor. The actual cold Verify phase is still pending.
+At that capture the owner had not yet changed the next-run choice, saved or
+exited for this new anchor. The completed cold Verify phase follows.
+
+### Anchored full-process Continue passes
+
+The owner changed only the next-run Magic Mushroom choice to Off, saved and
+fully exited. At `2026-11-10T19:29:18.0122873Z`, read-only verification found
+no Isaac process and old PID 34156 absent, with the executable SHA unchanged.
+Proof: `C:\Users\Mario\.t3\scratch\2026-11-10-act-as-the-test-sub-ea8edbcb\shutdown-proof.json`,
+SHA256 `6b2b4294b2614e32e43e2572a66b2df54154ea14759396ae0a1d7931d977c35d`.
+Its additional archive check used a wrong filename filter; a subsequent direct
+literal-path check confirms the anchor records hash above and log SHA256
+`03b095628b6cc32b33928c0a80b014a46ceae97e831b142f463d55d41512240d`.
+No anchor was altered or game test replayed for that collection error.
+
+After reopening the same installation/slot and choosing Continue, the owner
+reports `MM_UNSPENT_RELOAD_PASS 11 2299138499`. The stable two-record capture
+confirms `pass=true`, frame 472, observed Continue, seed `2299138499`, zero
+owned real/helper copies and untouched target identities. The five initial
+queries again select raw helper 733 and return 12. One Boss draw selects 733
+and returns 12, then all five queries return raw/translated fallback 668.
+The original/helper identity does not yield an extra copy after that draw.
+Snapshot/active Magic Mushroom remains On; next-run choice is Off; all seven
+other active and selected settings stay On. MCM 113 and metadata match.
+
+New process PID 32068 was created at `2026-11-10T19:34:33.9717510Z`, after
+verified shutdown, at `D:\The.Binding.of.Isaac.Repentance.v4.0.2\isaac-ng.exe`.
+Its SHA256 matches `e5faf6f513c6de9cc9ff1c335ef9c541e2b33fc623aa3b8ffbd2e6a6c0027bb0`.
+Game start is observed Continue at frame 449; the rule trace excludes 12 with
+active On (`removed=false`, already excluded), without adding/resetting rows.
+There are no captured Lua errors. The first process-path lookup failed before
+capture; a separate read-only collector preserved the log before broad lookup
+successfully found the process. No replay or game mutation was needed.
+
+Evidence:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T193844414Z-928a5417`,
+log SHA256 `313b1d6c72e65ee5a3b1ca3582c6d3d995859169adc78ab5350b057e45148f66`,
+records SHA256 `f0ec51bc4f2f6545c6e93fd04d034761862f6e456fcda98fcd8d6e86784de044`,
+zero malformed payloads. Main-agent inspection of the raw JSON corroborates
+the eleven native picks. The capture's first manifest sidecar checked zero
+files because its path handling stripped a prefix; this does not establish
+drift and must not be reported as a successful deployment comparison.
 
 ### Actual-grant fixture prepared: engine pending
 
@@ -630,6 +679,93 @@ health gains or restore saves.
 **Run these grants after depletion/reload checks.** Holding an actual Magic
 Mushroom intentionally excludes the helper globally; a fallback while holding
 it would not independently prove saved pool depletion persisted across restart.
+
+### Native one-copy grant passes
+
+In the same continued On run after the reload check, the owner ran the staged
+source `0030a04273d3895bc14bed23ce8ab7b998cd0251` grant pilot (SHA256
+`aedbbce67b1b97df6f85ae05af9ee599908b600727dfebaab03b12c908e0b307`).
+`MM_GRANT_ONE` **passes**. At frame 472, before counts are real 0/helper 0,
+damage 3.5, speed 1, max/current hearts 6/6. The explicit grant immediately
+produces helper true/full 1/1 while real stays 0. At frame 474, after two stable
+frames, real true/full is 1/1 and helper true/full 0/0. Damage is
+6.1224994659424, speed 1.2999999523163, max/current hearts 8/8. The passing
+result records copies 1, beforeReal 0, expectedReal 1, withModifier false.
+These are actual native inventory/effect observations, not stub results.
+The eight run settings stay On; only the next-run Magic Mushroom choice is Off.
+
+Stable five-record capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T202345926Z-e8e06ba2`,
+log SHA256 `3fcf84e183d0e37f87e76edac8088925c3ea0af8b98b5b938b4c6c87384a14f4`,
+records SHA256 `3c8a360f5d16ce4f162232a2052c0a80e721fd9d96651da6a9ba1294e150c2ca`,
+zero malformed records. Main-agent inspection corroborates the raw sequence.
+The two-copy/temporary-modifier follow-up is still pending.
+
+The corrected literal-relative-path deployment check now verifies all 42
+manifest entries: 41 match by SHA256 and length, including all runtime Lua and
+content. Only the already documented observer metadata-format difference
+remains. The earlier zero-file sidecar is retained as a failed verifier result.
+Corrected evidence:
+`D:\T3ValidationArchives\issue4-install-0bbc5d5-20261110T113633080Z\capture-corrected-deployment-20261110T202445211Z-54ecc26e\corrected-deployment-provenance.json`,
+SHA256 `811c32d325a3453b8a97bb1bb41169b0b4f528fd14edff54cf77946c6c9a3f6e`.
+The old artifacts and installation were not modified.
+
+A corrected warning scan of the entire preserved cold-reload log finds one
+startup SteamCloud/options warning and ten native repick warnings, with no Lua
+errors. The earlier summary's zero-warning claim used a pattern that missed
+literal `[warn]`. This correction does not relabel the availability results as
+weight-rate evidence; rates were measured separately against intact pools.
+
+### Two-copy conversion verified; forced-wisp cleanup fails
+
+The owner then ran `MM_GRANT_MODIFIER` in the same run. The native sequence
+distinguishes production conversion from the fixture's cleanup:
+
+- Frame 550: real true/full 1/1, helper true/full 0/0.
+- Frame 551 modifier control: real stays 1/1, helper true/full is 0/1, wisp
+  subtype 733. The temporary helper does not become a permanent item.
+- Frame 551 after two explicit actual helper grants: real stays 1/1, helper
+  true/full is 2/3.
+- Frame 553 after two stable conversion frames: real true/full 3/3, helper
+  true/full 0/1. The two actual helpers converted once each while retaining
+  the modifier. Damage 7.5716571807861, speed 1.9000000953674, hearts 14/14.
+- The fixture called `wisp:Remove()`, then waited for full helper count zero.
+  It stayed 1 until frame 671. The original `grant_result` is **pass=false**,
+  error `grant fixture timed out; preserve evidence`, real 3/helper true 0/
+  helper full 1. No Lua error or native warning occurs within this case.
+
+Thus the recorded production conversion assertions pass, but the original
+overall fixture does not. Do not relabel it a clean pass. This forced-private-
+wisp check does not claim natural Lemegeton selection coverage.
+
+Stable six-record capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T212538418Z-a9989052`,
+log SHA256 `22d04cc2ed5ec0360962a7aa9bd463da3be4bf1f707920b64949574eb1bb8f90`,
+records SHA256 `35b458d2f8a279b25702528095ff13524a4bbc9efa610d74fd848b356249d063`.
+The one-call targeted native helper removal also fails to clear that virtual
+count: `MM_MODIFIER_CLEANUP` records real 3/helper full 1, without granting
+anything. Its stable one-record capture is
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T213902903Z-71336fc7`,
+log SHA256 `e092dad76e8e1ec43d7fbd65f0d65e2132e0ff83fa4911af42abc2853703eef6`,
+records SHA256 `cea2638fa8c1f8d453a2e1850df45ffb98ff300bb0e048a18e804885f2a4d56a`.
+Both captures have zero malformed records. No further guessed cleanup calls or
+grant replay is requested. The disposable run must be discarded before play.
+
+The driver now records `conversionVerified`, `cleanupComplete` and
+`discardRunRequired` separately. It stops after verified conversion instead of
+waiting 120 frames for an entity removal to clear virtual inventory. A retained
+modifier still makes overall `pass=false`; Status explicitly reports
+`MM_CONVERSION_PASS_DISCARD_RUN`. A local red/green contract retains the virtual
+count after entity removal and verifies bounded callback removal plus honest
+verdicts. This revised driver has local verification only; the historical
+native failure above remains unchanged. Production pool/conversion code is
+unchanged from the validated runtime.
+
+The native [player removal API](https://wofsauge.github.io/IsaacDocs/rep/EntityPlayer.html#removecollectible)
+defaults to removing the transformation contribution and documents modifier
+handling; it does not promise this forced-wisp cleanup. The separately named
+[TemporaryEffects API](https://wofsauge.github.io/IsaacDocs/rep/TemporaryEffects.html)
+is not a general fake-inventory cleanup contract. No extension was added.
 
 ### Historical environment and native API research
 
@@ -726,12 +862,26 @@ was installed during this research.
 
 ## Remaining acceptance
 
-Preserve the exact acceptance criteria while resolving the implementation path.
-Still required: effective Boss/Treasure definition evidence, unchanged unrelated
-definitions, once-only application across Continue/reload, and independent
-toggle-off restoration under the established configuration semantics. The
-historical archive inspection is vanilla baseline evidence only. Do not infer
-modded pool behavior from it or request random loot rolls as absence tests.
+The numerical and preservation requirements remain unchanged. Exact helper
+assets/metadata and deployment hashes combine with native rate, availability,
+depletion and anchored cold-Continue evidence above. The same-content On/Off
+31-pool comparison supports preservation; the older cross-build comparison
+remains failed and unexplained, not a pass or a promise of unchanged seed
+mapping after adding custom content. No source mutation touches unrelated
+entries, and the three Greed/Ultra Secret helper definitions exactly mirror
+the checksum-verified originals. Native checks observe those five identities
+before/after depletion and Continue. Separate Greed/Ultra Secret exhaustion
+recipes remain unexecuted; no per-pool independence is assumed after the
+cross-pool measurement.
+
+Final source/spec and standards review, the final local suite, and diagnostic
+session cleanup remain outstanding. Feature-reference files remain with their
+owner; supply the actual loader, eighth default-On key and final evidence for
+that handoff. Do not close the issue or claim release before assessment and
+cleanup. No early starting-item, co-op or every-item-reroll matrix is claimed
+from the Normal Isaac checks. The owner explicitly requested a reasonable
+manual-test budget; retain valid evidence and limit additional checks to a
+specific unresolved acceptance condition.
 
 Use the [shared validation guide](../agents/game-validation.md) for future
 owner interaction and evidence collection. No production deployment, restart,

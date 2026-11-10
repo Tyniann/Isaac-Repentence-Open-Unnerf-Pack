@@ -1,5 +1,5 @@
 <items gfxroot="gfx/items/collectibles/" version="1">
-    <!-- Native rolls are mapped to collectible 12 before the item is granted.
-         The helper itself grants no stats, health or transformation effects. -->
+    <!-- Native rolls map to collectible 12 before granting it. The helper has
+         matching selection tags but no direct stat or health bonuses. -->
     <passive name="OUP Magic Mushroom Pool Entry" description="" gfx="Collectibles_012_MagicMushroom.png" quality="4" tags="summonable mushroom offensive" />
 </items>

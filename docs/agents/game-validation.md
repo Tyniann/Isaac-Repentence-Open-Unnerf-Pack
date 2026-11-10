@@ -130,6 +130,14 @@ five pools, invalidating a checker's assumption that Boss remained unspent.
 Record both pre-save availability and post-Continue availability for the same
 seed/build/slot; keep spent-entry persistence as a separate observation.
 
+Keep conversion and fixture cleanup verdicts separate. In #4, actual helper
+copies converted correctly while a forced item-wisp stayed a modifier, but
+removing that fixture's entity retained its virtual-item count. A subsequent
+native item-removal call did not clear it either. Preserve both failed cleanup
+results; do not repeat grants or try guessed cleanup APIs. Discard the
+disposable run before ordinary play. Removing an entity alone is not evidence
+that a virtual collectible was released.
+
 Stop owned diagnostics, confirm their exact cleanup, and retain errors rather
 than silently retrying. Some fixtures cannot roll back cleared rooms or terrain.
 The base observer's Stop disables logging but leaves callbacks registered until

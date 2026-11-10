@@ -26,7 +26,10 @@ local function setup(fault)
         assert(id == 733); modifier = 1
         wisp = {SubType = id, alive = true}
         function wisp:Exists() return self.alive end
-        function wisp:Remove() assert(self.alive); self.alive = false; modifier = 0 end
+        function wisp:Remove()
+            assert(self.alive); self.alive = false
+            if fault ~= "retained_modifier" then modifier = 0 end
+        end
         return wisp
     end
     local game = {Difficulty = 0, GetNumPlayers = function() return 1 end,
@@ -56,8 +59,12 @@ local function setup(fault)
     OUPPoolGrantProbe.Start(2, true, "MODIFIER")
     for _ = 1, 8 do tick(true) end
     local result = records[#records]
-    assert(not callback and real == 3 and helper == 0 and modifier == 0)
-    assert(result.kind == "grant_result" and result.pass and result.beforeReal == 1 and result.expectedReal == 3)
+    assert(not callback and real == 3 and helper == 0)
+    assert(result.kind == "grant_result" and result.beforeReal == 1 and result.expectedReal == 3)
+    if fault == "retained_modifier" then
+        assert(modifier == 1 and not result.pass and result.conversionVerified
+            and not result.cleanupComplete and result.discardRunRequired)
+    else assert(modifier == 0 and result.pass) end
     local sawControl = false
     for _, record in ipairs(records) do
         if record.kind == "modifier_control" then
@@ -70,4 +77,5 @@ end
 setup()
 setup("timeout")
 setup("missing_actor")
+setup("retained_modifier")
 print("grant fixture safety contracts passed (native grants remain separate)")
