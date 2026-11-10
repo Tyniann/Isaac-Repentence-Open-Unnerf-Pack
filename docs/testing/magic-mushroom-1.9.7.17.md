@@ -178,6 +178,45 @@ main SHA256 is
 The copied metadata is at
 `C:\Users\Mario\.t3\scratch\2026-11-10-act-as-the-research-sub-e5bb9e30\evidence-issue4-metadata-20261110\observer-metadata.xml`.
 
+### Enabled profile: capture passes, cross-build comparison fails
+
+The owner ran `OUPPoolProbe.Fingerprint("MM_ON_PROFILE")` in the same fresh
+run. The stable capture is
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T122248441Z-1884202c`.
+It contains 31 `full` and 31 `without_magic` profiles with 64 outputs each,
+one state, one successful completion and zero malformed records. Seed
+`2299138499` / `SVW0 6RZE`, frame 18, difficulty 0 and observed fresh status
+match the state smoke. The probe span has no Lua errors. The log is 45,124
+bytes with identical before/after SHA256
+`b09cded0b2023318cf806af3e453848f511a4070910715a231bdf293e31682f5`;
+selected-record SHA256 is
+`e14c5689244e4488137fcb6f773af7858c63a6ac424bbcfd9eda238dc5f1b7e8`.
+
+The pinned comparer (`fd539a4ba70a3a35f46bb0ed3d7b64458cfb14d982c11162e1fa06153d1d6493`)
+reports **FAIL** for baseline versus enabled `without_magic`: all 31 pools
+differ. The baseline hash, run seeds, pool sets and unique successful
+completions were verified. PowerShell initially stopped at the first Python
+stderr line, losing the useful error text. A locally verified subprocess
+capture recipe recovered exit code 1 and the complete `ValueError` from the
+same preserved files; no game test was replayed. That diagnostic is retained at
+`C:\Users\Mario\.t3\scratch\2026-11-10-act-as-the-test-sub-79ffd3db\diagnostic-68d6bd2fbc7f484b92a75018ffc6d1c5\comparison-diagnostic.json`.
+
+Offline phase comparisons provide a narrower observation: baseline `full`
+versus `without_magic` differs only in `POOL_24` (2/64 samples), while the
+enabled capture differs only in `POOL_TREASURE` (2/64) and `POOL_24` (3/64).
+The other 30 baseline pools and 29 enabled pools match within their respective
+captures. This does not explain the cross-build mismatch or establish exact
+weights. Adding content may change seeded initialization, but that cause is
+**unverified**. The baseline also lacked an observed game-start callback.
+
+Preservation remains **unverified**. The next comparison will hold installed
+content and instrumentation fixed, change only the Magic Mushroom toggle on
+fresh same-seed runs, and compare target-excluded profiles. Keep the original
+failed comparison as evidence; do not relabel it a pass. Off must still retain
+the native original definitions, and controlled native depletion/grant and
+Continue checks remain required. The owner has been asked for the independent
+fresh-run Boss depletion check; no result is claimed here.
+
 ### Historical environment and native API research
 
 The issue worktree started clean at then-current default SHA
