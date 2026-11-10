@@ -1,4 +1,4 @@
-# Magic Mushroom: native API prerequisite
+# Magic Mushroom: validation ledger
 
 Issue [#4](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/4)
 remains open. A helper-backed implementation is now in development; no
@@ -43,8 +43,8 @@ run to a single identity and checks bounded depletion against an explicit
 fallback. It must not be used in a valuable run. It permits one destructive
 pool check per fresh run; its Continue query does not isolate or reset pools.
 Its early native-pick trace also records selections before game-start settings
-are chosen. No engine check has run yet, including the collection exclusion
-and early-generation paths.
+are chosen. The baseline and installation/loading smoke are captured below;
+collection-exclusion acceptance and early-generation timing remain unverified.
 
 Starting-item generation is handled in MC_PRE_GET_COLLECTIBLE, before native
 selection, not only at game start. The configuration preview reloads the selected
@@ -119,33 +119,84 @@ Executable hash remains `e5faf6f513c6de9cc9ff1c335ef9c541e2b33fc623aa3b8ffbd2e6a
 Legacy deployed main/config hashes are respectively
 `caedfc800e679e5b094bcdf38fd4380a7a3a859f7b9891ea9d6eb3e73ba4a530` and
 `a6c2443f863914c140134b663259d226e91dbd1e118789851f240c3ed3c811d5`.
-PID 26076 was left running during collection. The owner is now asked to close
-the game for the reversible update. StageOnly verified 42 payload files for
-runtime source `0bbc5d5`, preserving installed pack/MCM hashes; no feature
-deployment or feature engine pass has yet occurred.
+PID 26076 was left running during that baseline collection. This historical
+state predates the backed-up installation and fresh-state smoke recorded below.
 
 ## Current evidence, 2026-11-10
 
-- The issue worktree started clean at current default SHA
-  `3be8e611c96cb6a48d0d5b8c64f38b06a4ea0829`, including the integrated #1/#3
-  validation evidence. The root checkout's older HEAD was not used.
-- Read-only inspection of Mafia-Server's deployed
-  `mods/open_unnerf_pack_validation` found the seven existing configuration
-  choices and no Magic Mushroom module. The seven runtime entrypoint hashes
-  matched the current repository's corresponding files; this is not a full
-  deployment inventory or proof of which mods a running game loaded.
-- Executable SHA256:
-  `e5faf6f513c6de9cc9ff1c335ef9c541e2b33fc623aa3b8ffbd2e6a6c0027bb0`.
-  A new read-only byte scan found `1.9.7.17.J460`. Blank Windows version fields
-  do not contradict that build evidence. Build identification is separate from
-  the console capability observation below.
-- The owner confirmed MCM is active, supplied the console screenshot below,
-  and explicitly assigned the disposable shared test session to issue #4.
-  No specific MCM version is inferred from that statement.
+### Installation and fresh-state smoke
+
+The owner closed the game before the maintained installation driver ran. Session
+`D:\T3ValidationArchives\issue4-install-0bbc5d5-20261110T113633080Z` retains the
+backup subdirectory. Runtime source `0bbc5d5d690b3434bdaec3c057edd01b1c885dc0`
+installed 42 files matching the manifest before launch; the driver recorded
+`gameStarted=false`. Independent verification found the MCM, userData and
+`GameRoot/data` state unchanged; the original pack was archived, userData and
+game-data backups match their before-state, the executable is unchanged, and
+the game was closed at that verification. The inventory counted 22 MCM, 180 userData, 5 game-data and
+14 archived-pack files. No save was restored, and the historical baseline
+archive remains untouched.
+
+The stable fresh capture is
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T120500547Z-16bf55d4`.
+It contains label `MM_ON_FRESH`, one state, zero malformed records and zero
+completion records. The log is 17,389 bytes, has mtime
+`2026-11-10T12:02:05.3168015Z`, and has identical before/after SHA256
+`11b733b2bd9b4062e55c9325de05d1ec891c4d552b14d0f6436bb8d32cba25de`.
+The selected record SHA256 is
+`287b87a81acedd9e98d92fb70ca0715fed1189f43b6605a065d6db16b8b55db2`; capture
+metadata SHA256 is
+`7351cbffaefc415592234287300fb54ff334f2460a2226fee23a2f5f678c9d05`.
+
+The owner started a Normal Isaac run; the observed state had seed `SVW0 6RZE` / numeric
+`2299138499`, difficulty 0, frame 18, `continued=false`, feature
+`enabled=true`, helper ID 733, and helper quality 4/type 1/tags 17826048/
+hidden false. The real item was quality 4/type 1/tags 17826048/hidden false;
+MCM was 113. All eight selected and current-run choices were On, including
+Magic Mushroom. The trace records exactly
+`OUP_POOL_RULE magicMushroom enabled=true metadata=true excluded=12 removed=true phase=game_started seed=2299138499 frame=0`
+and `game_started continued=false frame=0`. It contains no
+`pick_before_game_started` record, so early selection timing remains untested.
+No Lua errors were observed. The owner screenshot and raw capture were inspected.
+
+This is a configuration/loading fresh-state smoke only. Exact weights,
+unrelated-pool preservation, depletion/one-item availability, actual grants,
+Off restoration and Continue behavior remain **PENDING**. A fingerprint pass
+has not been captured.
+
+After launch, 41 of 42 manifest files still matched. The only changed file was
+`mods/open_unnerf_validation_observer/metadata.xml`: installed size 284 bytes and SHA256
+`c8a8fa15763dc0b445c4196a132e6fcb0ab4b5ec68bc74120ff232c2ccefa302`; staged
+size 237 bytes and SHA256
+`ef6fe552fd6acc52588926e132d48cac5f37c1f91a7396c141409f27c2f00cbd`. The
+installed copy adds version `1.0`, empty visibility and formatting. The cause
+is not established; this difference was observed after launch. All Lua and
+content files match. Observer main SHA256 is
+`32e56e884c63ea2a3153f1b0b9b278850a0c6ebe83af2a16a26c1a3699156e2c`; pack
+main SHA256 is
+`36f500e9abbde407c3aeffed3fcf6b22db403c908e96589678541a888d13f2f0`.
+The copied metadata is at
+`C:\Users\Mario\.t3\scratch\2026-11-10-act-as-the-research-sub-e5bb9e30\evidence-issue4-metadata-20261110\observer-metadata.xml`.
+
+### Historical environment and native API research
+
+The issue worktree started clean at then-current default SHA
+`3be8e611c96cb6a48d0d5b8c64f38b06a4ea0829`, including the integrated #1/#3
+validation evidence. The root checkout's older HEAD was not used. The owner
+explicitly assigned the shared disposable validation session to issue #4.
+
+The earlier read-only inspection of Mafia-Server's deployed
+`mods/open_unnerf_pack_validation` found seven configuration choices and no
+Magic Mushroom module at that time. Its seven runtime entrypoint hashes matched
+the then-current repository files; this was not a full deployment inventory or
+proof of which mods a running game loaded. The executable SHA256 recorded then
+was `e5faf6f513c6de9cc9ff1c335ef9c541e2b33fc623aa3b8ffbd2e6a6c0027bb0`, with
+read-only byte-scan evidence `1.9.7.17.J460`. This finding predates the
+installation above and is not the current installation state.
 
 ![Owner-supplied native pool API query output](evidence/magic-mushroom-native-api.png)
 
-The main agent read the supplied screenshot directly. It shows:
+The earlier capability query showed:
 
 ```text
 MM_API native
@@ -157,22 +208,23 @@ MM_METHOD GetPool nil
 
 Screenshot SHA256:
 `f8667f23b02cbe8943a5897a72453d3ddd8c41ebe863ce89e6e2be9840d8f2f7`.
+That protected lookup queried method availability without drawing items or
+modifying pools/settings. It records four methods absent in that observed
+runtime, not an exhaustive API survey or proof that all native approaches are
+impossible. It does not establish current deployed build hashes, pool contents,
+or full MCM behavior.
 
-The query read method availability through protected lookups. It did not draw
-items or modify pools/settings. These four methods are absent in the observed
-runtime. The screenshot does not independently establish deployed build hashes,
-pool contents, all possible native APIs, or full MCM behavior.
-
-## Consequence and remaining work
+## Historical API research and remaining work
 
 The documented [native ItemPool interface](https://wofsauge.github.io/IsaacDocs/rep/ItemPool.html)
-has no pool-entry insertion/edit API. The observation confirms the absence of
-the four queried methods in this session; an exact native implementation path
-has not been established. Global item removal affects other pools, and replacing
-individual roll results does not prove the required entry definitions.
-The [XML reference](https://wofsauge.github.io/IsaacDocs/rep/xml/itempools.html)
+has no pool-entry insertion/edit API. At the time of the query, the four listed
+methods were absent in that session; this did not establish an exact native
+implementation path. Global item removal affects other pools, and replacing
+individual roll results does not prove the required entry definitions. The
+[XML reference](https://wofsauge.github.io/IsaacDocs/rep/xml/itempools.html)
 does not establish selective replacement of an existing entry or per-run toggle
-control over static content.
+control over static content. This is historical implementation research, not a
+current claim that the pack is uninstalled or that no engine check has occurred.
 
 [REPENTOGON's methods](https://repentogon.com/ItemPool.html) are a possible research
 direction, not an approved dependency or a verified solution. Its
