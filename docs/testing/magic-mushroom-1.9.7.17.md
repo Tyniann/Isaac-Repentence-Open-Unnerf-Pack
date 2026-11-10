@@ -433,6 +433,43 @@ depletion, enabled weighting, Greed/Ultra Secret checks, actual grants and full
 process restart remain pending. Queries did not decrease weights, so the
 same Off run can now be used for its separate depletion check.
 
+The separate `MM_OFF_TREASURE` depletion check also **passes** in that same
+nondecreasing-profile run: isolation keeps real identity 12, then native pool
+0 selects 12 with decrease true and 668 with decrease false. The result is
+`expected=1`, `outputs=[12]`, `after=668`, `pass=true`; no Lua errors. This is
+availability/depletion evidence, separate from the intact-pool rate control.
+Stable capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T155421986Z-d2b4e73e`,
+log SHA256 `af01f9ec5416d7a02d9bfb8310387cc44917f7a9f430a9405fcccfc0d5ebbcf0`,
+record SHA256 `b10483c1a99c133199f6dbe49f5e069b787eabf7799a303512d36bcf65fc62f8`.
+
+### Actual-grant fixture prepared: engine pending
+
+`tools/validation/pool-grant-probe.lua` starts with one explicit actual helper
+grant in a disposable Normal Isaac run. The console must close to advance its
+late player-effect observer; completion requires two stable frames with the
+expected real-item count and zero actual helper copies. It records damage,
+speed and health alongside true/full item counts. A subsequent two-copy case
+requires an existing real copy and creates one tracked helper item-wisp. It
+first checks that this is only a modifier, then verifies conversion counts
+while retaining that modifier, removes only the fixture-created wisp, and
+checks the owned copies remain. This forced-private-modifier case does not
+claim to test natural Lemegeton selection.
+
+Native count/wisp APIs are documented in the
+[EntityPlayer reference](https://wofsauge.github.io/IsaacDocs/rep/EntityPlayer.html).
+Callback timing and actual grants remain for the first native pilot. Local
+scripted transitions are only driver safety evidence: they cover successful
+one/two-copy protocols, modifier cleanup, distinct Lua wrappers for one actor,
+and timeout cleanup. Review found that a wrong actor could bypass the deadline;
+the deadline now precedes that return, with a failing-then-passing regression.
+The driver leaves granted real items in the disposable run and does not undo
+health gains or restore saves.
+
+**Run these grants after depletion/reload checks.** Holding an actual Magic
+Mushroom intentionally excludes the helper globally; a fallback while holding
+it would not independently prove saved pool depletion persisted across restart.
+
 ### Historical environment and native API research
 
 The issue worktree started clean at then-current default SHA

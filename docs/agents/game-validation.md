@@ -41,6 +41,7 @@ records its later cleanup. Neither establishes the current live state.
 | `tools/validation/compatibility-batch.lua` | Native frame-driven fixture runner for bounded existing compatibility cases. Mutates disposable fixtures and can clear map rooms/alter terrain. It does not test arbitrary future features. |
 | `tools/validation/collect-pool-profile.ps1` | Scoped pool-log collector. Copies a live log using shared reads, hashes it before/after, and preserves exact-label JSON plus malformed payloads. Does not execute game commands or alter the source log. |
 | `tools/validation/pool-weight-profile.lua` | Nondecreasing sampling against an intact Treasure pool. Starts with a small pilot; inspect native repick warnings before broader execution. An isolated/depleted pool is not a valid proportional-weight control. |
+| `tools/validation/pool-grant-probe.lua` | Explicit disposable-run helper grants with a frame-driven count observer. Close the console to advance, then query status. Cleans its callbacks and its own temporary wisp, leaving granted real items in that disposable run. |
 
 The runner's smallest engine smoke precedes a broader batch. Main-agent
 verification of a new recipe is required before delegating routine execution.
@@ -119,6 +120,9 @@ errors. In #4, an isolated two-item rate experiment emitted "item pool ran out
 of repicks" on 3,946/4,096 calls. Its proportional-odds assertion was invalid
 under native fallback behavior. Keep controlled availability/depletion checks
 separate from rate checks, and verify an intact-pool pilot before broad sampling.
+Keep actual grants after depletion/reload checks when ownership itself removes
+an identity from pools. A fallback caused by ownership cannot prove that a
+depleted entry survived serialization unchanged.
 
 Stop owned diagnostics, confirm their exact cleanup, and retain errors rather
 than silently retrying. Some fixtures cannot roll back cleared rooms or terrain.
