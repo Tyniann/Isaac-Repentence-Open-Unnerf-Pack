@@ -1232,12 +1232,12 @@ requires the actual vanilla comparison arranged by the shared session owner.
 | Fresh and continued load | Pass for recorded local Normal runs C1/C3/C4 | Matched owner observations, source/manifest, seeds, fresh/Continue log and no Lua errors. Other modes unverified. |
 | Maw cache/damage and per-player isolation | Single-copy On/Off, two-copy handling, held-item Continue/removal and Hard Jacob/Esau isolation corroborated | Pack-absent comparison remains open; local/network co-op generally is not certified. |
 | Maw ring/black-heart drops | Native ring field 0.05 On / 0 Off and one controlled one-Clotty native black-heart output corroborated | Pack-absent comparison remains open; the single output is not an empirical probability estimate. |
-| Orbitals/native state | Independent Dagger acquisition fields pass with owner + log evidence; doorway/BFFS/Continue fields logged under Maw-Off context | Contact/BFFS combat scaling, Meat transitions, other orbitals and pack-absent comparison remain unverified. |
-| Dark Bum/output/exclusions | Pending | Controlled red-heart feeding, record reward provenance and excluded owner cases. |
-| Relic timing | Independent initialization/gating corroborated (Off counter 0, On 2); cadence pending | Number actual hostile clears/payouts, trace native reset ordering, repeat control and Continue. |
-| Hard/Normal blue/purple fires | Pending | Record finite trials per type/mode/control, 0/1/2-drop counts and nonlethal/repeated damage separately. |
-| Humbling Bundle | Pending | Four pickup types, native reward-selection paths, existing doubles and paired control. |
-| Stomp immunity | Current f1 Host Hat/actual Mom independent On/Off reported by #3; final artifact references pending | Pyromaniac healing, ordinary-damage controls and other stomp variants remain open; historical reporter case not generalized. |
+| Orbitals/native state | Independent Dagger acquisition and doorway/BFFS/Continue fields; controlled native contact On 30/60 damage attempts versus pack-absent 15/30 without/with BFFS; native Meat variants 44/45 On damage 14 / size 13 versus absent 7 / 8 | Representative field/contact behavior corroborated; fixed DPS, every orbital variant and every native transformation are not certified. See [native batches](native-batches.md). |
+| Dark Bum/output/exclusions | Independent gate-Off native pills remained unchanged; On six familiar-attributed native payout chains became soul hearts for Isaac | [Configuration results](configuration-results-1.9.7.17.md) retain exact provenance and Morph identities. Excluded characters, general payout variants and output rates remain unverified; this was a gate-Off control, not pack-absent. |
+| Relic timing | Off 0 / On 2 initialization; pack-absent Hard payout observed at seventh clear, absent Normal no payout in six clears; enabled Normal P2 payout at fifth clear, reset 6→2, then three further increments on the same familiar | Representative earlier payout/reset corroborated. Exact universal intervals, second payout cycle, multiple Relics and held-item Continue remain unverified. See [native batches](native-batches.md). |
+| Hard/Normal blue/purple fires | Enabled Hard B6, absent Hard V2, absent Normal V3 and enabled Normal P1 each completed 200 eligible trials per variant; six enabled Hard doubles are distinct pickups, no Normal doubles observed | Mode-specific samples and actual stacking are recorded in [native batches](native-batches.md). Exact rates, repeated/nonlethal-hit behavior and universal pickup caps are not certified. |
+| Humbling Bundle | Independent gate-Off single penny stayed single; On key, four pennies and bomb converted in native chest contents; half-heart and already-doubled contents distinguished | [Configuration results](configuration-results-1.9.7.17.md) retain the six conversions. Full-red-heart conversion, other reward sources and co-op remain unverified; this was a gate-Off control, not pack-absent. |
+| Stomp immunity | Actual Mom/Host Hat independent Off health 6→4 versus On 6→6 on current f1; synthetic engine Pyromaniac crush absent 4→2 versus On 4→6 | Native Mom/Pyromaniac and other stomp sources remain unverified. [Configuration results](configuration-results-1.9.7.17.md) and [native batches](native-batches.md) retain distinct inputs; historical [issue #2](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/2) is not generalized or closed. |
 
 Preparation alone cannot justify a checkbox or issue closure. Actual commands,
 observed values, timestamps and log references above justify only the bounded
@@ -1248,13 +1248,15 @@ criterion in #1 is checked; all other acceptance boxes remain unchanged and the
 issue remains open. Published result:
 https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/1#issuecomment-6723715489
 
-Local results branch is `issue-1-engine-validation` at the prepared f1c8325 base.
-The shared observer file is owned/adopted by #3's integration branch and must not
-be committed as a divergent duplicate by #1. Results documents are #1-owned.
+The initial results branch was `issue-1-engine-validation`; its evidence and
+shared observer were subsequently integrated through PRs #9–#11. Remaining
+batch work is on `issue-1-batched-validation`. Production deployment remains
+the recorded f1c8325 source despite those later documentation/tooling commits.
 
 ## Subsequent bounded batches (release one at a time after M1)
 
-These are proposed recipes, not executed tests. Do not send the whole list as an
+This section preserves historical proposals. Later M2–M4 records and the current
+acceptance matrix supersede its pending labels. Do not send the whole list as an
 owner sequence. Establish each smallest case in-engine before broader execution.
 
 - **M4 distinct-player Maw cache (prepared, not executed):** after preserving M3,

@@ -1,13 +1,18 @@
 # Isaac-Repentence-Open-Unnerf-Pack
 A pack of modular balance reverts targeting **The Binding of Isaac: Repentance+ v1.9.7.17**.
 
-Compatibility is under validation. Fresh local Normal loading, relaunch/Continue,
-single-copy Maw damage/removal, and bounded Sacrificial Dagger field checks have
-been observed on this build. Full feature compatibility, combat/RNG behavior,
-other modes and multiplayer remain unverified. See the
+Compatibility is under validation. Recorded local Normal/Hard tests cover
+fresh loading/Continue, Maw damage/cache and ring output, representative orbital
+contact, Dark Bum and Bundle outputs, Relic payout/reset, fire distributions and
+bounded stomp protection. Pack-absent controls cover orbitals, Relic, fires and
+synthetic crush damage; some other controls disable one feature within the pack.
+These results do not certify every character, interaction, exact drop rate or
+multiplayer mode. See the
 [per-feature audit and owner test matrix](docs/testing/repentance-plus-1.9.7.17.md)
 and [engine results ledger](docs/testing/issue-1-engine-results.md) for the exact
-conditions, evidence and outstanding checks.
+conditions, evidence and outstanding checks. The [native batch results](docs/testing/native-batches.md)
+record the pack-absent comparisons, observed Hard-fire double rewards and the
+limits of the representative samples. Issue #1 remains open.
 The optional MCM configuration has also been exercised with Pure v113 on this
 build: persistence, fallback, Continue/save-slot behavior, operation without MCM,
 and seven independent gate effects. See the [configuration results](docs/testing/configuration-results-1.9.7.17.md)
