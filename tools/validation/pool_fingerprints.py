@@ -7,7 +7,7 @@ from pathlib import Path
 def read(path, label, phase):
     records = {}
     seeds = set()
-    complete_count = None
+    completion = None
     for line in Path(path).read_text(encoding="utf-8-sig").splitlines():
         marker = "OUP_POOL "
         if marker not in line:
@@ -15,8 +15,10 @@ def read(path, label, phase):
         record = json.loads(line.split(marker, 1)[1])
         if record.get("label") != label:
             continue
-        if record.get("kind") == "fingerprint_complete" and record.get("pass") is True:
-            complete_count = record["pools"]
+        if record.get("kind") == "fingerprint_complete":
+            if completion is not None:
+                raise ValueError("duplicate completion; use a unique test label")
+            completion = record
         if record.get("kind") != "fingerprint" or record.get("phase") != phase:
             continue
         key = (record["poolID"], record["pool"])
@@ -26,7 +28,9 @@ def read(path, label, phase):
             raise ValueError("incomplete native output profile")
         records[key] = record["outputs"]
         seeds.add(record["seed"])
-    if not records or complete_count != len(records) or len(seeds) != 1:
+    if (not records or completion is None or completion.get("pass") is not True
+            or completion.get("pools") != len(records) or len(seeds) != 1
+            or completion.get("seed") not in seeds):
         raise ValueError("missing/incomplete profile or mixed run seeds")
     return records, seeds
 
