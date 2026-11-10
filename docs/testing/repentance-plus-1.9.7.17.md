@@ -10,20 +10,29 @@ MCM Pure v113, and a separately hashed observer. See the
 [engine results ledger](issue-1-engine-results.md) for exact deployment/backup
 provenance, seeds, settings, commands, owner observations and evidence hashes.
 
-Confirmed within the recorded local Normal Isaac conditions:
+Confirmed within the recorded local conditions (each run's actual mode and
+actor context is recorded in the linked ledgers):
 
 - Fresh loading and relaunch/Continue without pack-originated Lua errors.
-- Single-copy Maw acquisition/removal damage and cache refresh, with paired
-  Maw-gate On/Off controls and owner/log corroboration.
-- Sacrificial Dagger acquisition field processing with an independent orbital
-  gate On/Off comparison. Native combat/DPS and broader orbital coverage remain
-  pending; lifecycle observations have their exact gate context in the ledger.
+- Maw acquisition/removal, two-copy damage, held-item Continue/removal and
+  Hard Jacob/Esau actor isolation; ring field 0.05 On / 0 Off and one controlled
+  native black-heart output. A single reward is not a probability estimate.
+- Sacrificial Dagger acquisition/lifecycle fields and native contact, including
+  BFFS, plus native one/two-Cube-of-Meat fields. Pack-absent controls show the
+  representative increases were not already restored by this build.
+- Native Dark Bum and chest-content Bundle outputs with independent gate
+  controls, and actual Mom/Host Hat immunity. See the shared
+  [configuration results](configuration-results-1.9.7.17.md) for exact limits.
+- [Native batches](native-batches.md) record pack-absent Hard/Normal fire
+  histograms, enabled Hard stacking and synthetic engine Pyromaniac crush
+  controls. Observed rates are finite samples, not theoretical guarantees.
 
-These are bounded results, not full compatibility acceptance. Maw ring/drop,
-multiple-copy/player-isolation behavior, other features, and true pack-absent
-vanilla/stacking comparisons remain pending. Historical pending cells below
-must be read alongside the current ledger; a config-Off run is not a pack-absent
-vanilla run. Issue #1 remains open.
+Subsequent enabled Normal batches recorded a native Relic payout/reset and
+200 fire trials per variant. These are bounded results, not full compatibility
+acceptance. Whole-pack-absent comparisons for Maw, Dark Bum and Bundle remain
+open, alongside the per-feature limits in the current matrix. Historical pending
+cells below must be read alongside the current ledger; a config-Off run is not
+a pack-absent vanilla run. Issue #1 remains open.
 
 ## Evidence boundary (2026-11-08)
 
