@@ -5,6 +5,9 @@ Feature-specific commands and results stay in the linked ledgers. The main
 agent owns test design and acceptance; apply the roles in [subagents.md](subagents.md)
 to research, routine execution and all computer use.
 
+For the reusable native helper module, registration contract and state model,
+see [native pool rules](pool-rules.md).
+
 ## Establish ownership and the build
 
 1. Read the issue's current acceptance criteria and recent validation records.
