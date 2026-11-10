@@ -217,6 +217,107 @@ the native original definitions, and controlled native depletion/grant and
 Continue checks remain required. The owner has been asked for the independent
 fresh-run Boss depletion check; no result is claimed here.
 
+### Boss availability/depletion and Continue
+
+The fresh Normal Isaac Boss check (`MM_ON_BOSS`, frame 23, seed
+`2299138499`) **passes controlled availability and depletion**. The diagnostic
+removed every other collectible identity from this disposable run. The early
+native trace selected helper 733 from Boss pool 2 with `decrease=true`; the
+production callback returned collectible 12. The next nondecreasing query
+returned explicit fallback 668. The result records `expected=1`,
+`outputs=[12]`, `after=668`, `pass=true`. No Lua error or assertion was found.
+This proves one effective Boss draw in this controlled case, not relative
+weight, actual player inventory grants or preservation of the removed items.
+
+The stable five-record capture is
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T125109083Z-60c6453d`:
+
+| File | SHA256 |
+| --- | --- |
+| `log.txt` | `f2f2d8b0133e0570aaef5ac70d024ef2f617c5aab93bfa4624a724c2ed41fa26` |
+| `pool-records.jsonl` | `1d359372c0c2dbf2bb60efafa876d53bf45aa69f8d873d997fa1d928b6ed15c2` |
+| `capture.json` | `f3bf8130da79f2a9183058154bdb6fba96dcf90fb59fa9d150235af110ee6de5` |
+
+The owner then changed only Magic Mushroom pools to Off in MCM and continued
+the depleted run. `MM_ON_BOSS_RELOAD` records `continued=true`, seed
+`2299138499`, frame 436, enabled true, selected `magicMushroom=false` and
+run-snapshot `magicMushroom=true`; all seven other choices remain On, MCM 113.
+Boss pool 2 returned fallback 668 again, with `continue_result.pass=true`.
+The run-start rule trace excluded original 12 with `removed=false`, consistent
+with its prior exclusion; no helper entry was appended or reset by production.
+This **passes Continue depletion and next-run/active-run separation**.
+
+Stable evidence is
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T125636359Z-8cf66c4a`,
+log SHA256
+`dabb499c0d97bad69ffce647fe5f17524bd1ec465977605f0d8f1a29ca9ffd18`,
+three-record SHA256
+`09acb8a64bb2b1ec7faf3e9d520166f3aed6039138c68756092555cd18a6c18e`.
+There are no malformed records or Lua errors. The owner reported exiting to
+desktop and relaunching, but the continued game-start event retains diagnostic
+label `MM_ON_BOSS`. The subsequently observed process (PID 31116) was created
+at `2026-11-10T12:00:41.1448310Z`, before the pre-exit Boss capture at 12:51.
+That process did not restart for this Continue test. Full application restart
+remains **PENDING**; do not treat the label `RELOAD` as proof of a fresh Lua VM.
+
+The pre-exit job searched standard Steam paths and did not verify the actual
+installation. The subsequent job corrected that inspection to the explicit
+game root: executable SHA matches, and 41/42 runtime files match, with only the
+previously documented observer metadata difference. All Lua/content bytes match.
+
+### Same-content On/Off preservation: pass
+
+The fresh Off profile (`MM_OFF_PROFILE`, seed `2299138499`, continued false)
+records both selected and run-snapshot Magic Mushroom settings false. The
+other seven choices remain true, MCM 113, helper 733 and matching metadata.
+The stable 64-record capture contains both 31-pool phases, one successful
+completion and zero malformed records or Lua errors:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T132149704Z-a9d9b788`.
+Log SHA256 is
+`064b638bbddbc30b618ad2b7ecc7b86ae15f6af80f42ab07e81043741e4acc4b`.
+
+With content/instrumentation unchanged, the pinned comparer reports
+`pass=true`, `phase=without_magic`, `pools=31`, `queries=1984`; child exit code
+0, empty stderr. Exact command and output are preserved in that capture's
+`same-content-comparison.json`. Full-phase On/Off samples differ only in
+Treasure (3/64), Greed Treasure (1/64) and `POOL_24` (3/64); all other pools
+match. A lack of sampled Magic Mushroom picks is not treated as absence.
+
+This **passes the controlled native target-excluded preservation comparison**
+and verifies the new-run gate becomes Off independently. It does not resolve
+the failed comparison against the earlier installed content, whose initial
+state/shuffle difference remains unexplained. Partial source XML and the
+vanilla archive remain separate evidence of which definitions change; finite
+profiles do not enumerate every weight. Relative weight, Treasure/Greed/Ultra
+Secret depletion, actual grants and full process restart remain outstanding.
+
+### Focused Treasure weight fixture: engine pending
+
+The current archive recheck validates all three Repentance XML checksums. Both
+collectibles 4 and 169 have Treasure Weight 1 / DecreaseBy 1 / RemoveOn 0.1
+and quality 4. The fixture uses Cricket's Head (4), a passive without a hidden
+attribute; Polyphemus (169) has a separate `special=true` attribute and is not
+needed. The three-line parser change only adds the metadata filename and
+changes the ID filters. Result SHA256:
+`e7dc389d3947246ad4d0ad15d6011c64bb6662f8ee17737781c8cc7ada9e2d6f`.
+
+`tools/validation/treasure-weight-probe.lua` leaves only that Weight-1 reference
+and the active Magic Mushroom identity. It makes 4,096 nondecreasing queries
+with fixed positive 31-bit seeds. Its bounded rate assertion expects 1:1 On
+or 0.5:1 Off, with a three-percentage-point window. An early callback counts
+native identities before translation, rejecting unexpected identities. It
+then removes the reference and expects exactly one Magic Mushroom draw followed
+by fallback 668. This deliberately empties other disposable-run entries.
+
+The rate check corroborates declared weights; it does not expose native entry
+descriptors or prove arbitrary floating-point values by itself. Exact values
+remain source evidence alongside native rate/depletion behavior. Local safety
+contracts pass for On/Off, metadata rejection before mutation and callback
+cleanup after query failure; Lua syntax passes. Focused review found zero
+findings. No native result is claimed yet. The fixture stages outside the
+game directory and neither installs content nor starts a run. The owner opted
+to keep manual fresh runs, so no restart automation is added.
+
 ### Historical environment and native API research
 
 The issue worktree started clean at then-current default SHA
