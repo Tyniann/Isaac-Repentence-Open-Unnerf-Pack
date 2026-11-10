@@ -1,24 +1,31 @@
 -- Pool-rule/config callback contracts only. Native pool selection is tested in Isaac.
 local callbacks, listeners, removed, enabled, owned = {}, {}, {}, true, false
 ModCallbacks = {MC_POST_GET_COLLECTIBLE = 63, MC_POST_PEFFECT_UPDATE = 31,
-    MC_POST_PICKUP_INIT = 34}
+    MC_POST_PICKUP_INIT = 34, MC_PRE_GET_COLLECTIBLE = 62,
+    MC_POST_PLAYER_INIT = 9, MC_PRE_GAME_EXIT = 17}
 PickupVariant = {PICKUP_COLLECTIBLE = 100}
 EntityType = {ENTITY_PICKUP = 5}
-Isaac = {GetItemConfig = function() return {GetCollectible = function()
-    return {Quality = 4, Tags = 7, Type = 1}
+local validMetadata = true
+Isaac = {GetItemConfig = function() return {GetCollectible = function(_, id)
+    return {Quality = (id == 1001 and not validMetadata) and 3 or 4, Tags = 7, Type = 1}
 end} end, GetItemIdByName = function(name)
     assert(name == "OUP Magic Mushroom Pool Entry"); return 1001
 end}
 local pool = {RemoveCollectible = function(_, id) removed[#removed + 1] = id end}
+function pool:GetLastPool() return 1 end
+function pool:GetCollectible(p, decrease, seed) assert(p == 1 and seed == 123); return 23 end
 local helperCopies = 0
+local grants = 0
 local player = {HasCollectible = function(_, id, ignoreModifiers)
     assert(ignoreModifiers == true, "ignore temporary wisps/modifiers")
     return (owned and id == 12) or (id == 1001 and helperCopies > 0)
 end}
 function player:GetCollectibleNum(id) assert(id == 1001); return helperCopies end
 function player:RemoveCollectible(id) assert(id == 1001); helperCopies = helperCopies - 1 end
-function player:AddCollectible(id) assert(id == 12); owned = true end
+function player:AddCollectible(id) assert(id == 12); owned = true; grants = grants + 1 end
 Game = function() return {GetItemPool = function() return pool end,
+    GetSeeds = function() return {GetStartSeed = function() return 12345 end} end,
+    GetFrameCount = function() return 0 end,
     GetNumPlayers = function() return 1 end} end
 Isaac.GetPlayer = function() return player end
 RegisterMod = function()
@@ -26,11 +33,21 @@ RegisterMod = function()
 end
 openUnnerfPack = {Config = {
     IsEnabled = function(key) assert(key == "magicMushroom"); return enabled end,
+    IsEnabledForPoolGeneration = function(key) assert(key == "magicMushroom"); return enabled end,
     AddRunStartListener = function(fn) listeners[#listeners + 1] = fn end,
 }}
 local rules = require("Mods/Pool Rules/main")
 rules.Register("magicMushroom", 12, "OUP Magic Mushroom Pool Entry")
 assert(#listeners == 1)
+assert(callbacks[62]() == nil and removed[1] == 12, "exclude original BEFORE first native roll")
+local preparedCount = #removed
+callbacks[62]()
+assert(#removed == preparedCount, "no repeated preparation per pick")
+callbacks[17]()
+enabled = false
+callbacks[62]()
+assert(removed[#removed] == 1001, "fresh Off excludes helper before generation")
+enabled, removed = true, {}
 listeners[1](false)
 assert(#removed == 1 and removed[1] == 12, "On excludes original, leaves helper to native picker")
 assert(callbacks[63](nil, 1001, 1, true, 123) == 12)
@@ -55,10 +72,14 @@ function pickup:Morph(t, v, id, keepPrice, keepSeed, ignoreModifiers)
 end
 callbacks[34](nil, pickup)
 assert(pickup.SubType == 12, "defensive mapping for scripted helper pedestals")
-owned, helperCopies = false, 1
+owned, helperCopies = false, 2
 callbacks[31](nil, player)
-assert(owned and helperCopies == 0, "inventory rerolls cannot leave helper copies")
+assert(owned and helperCopies == 0 and grants == 2, "inventory conversion preserves real grants")
 helperCopies = 1
 callbacks[31](nil, player)
-assert(owned and helperCopies == 0, "helper plus real item does not grant a duplicate")
+assert(owned and helperCopies == 0 and grants == 3, "existing real copies do not swallow a new grant")
+owned, validMetadata = false, false
+listeners[1](true)
+assert(removed[#removed] == 1001, "mismatched helper excluded")
+assert(callbacks[63](nil, 1001, 1, true, 123) == 23, "mismatched selection retries native pool")
 print("pool rule contracts passed (Lua doubles; engine validation pending)")

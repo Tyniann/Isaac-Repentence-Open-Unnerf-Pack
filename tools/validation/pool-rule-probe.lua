@@ -1,5 +1,5 @@
--- Diagnostic mod entry point. Nothing mutates pools until Run is explicitly called.
--- Run exhausts disposable-run pools; it is not a read-only observer or gameplay mod.
+-- Diagnostic entry point. Explicit Fingerprint removes only Magic Mushroom;
+-- explicit Run exhausts disposable-run pools. This is not a gameplay mod.
 assert(OUPPoolProbe == nil, "pool probe already loaded")
 local json = require("json")
 local mod = RegisterMod("OUP pool validation", 1)
@@ -13,6 +13,7 @@ local continued, checked = nil, {}
 local observedSeed
 local label = "unstarted"
 local capturing = false
+local fingerprinting = false
 local fallback = CollectibleType.COLLECTIBLE_DADS_NOTE
 
 local function record(kind, fields)
@@ -27,7 +28,7 @@ end
 local function context()
     local real = Isaac.GetItemConfig():GetCollectible(12)
     local id = Isaac.GetItemIdByName(helperName)
-    local helper = Isaac.GetItemConfig():GetCollectible(id)
+    local helper = id > 0 and Isaac.GetItemConfig():GetCollectible(id) or nil
     local saved = json.decode(openUnnerfPack:LoadData())
     return {helper = id, enabled = openUnnerfPack.Config.IsEnabled("magicMushroom"),
         choices = saved.settings, run = saved.run, difficulty = Game().Difficulty,
@@ -53,6 +54,7 @@ local function gameStarted(_, isContinue)
     record("game_started", {continued = isContinue})
 end
 local function nativePick(_, selected, pool, decrease, seed)
+        if fingerprinting then return end
         local early = observedSeed ~= Game():GetSeeds():GetStartSeed()
         if capturing or early then
             record(early and "pick_before_game_started" or "native_pick",
@@ -66,6 +68,48 @@ end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, gameStarted)
 mod:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, gameExit)
 mod:AddPriorityCallback(ModCallbacks.MC_POST_GET_COLLECTIBLE, CallbackPriority.EARLY, nativePick)
+
+function probe.Fingerprint(nextLabel)
+    assert(next(checked) == nil, "fingerprint needs a fresh, unconsumed pool state")
+    label = nextLabel or "fingerprint"
+    checked.fingerprint = true
+    local state = probe.State()
+    local pool = Game():GetItemPool()
+    local names, canonical = {}, {}
+    for name, id in pairs(ItemPoolType) do
+        if type(name) == "string" and type(id) == "number" and name:match("^POOL_") and id >= 0 then
+            if not canonical[id] or name < canonical[id] then canonical[id] = name end
+        end
+    end
+    for id, name in pairs(canonical) do names[#names + 1] = {name = name, id = id} end
+    table.sort(names, function(a, b) return a.id < b.id end)
+    fingerprinting = true
+    local ok, failure = pcall(function()
+        for _, phase in ipairs({"full", "without_magic"}) do
+            if phase == "without_magic" then
+                -- Remove only the two Magic Mushroom identities. Every other
+                -- row remains available. This permits exact seeded comparison
+                -- of unrelated pool selections before/after the implementation.
+                pool:RemoveCollectible(12)
+                if state.helper > 0 then pool:RemoveCollectible(state.helper) end
+            end
+            for _, entry in ipairs(names) do
+                local outputs = {}
+                for index = 1, 64 do
+                    outputs[index] = pool:GetCollectible(entry.id, false, 290000 + index * 7919, fallback)
+                end
+                record("fingerprint", {phase = phase, pool = entry.name, poolID = entry.id, outputs = outputs})
+            end
+        end
+    end)
+    fingerprinting = false
+    record("fingerprint_complete", {pass = ok, pools = #names, error = failure,
+        seedString = Game():GetSeeds():GetStartSeedString()})
+    assert(ok, failure)
+    print("MM_FINGERPRINT_COMPLETE", #names, Game():GetSeeds():GetStartSeedString())
+    -- Native queries do not decrease weights. Only Magic Mushroom was excluded
+    -- between the profiles; use a fresh run before its availability/depletion test.
+end
 
 function probe.Run(poolName, nextLabel)
     assert(pools[poolName] ~= nil and next(checked) == nil, "one pool check per fresh run")

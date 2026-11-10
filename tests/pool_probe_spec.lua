@@ -13,8 +13,9 @@ CollectibleType = {COLLECTIBLE_DADS_NOTE = 668}
 PlayerType = {PLAYER_ISAAC = 0}
 ModConfigMenu = {Version = 113}
 local metadata = {Quality = 4, Tags = 7, Type = 1, Hidden = false}
+local helperID = 1001
 Isaac = {
-    GetItemIdByName = function() return 1001 end,
+    GetItemIdByName = function() return helperID end,
     GetItemConfig = function() return {GetCollectible = function() return metadata end,
         GetCollectibles = function() return {Size = 1002} end} end,
     GetPlayer = function() return player end,
@@ -31,7 +32,8 @@ function pool:GetCollectible(_, decrease, seed, fallback)
 end
 Game = function() return {
     GetItemPool = function() return pool end, GetNumPlayers = function() return 1 end,
-    GetSeeds = function() return {GetStartSeed = function() return 123 end} end,
+    GetSeeds = function() return {GetStartSeed = function() return 123 end,
+        GetStartSeedString = function() return "AAAA BBBB" end} end,
     GetFrameCount = function() return 10 end, Difficulty = 0,
 } end
 openUnnerfPack = {Config = {IsEnabled = function() return true end},
@@ -63,4 +65,16 @@ assert(rawCallback(nil, 23, 0, false, 42) == nil, "observer cannot alter selecti
 OUPPoolProbe.Stop()
 assert(OUPPoolProbe == nil and next(callbacks) == nil and removals == before)
 assert(#logs > 3)
+-- Baseline capture must also work BEFORE the helper/feature is installed.
+helperID = 0
+pool.RemoveCollectible = function(_, id) assert(id == 12); removals = removals + 1 end
+pool.GetCollectible = function(_, _, decrease) assert(decrease == false); return 3 end
+dofile("tools/validation/pool-rule-probe.lua")
+before = removals
+OUPPoolProbe.Fingerprint("BASELINE")
+assert(removals == before + 1, "fingerprint excludes only Magic Mushroom")
+local last = json.decode(logs[#logs]:match("OUP_POOL (.*)"))
+assert(last.kind == "fingerprint_complete" and last.pass and last.pools == 5)
+assert(not pcall(OUPPoolProbe.Fingerprint, "REPLAY"), "fresh state required for repeated profile")
+OUPPoolProbe.Stop()
 print("pool probe protocol passed (Lua doubles; native verification pending)")

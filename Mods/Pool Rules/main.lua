@@ -5,6 +5,14 @@
 local rules = {}
 local byHelper, registeredKeys, targets = {}, {}, {}
 local mod = RegisterMod("Open Unnerf Pack pool rules", 1)
+local prepared, preparedSeed = false, nil
+
+local function metadataMatches(rule)
+    local items = Isaac.GetItemConfig()
+    local original, helper = items:GetCollectible(rule.collectible), items:GetCollectible(rule.helper)
+    return original and helper and original.Quality == helper.Quality
+        and original.Tags == helper.Tags and original.Type == helper.Type
+end
 
 local function syncOwnership(rule)
     local owned = false
@@ -32,31 +40,50 @@ function rules.Register(key, collectible, helperName)
     return true
 end
 
-openUnnerfPack.Config.AddRunStartListener(function()
+local function prepare(setting, phase)
     local pool = Game():GetItemPool()
     for _, rule in pairs(registeredKeys) do
-        rule.collected = false
         -- Never add/reset weights here: Continue restores native pool state.
         -- One complete helper identity mirrors every pool of the original ID.
-        local enabled = openUnnerfPack.Config.IsEnabled(rule.key)
-        local items = Isaac.GetItemConfig()
-        local original, helper = items:GetCollectible(rule.collectible), items:GetCollectible(rule.helper)
-        local metadataMatches = original and helper and original.Quality == helper.Quality
-            and original.Tags == helper.Tags and original.Type == helper.Type
-        local excluded = enabled and metadataMatches and rule.collectible or rule.helper
+        local enabled = setting(rule.key)
+        local matches = metadataMatches(rule)
+        local excluded = enabled and matches and rule.collectible or rule.helper
         local removed = pool:RemoveCollectible(excluded)
         if Isaac.DebugString then
             Isaac.DebugString("OUP_POOL_RULE " .. rule.key .. " enabled=" .. tostring(enabled)
-                .. " metadata=" .. tostring(not not metadataMatches) .. " excluded=" .. excluded
-                .. " removed=" .. tostring(removed))
+                .. " metadata=" .. tostring(not not matches) .. " excluded=" .. excluded
+                .. " removed=" .. tostring(removed) .. " phase=" .. phase
+                .. " seed=" .. Game():GetSeeds():GetStartSeed() .. " frame=" .. Game():GetFrameCount())
         end
-        syncOwnership(rule)
     end
+    prepared, preparedSeed = true, Game():GetSeeds():GetStartSeed()
+end
+
+openUnnerfPack.Config.AddRunStartListener(function()
+    prepare(openUnnerfPack.Config.IsEnabled, "game_started")
+    for _, rule in pairs(registeredKeys) do rule.collected = false; syncOwnership(rule) end
 end)
 
-mod:AddCallback(ModCallbacks.MC_POST_GET_COLLECTIBLE, function(_, selected)
+mod:AddCallback(ModCallbacks.MC_PRE_GET_COLLECTIBLE, function()
+    if not prepared or preparedSeed ~= Game():GetSeeds():GetStartSeed() then
+        prepare(openUnnerfPack.Config.IsEnabledForPoolGeneration, "pre_generation")
+    end
+end)
+local function resetPreparation() prepared, preparedSeed = false, nil end
+mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, resetPreparation)
+mod:AddCallback(ModCallbacks.MC_PRE_GAME_EXIT, resetPreparation)
+
+mod:AddCallback(ModCallbacks.MC_POST_GET_COLLECTIBLE, function(_, selected, _, decrease, seed)
     local rule = byHelper[selected]
-    if rule then return rule.collectible end
+    if rule then
+        if metadataMatches(rule) then return rule.collectible end
+        -- Fail closed even if another source restored a mismatched helper.
+        -- Exclude it before retrying; never expose the private item itself.
+        local pool = Game():GetItemPool()
+        local actualPool = pool:GetLastPool()
+        pool:RemoveCollectible(rule.helper)
+        return pool:GetCollectible(actualPool, decrease, seed)
+    end
 end)
 
 mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
@@ -66,8 +93,8 @@ mod:AddCallback(ModCallbacks.MC_POST_PEFFECT_UPDATE, function(_, player)
         -- this path too). Never leave a private helper in the inventory.
         if player:HasCollectible(rule.helper, true) then
             local copies = player:GetCollectibleNum(rule.helper, true)
-            for _ = 1, copies do player:RemoveCollectible(rule.helper) end
-            if not player:HasCollectible(rule.collectible, true) then
+            for _ = 1, copies do
+                player:RemoveCollectible(rule.helper)
                 player:AddCollectible(rule.collectible)
             end
         end

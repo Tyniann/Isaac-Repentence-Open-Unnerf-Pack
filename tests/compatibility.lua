@@ -28,6 +28,7 @@ DamageFlag = {DAMAGE_EXPLOSION=4, DAMAGE_CRUSH=8}
 Difficulty = {DIFFICULTY_HARD=1, DIFFICULTY_NORMAL=0}
 local players, spawned = {}, 0
 local game = {Difficulty=1, GetNumPlayers=function() return #players end,
+    GetFrameCount=function() return 0 end,
     GetItemPool=function() return {RemoveCollectible=function() end} end,
     GetSeeds=function() return {GetStartSeed=function() return 12345 end} end}
 function Game() return game end

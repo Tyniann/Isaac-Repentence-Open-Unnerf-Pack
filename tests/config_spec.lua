@@ -28,6 +28,8 @@ for _, name in ipairs({"ModCallbacks", "CacheFlag", "FamiliarVariant", "PlayerTy
     "KeySubType", "BombSubType", "Difficulty", "DamageFlag"}) do _G[name] = enum() end
 local storage, mods, menu, seed, player, excluded
 local game = {Difficulty = Difficulty.DIFFICULTY_HARD}
+local gameFrame = 0
+function game:GetFrameCount() return gameFrame end
 function game:GetItemPool() return {RemoveCollectible = function(_, id) excluded[id] = true end} end
 function game:GetSeeds() return {GetStartSeed = function() return seed end} end
 function game:GetNumPlayers() return 1 end
@@ -83,6 +85,20 @@ local count = 0
 local function test(name, fn)
     fn(); count = count + 1; print("ok " .. count .. " - " .. name)
 end
+
+test("early pool generation reads choices for fresh runs and snapshots for Continue", function()
+    local data = '{"version":1,"settings":{"magicMushroom":false},"run":{"seed":12345,"settings":{"magicMushroom":true}}}'
+    boot(data, true)
+    gameFrame = 0
+    assert(not openUnnerfPack.Config.IsEnabledForPoolGeneration("magicMushroom"), "same seed fresh uses choices")
+    assert(storage == data, "preview never writes save data")
+    gameFrame = 321
+    assert(openUnnerfPack.Config.IsEnabledForPoolGeneration("magicMushroom"), "Continue uses snapshot")
+    storage = '{"version":1,"settings":{"magicMushroom":true},"run":{"seed":67890,"settings":{"magicMushroom":false}}}'
+    seed = 67890
+    assert(not openUnnerfPack.Config.IsEnabledForPoolGeneration("magicMushroom"), "reload selected slot")
+    gameFrame = 0
+end)
 
 test("absent MCM, first install defaults, exit and reload", function()
     boot(nil, false); start(false); checkDefaults()

@@ -34,7 +34,7 @@ Inventory and direct-pedestal fallback paths prevent a private helper escaping
 the normal selection callback. Temporary wisps/modifiers are excluded from the
 inventory ownership conversion; broader interactions still need engine checks.
 
-Local checks pass: configuration (15 cases including eight independent gates),
+Local checks pass: configuration (16 cases including eight independent gates),
 compatibility regressions, pool-rule/diagnostic contracts, asset definitions,
 existing batch/Maw/stomp harnesses, and Lua syntax. These are source and harness
 evidence only. The diagnostic `tools/validation/pool-rule-probe.lua` checks
@@ -45,6 +45,30 @@ pool check per fresh run; its Continue query does not isolate or reset pools.
 Its early native-pick trace also records selections before game-start settings
 are chosen. No engine check has run yet, including the collection exclusion
 and early-generation paths.
+
+Starting-item generation is handled in MC_PRE_GET_COLLECTIBLE, before native
+selection, not only at game start. The configuration preview reloads the selected
+slot and uses next-run choices at frame zero, or a matching resumed-run snapshot
+after frame zero. It does not change other features' active cache or write data.
+Player initialization/exit invalidates preparation; the game-start listener
+confirms the actual selected run settings without resetting weights. Same-seed
+fresh and Continue selection have local contracts, with engine timing still
+pending validation.
+
+The engine protocol also captures 64 fixed-seed nondecreasing queries for every
+native pool, both before and after excluding just the two Magic Mushroom
+identities. Capture the baseline before installing the feature. Compare equal
+start seeds and the same build/other settings using
+`tools/validation/pool_fingerprints.py`: On `without_magic` profiles must match
+the baseline, and Off `full` profiles must match the baseline. The comparer
+rejects missing pools, incomplete/duplicate captures, seed differences and changed
+outputs. This combines unchanged source/archive records and targeted-only
+production mutations with actual native preservation/restoration evidence;
+finite fingerprints alone are not an enumeration of every engine entry/weight.
+Native helper XML/metadata plus per-pool controlled depletion remain separate
+parts of the exact-definition evidence. Fingerprint excludes only Magic Mushroom
+and Run is destructive to the rest of the disposable pools; use fresh runs
+between those tests. No baseline fingerprint has yet been captured in Isaac.
 
 The feature-reference documentation thread owns `docs/features/**` and the
 root README index. Those files are intentionally unchanged here; hand off

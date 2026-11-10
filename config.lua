@@ -52,6 +52,16 @@ function config.IsEnabled(key)
     return active[key] == true
 end
 
+function config.IsEnabledForPoolGeneration(key)
+    -- Starting items can roll before POST_GAME_STARTED. Read the selected
+    -- slot now without persisting or changing the other features' active cache.
+    -- A fresh run has frame zero (including a new run with the same seed).
+    load()
+    local game = Game()
+    local snapshot = run and run.seed == game:GetSeeds():GetStartSeed() and game:GetFrameCount() > 0
+    return normalize(snapshot and run.settings or choices)[key] == true
+end
+
 local menuRegistered = false
 local function registerMenu()
     if menuRegistered or ModConfigMenu == nil then return end
