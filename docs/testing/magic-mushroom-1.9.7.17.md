@@ -534,7 +534,54 @@ identities remain untouched by exclusion. It records raw identities and both
 vectors, without assuming Boss or the other pools remain available. Local
 contracts exercise both per-pool and shared-depletion models, missing initial
 availability, and callback cleanup; these are not native evidence. First engine
-execution is pending. The XML/API references do not settle cross-pool mutation.
+execution is recorded below. The XML/API references do not settle cross-pool mutation.
+
+### Native cross-pool depletion measured
+
+The fresh On run used numeric seed `2961248207`, frame 120, difficulty 0,
+observed `continued=false`, all eight choices/run settings On, MCM 113 and
+matching helper 733 metadata. The diagnostic exclusion loop leaves both target
+identities untouched and the owned-item guard passes. All five initial
+nondecreasing queries return 12 from raw helper 733. One Treasure draw with
+decrease true returns 12 from 733. All five subsequent nondecreasing queries
+return raw/translated fallback 668. **The test demonstrates loss of availability
+across all five pools after that draw in this build.** Thus another pool cannot
+be assumed unspent merely because the test drew from Treasure. The former
+reload check's premise was invalid; production code is unchanged.
+
+Stable capture (the collector's actual output location):
+`D:\T3ValidationArchives\capture-20261110T184415636Z-a3f5338f`,
+log SHA256 `376c0b78a0f02f77df5e4416f652810c05559e0e18bcb6eb956636689e98931b`,
+records SHA256 `145300a7a55cdfaef888a7cb0b99cd7cd85e4a7cc9474c1430a4c6cd91cddf8b`.
+Two selected records, zero malformed, 11 captured native calls. There are 11
+native repick warnings and no Lua errors between state and result. Isolation
+supports availability/depletion observations, not proportional weighting.
+The preceding game-start trace is On, excludes 12, frame 0, matching seed.
+
+### Replacement unspent-reload protocol: engine pending
+
+The current `tools/validation/pool-reload-check.lua` replaces the failed
+single-phase recipe retained at source `531d7effc3977e54fbf4e7c4644b644e2d64aca9`.
+It pins seed **SVW0 6RZE** / `2299138499` and uses an explicit two-phase
+protocol. On an observed fresh On Normal Isaac run, it excludes only non-target
+IDs and records five nondecreasing successful helper selections without drawing
+or decreasing the target (`MM_UNSPENT_PREPARE`, `reload_anchor`). Archive that
+anchor before the owner changes only the next-run choice to Off and saves,
+fully closes and reopens Isaac, then chooses Continue on the same slot/run.
+
+Running the same file on Continue requires the matching seed, active/saved-run
+On, next-run Off, zero actual owned copies and matching metadata. It again
+excludes only non-target IDs, requires all five measured identities available,
+draws once from Boss and then requires all five fallbacks. Its early callback
+requires raw helper identities before depletion and fallback identities after,
+then unregisters on success or failure (`MM_UNSPENT_RELOAD`, `reload_result`).
+This is a positive availability control paired with the earlier spent-Treasure
+cold observation. Do not infer this protocol passed from the old failed result.
+Local contracts cover prepare without consumption, Continue, seed/choice/owned
+guards, missing availability, native original leakage, duplicate availability
+after depletion and callback cleanup; syntax passes and focused review reports
+zero findings. Engine execution remains
+pending.
 
 ### Actual-grant fixture prepared: engine pending
 

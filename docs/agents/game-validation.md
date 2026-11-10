@@ -124,6 +124,12 @@ Keep actual grants after depletion/reload checks when ownership itself removes
 an identity from pools. A fallback caused by ownership cannot prove that a
 depleted entry survived serialization unchanged.
 
+Measure a positive availability anchor before saving when testing an unspent
+entry across restart. In #4, a native Treasure draw exhausted the helper in all
+five pools, invalidating a checker's assumption that Boss remained unspent.
+Record both pre-save availability and post-Continue availability for the same
+seed/build/slot; keep spent-entry persistence as a separate observation.
+
 Stop owned diagnostics, confirm their exact cleanup, and retain errors rather
 than silently retrying. Some fixtures cannot roll back cleared rooms or terrain.
 The base observer's Stop disables logging but leaves callbacks registered until
