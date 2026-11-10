@@ -381,6 +381,38 @@ records, with no malformed records. The main agent parsed the actual command
 output for the decisive complete, clear and payout records. No further gameplay
 batch is planned; remaining per-feature limits belong in the acceptance matrix.
 
+### Owner-selected cleanup and handoff
+
+The owner confirmed exit to desktop and chose to keep the tested pack and MCM,
+removing validation tools. The first archive-plus-recursive-delete command was
+rejected before execution, with no more specific policy reason returned. It
+made no changes. A safer, reversible same-volume directory move then succeeded
+after process/provenance guards, a before manifest and protected-file snapshots.
+
+At 2026-11-10 00:54:36 UTC, all 12 observer/optional-helper files were archived
+outside the game at `D:\T3ValidationArchives\ounp-observer-20261110T005435597Z`.
+The original `mods/open_unnerf_validation_observer` directory is absent. Archive
+file hashes match the before inventory. All 13 production files still match
+f1c8325; full before/after hashes of the pack, MCM, user-data and game-data trees
+are unchanged. No saved run was restored or engine launched after cleanup.
+The game remained closed, and original validation backups were retained.
+
+Cleanup artifacts are Windows session
+`cleanup-keep-pack-20261110T005435589Z/before.json` (SHA-256
+`591b848c9824c0e2d7cf4425e6911d7e131ab3312398700e58258625c97c2f41`)
+and `after.json` (SHA-256
+`c5ea5ced5da502125df51c438a9d74ed19cd4de1de043a9915dd62b783b04286`).
+For a future coordinated diagnostic session, verify the recorded archive
+inventory while the game is closed and move it back only if the original
+observer directory is absent. This is not needed for ordinary play.
+
+Issue #1 stays open: whole-pack-absent Maw, Dark Bum and Bundle comparisons
+remain outstanding, and the broader historical stomp criteria stay in #2.
+Existing feature-Off comparisons and the narrower native stomp evidence are
+retained with their actual scope. The owner requested sensible bounded testing;
+unexecuted edge cases are listed as unknown rather than issuing more per-case
+console prompts or treating them as passes.
+
 Run requires a cleared disposable room and no Relic, Dark Bum, Maw or Humbling
 Bundle on any actor. It records the actual difficulty, actor types, health,
 damage/luck, feature gates, seed, positions and trial identities. Pack-absent
