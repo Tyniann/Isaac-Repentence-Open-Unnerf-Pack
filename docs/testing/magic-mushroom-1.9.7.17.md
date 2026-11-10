@@ -13,8 +13,8 @@ Treasure availability/depletion pass, all five helper pools survive an anchored
 full-process Continue, and the saved On snapshot stays independent of next-run
 Off. Actual grants convert one and two owned helper copies correctly while a
 forced helper wisp remains a modifier. The forced-wisp fixture's cleanup fails;
-that failure is preserved separately below. Final review and disposal/removal
-of the diagnostic session remain pending. Early starting-item generation and
+that failure is preserved separately below. Both final review axes and local
+checks pass; disposal/removal of the diagnostic session remains pending. Early starting-item generation and
 separate Greed/Ultra Secret exhaustion recipes have not been engine-tested.
 
 ## Owner-approved helper implementation
@@ -874,8 +874,21 @@ before/after depletion and Continue. Separate Greed/Ultra Secret exhaustion
 recipes remain unexecuted; no per-pool independence is assumed after the
 cross-pool measurement.
 
-Final source/spec and standards review, the final local suite, and diagnostic
-session cleanup remain outstanding. Feature-reference files remain with their
+Final source/spec and standards reviews each report zero findings on
+`95625cfa7394b30ec1e309b68ed2bde9d69e04a8`. The final local suite passes all
+11 standalone specs (9 Lua, 2 Python), syntax on 37 tracked Lua files, and
+`git diff --check`. Full local output is `/tmp/issue4-final-tests-95625cf.txt`.
+These local checks are not engine evidence. After fetch, default `origin/master`
+is still the starting `3be8e611c96cb6a48d0d5b8c64f38b06a4ea0829`; the scoped
+diff is nonempty and the checkout remains owned by this issue.
+
+Diagnostic session cleanup remains outstanding. At the read-only check around
+`2026-11-10T21:50Z`, PID 32068 is still running and the log has no fresh start
+or exit after `MM_MODIFIER_CLEANUP`. The owner has been asked to set Magic
+Mushroom On, discard the disposable run through an ordinary new run, save/quit
+and fully close Isaac before reversible observer removal. No further cleanup
+commands are guessed and no mod directory is moved while it is running.
+Feature-reference files remain with their
 owner; supply the actual loader, eighth default-On key and final evidence for
 that handoff. Do not close the issue or claim release before assessment and
 cleanup. No early starting-item, co-op or every-item-reroll matrix is claimed

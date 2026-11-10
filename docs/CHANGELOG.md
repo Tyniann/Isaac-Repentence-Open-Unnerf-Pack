@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Add a reusable native helper-backed pool rule and independent optional-MCM
   setting for Magic Mushroom's Boss availability and Treasure weighting revert
-  (#4; engine validation pending).
+  (#4).
 
 - Add seven independent unnerf toggles through optional Mod Config Menu Pure,
   saved across relaunches and applied to new runs (#3, #5).
