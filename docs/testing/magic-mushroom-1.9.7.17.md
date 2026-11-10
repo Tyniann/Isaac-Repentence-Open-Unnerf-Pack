@@ -291,7 +291,7 @@ vanilla archive remain separate evidence of which definitions change; finite
 profiles do not enumerate every weight. Relative weight, Treasure/Greed/Ultra
 Secret depletion, actual grants and full process restart remain outstanding.
 
-### Focused Treasure weight fixture: engine pending
+### Retired isolated Treasure weight experiment
 
 The current archive recheck validates all three Repentance XML checksums. Both
 collectibles 4 and 169 have Treasure Weight 1 / DecreaseBy 1 / RemoveOn 0.1
@@ -301,20 +301,20 @@ needed. The three-line parser change only adds the metadata filename and
 changes the ID filters. Result SHA256:
 `e7dc389d3947246ad4d0ad15d6011c64bb6662f8ee17737781c8cc7ada9e2d6f`.
 
-`tools/validation/treasure-weight-probe.lua` leaves only that Weight-1 reference
-and the active Magic Mushroom identity. It makes 4,096 nondecreasing queries
-with fixed seeds paired across both halves of the 32-bit domain. Its bounded rate assertion expects 1:1 On
+The retired `tools/validation/treasure-weight-probe.lua` left only that Weight-1 reference
+and the active Magic Mushroom identity. It made 4,096 nondecreasing queries
+with fixed seeds paired across both halves of the 32-bit domain. Its bounded rate assertion expected 1:1 On
 or 0.5:1 Off, with a three-percentage-point window. An early callback counts
 native identities before translation, rejecting unexpected identities. It
 then removes the reference and expects exactly one Magic Mushroom draw followed
 by fallback 668. This deliberately empties other disposable-run entries.
 
-The rate check corroborates declared weights; it does not expose native entry
+The proposed rate check did not expose native entry
 descriptors or prove arbitrary floating-point values by itself. Exact values
-remain source evidence alongside native rate/depletion behavior. Local safety
+remain source evidence. Local safety
 contracts pass for On/Off, metadata rejection before mutation and callback
 cleanup after query failure; Lua syntax passes. Focused review found zero
-findings. No native result is claimed yet. The fixture stages outside the
+findings. The experiments below failed; no native weight pass is claimed. The fixture staged outside the
 game directory and neither installs content nor starts a run. The owner opted
 to keep manual fresh runs, so no restart automation is added.
 
@@ -341,6 +341,55 @@ production code was changed. The immediate bounded diagnostic may reuse the
 already isolated two-entry state because the failed check consumed neither;
 ordinary subsequent pool checks still require fresh runs. A new label suffix
 `_U32` separates the next records from the original failed evidence.
+
+The expanded-domain diagnostic also **fails**: 2,815 target / 1,281 reference,
+rate 0.687255859375. Lower-half counts are 1,414 / 634 and upper-half counts
+1,401 / 647. Both halves show the discrepancy; broadening the seed domain did
+not resolve it. Evidence is preserved at
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T140706260Z-33d21f27`:
+log SHA256 `775f932d8ac969d5363c944f7bc89d8c0cf5cd71f511b67d2572a11e4f9c5a85`,
+record SHA256 `2421f9f970e9fa6bf655b3718af041d2f73d82b66cefbab20ac5644239c88095`,
+capture SHA256 `068156501a2319e2ce876e8da0525390cbc62bec15e57cb18bf44935349fca63`.
+
+The native log explains why this experiment cannot establish relative weight:
+between state and sample records, **3,946 of 4,096 queries** emit
+`[INFO] - [warn] item pool ran out of repicks`. The artificially restricted pool
+drives native fallback behavior; ordinary proportional odds cannot be assumed
+for that state. These failed assertions are **inconclusive about production
+weighting**, not successful weight checks or confirmed production defects.
+The isolated rate fixture and its synthetic spec are retired from the current
+tree; pinned source and staged failed files remain preserved. One-identity
+availability/depletion tests remain distinct from relative-weight claims.
+
+### Intact-pool weight profiler: native pilot pending
+
+`tools/validation/pool-weight-profile.lua` replaces the isolated rate experiment.
+It never removes/decreases entries, changes metadata, grants items or starts a
+run. Its initial 8,192-query pilot records all returned-item counts plus native
+target/reference counts. It rejects restricted states (fewer than 32 distinct
+other items or fewer than 90% other-item draws), and removes its diagnostic
+callback after both success and error. Native repick warnings must be inspected
+from the captured pilot before broader execution. A pilot is not a weight pass.
+
+After that smallest native case is verified, the bounded full profile can use
+262,144 fixed-seed nondecreasing queries against the intact Treasure pool.
+It requires at least 256 target-plus-reference observations and compares their
+conditional target share against one third Off or one half On with a predefined
+four-standard-deviation diagnostic bound. This is finite consistency evidence,
+not raw descriptor enumeration or a proof of exact floating-point values.
+The XML records remain the exact-value evidence. No depleted isolated state can
+be reused for this experiment; a fresh run is required to restore the pool.
+
+Local contracts cover On/Off profiles, seed-domain coverage, refusal to mutate
+pools, callback cleanup, metadata rejection, restricted-pool rejection, and a
+biased full-profile failure. Standards review found zero issues; spec review
+found that the full call could bypass a usable pilot. The corrected API
+requires a successful matching pilot and an explicit `ReviewPilot` attestation
+after its archived native warnings have been checked. A reviewed pilot permits
+one bounded full attempt. Tests confirm failed, unreviewed and already-consumed
+pilot review states block further queries. Those pass with synthetic counts; native pilot
+and weighting acceptance remain **PENDING**. Production remains at source
+`0bbc5d5`; these corrections affect validation tooling only.
 
 ### Historical environment and native API research
 

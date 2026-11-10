@@ -40,6 +40,7 @@ records its later cleanup. Neither establishes the current live state.
 | `tools/compatibility-observer.lua` | Separate read-only observer mod. Records settings, game/player/familiar context and events to the game log. Production does not load it. |
 | `tools/validation/compatibility-batch.lua` | Native frame-driven fixture runner for bounded existing compatibility cases. Mutates disposable fixtures and can clear map rooms/alter terrain. It does not test arbitrary future features. |
 | `tools/validation/collect-pool-profile.ps1` | Scoped pool-log collector. Copies a live log using shared reads, hashes it before/after, and preserves exact-label JSON plus malformed payloads. Does not execute game commands or alter the source log. |
+| `tools/validation/pool-weight-profile.lua` | Nondecreasing sampling against an intact Treasure pool. Starts with a small pilot; inspect native repick warnings before broader execution. An isolated/depleted pool is not a valid proportional-weight control. |
 
 The runner's smallest engine smoke precedes a broader batch. Main-agent
 verification of a new recipe is required before delegating routine execution.
@@ -113,6 +114,11 @@ engine-observed only when instrumentation saw the game-start callback. Pre-damag
 events do not prove final damage, and pickup observations need spawn provenance.
 Random failure to roll an item proves neither absence nor exact weight. Native
 fixtures, forced engine inputs and uninstrumented play are different evidence.
+Read native warning/info lines between structured records as well as Lua
+errors. In #4, an isolated two-item rate experiment emitted "item pool ran out
+of repicks" on 3,946/4,096 calls. Its proportional-odds assertion was invalid
+under native fallback behavior. Keep controlled availability/depletion checks
+separate from rate checks, and verify an intact-pool pilot before broad sampling.
 
 Stop owned diagnostics, confirm their exact cleanup, and retain errors rather
 than silently retrying. Some fixtures cannot roll back cleared rooms or terrain.
