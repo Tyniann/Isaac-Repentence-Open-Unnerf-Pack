@@ -1230,14 +1230,40 @@ requires the actual vanilla comparison arranged by the shared session owner.
 | Criterion | Current engine status | Next bounded evidence |
 | --- | --- | --- |
 | Fresh and continued load | Pass for recorded local Normal runs C1/C3/C4 | Matched owner observations, source/manifest, seeds, fresh/Continue log and no Lua errors. Other modes unverified. |
-| Maw cache/damage and per-player isolation | Single-copy On/Off, two-copy handling, held-item Continue/removal and Hard Jacob/Esau isolation corroborated | Pack-absent comparison remains open; local/network co-op generally is not certified. |
-| Maw ring/black-heart drops | Native ring field 0.05 On / 0 Off and one controlled one-Clotty native black-heart output corroborated | Pack-absent comparison remains open; the single output is not an empirical probability estimate. |
+| Maw cache/damage and per-player isolation | Single-copy On/Off, two-copy handling, held-item Continue/removal and Hard Jacob/Esau isolation corroborated | Isolated feature-Off control establishes native damage in these setups. Whole-pack-absent repeat is unrun; local/network co-op generally is not certified. |
+| Maw ring/black-heart drops | Native ring field 0.05 On / 0 Off and one controlled one-Clotty native black-heart output corroborated | Isolated feature-Off ring field establishes the absent native restoration. Whole-pack-absent kill/drop repeat is unrun; the single output is not an empirical probability estimate. |
 | Orbitals/native state | Independent Dagger acquisition and doorway/BFFS/Continue fields; controlled native contact On 30/60 damage attempts versus pack-absent 15/30 without/with BFFS; native Meat variants 44/45 On damage 14 / size 13 versus absent 7 / 8 | Representative field/contact behavior corroborated; fixed DPS, every orbital variant and every native transformation are not certified. See [native batches](native-batches.md). |
 | Dark Bum/output/exclusions | Independent gate-Off native pills remained unchanged; On six familiar-attributed native payout chains became soul hearts for Isaac | [Configuration results](configuration-results-1.9.7.17.md) retain exact provenance and Morph identities. Excluded characters, general payout variants and output rates remain unverified; this was a gate-Off control, not pack-absent. |
 | Relic timing | Off 0 / On 2 initialization; pack-absent Hard payout observed at seventh clear, absent Normal no payout in six clears; enabled Normal P2 payout at fifth clear, reset 6→2, then three further increments on the same familiar | Representative earlier payout/reset corroborated. Exact universal intervals, second payout cycle, multiple Relics and held-item Continue remain unverified. See [native batches](native-batches.md). |
 | Hard/Normal blue/purple fires | Enabled Hard B6, absent Hard V2, absent Normal V3 and enabled Normal P1 each completed 200 eligible trials per variant; six enabled Hard doubles are distinct pickups, no Normal doubles observed | Mode-specific samples and actual stacking are recorded in [native batches](native-batches.md). Exact rates, repeated/nonlethal-hit behavior and universal pickup caps are not certified. |
 | Humbling Bundle | Independent gate-Off single penny stayed single; On key, four pennies and bomb converted in native chest contents; half-heart and already-doubled contents distinguished | [Configuration results](configuration-results-1.9.7.17.md) retain the six conversions. Full-red-heart conversion, other reward sources and co-op remain unverified; this was a gate-Off control, not pack-absent. |
-| Stomp immunity | Actual Mom/Host Hat independent Off health 6→4 versus On 6→6 on current f1; synthetic engine Pyromaniac crush absent 4→2 versus On 4→6 | Native Mom/Pyromaniac and other stomp sources remain unverified. [Configuration results](configuration-results-1.9.7.17.md) and [native batches](native-batches.md) retain distinct inputs; historical [issue #2](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/2) is not generalized or closed. |
+| Stomp immunity | Actual Mom/Host Hat independent Off health 6→4 versus On 6→6 on current f1; synthetic engine Pyromaniac crush absent 4→2 versus On 4→6 | Native Mom/Pyromaniac and other stomp sources remain unverified. [Configuration results](configuration-results-1.9.7.17.md) and [native batches](native-batches.md) retain distinct inputs. Historical [issue #2](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/2) was already closed before this session; that state is not evidence of broader coverage. |
+
+### Acceptance assessment, 2026-11-10
+
+The original issue requires a vanilla comparison so an already restored effect
+is not applied twice; it does not require uninstalling every module for each
+comparison. The earlier whole-pack-absent closure gate imposed a stronger
+requirement than that contract. The recorded feature-Off controls are not
+relabeled as pack-absent runs, and no unexecuted scenario becomes a pass.
+
+For Maw, disabling its three callbacks leaves the native damage/cache and ring
+drop field untouched; other modules do not write those fields. For the Normal
+Dark Bum setup, Relic handling requires its own spawner, Bundle requires its
+collectible, and the fire helper requires Hard fireplace damage. For Bundle's
+native chest contents, the other modules do not double key/penny/bomb selections.
+The recorded fresh-run items/entities therefore isolate native behavior for
+these comparisons. The paired changed outputs establish that the build had not
+already restored the intended effects. Whole-pack-absent controls independently
+cover the remaining representative mechanics described in the native ledger.
+
+An independent Sol/high acceptance review found no concrete blocking criterion
+or unresolved observed product failure. Issue #1's representative validation
+and anti-stacking requirement are satisfied. Exact probability estimates,
+whole-pack-absent repeats of these three controls, excluded characters, every
+reward source and every orbital/stomp variant remain unknown optional checks.
+The matrix preserves these limits, and no further owner testing is required
+for this acceptance decision.
 
 Preparation alone cannot justify a checkbox or issue closure. Actual commands,
 observed values, timestamps and log references above justify only the bounded

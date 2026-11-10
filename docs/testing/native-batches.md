@@ -406,12 +406,13 @@ For a future coordinated diagnostic session, verify the recorded archive
 inventory while the game is closed and move it back only if the original
 observer directory is absent. This is not needed for ordinary play.
 
-Issue #1 stays open: whole-pack-absent Maw, Dark Bum and Bundle comparisons
-remain outstanding, and the broader historical stomp criteria stay in #2.
-Existing feature-Off comparisons and the narrower native stomp evidence are
-retained with their actual scope. The owner requested sensible bounded testing;
-unexecuted edge cases are listed as unknown rather than issuing more per-case
-console prompts or treating them as passes.
+The first handoff kept issue #1 open for whole-pack-absent Maw, Dark Bum and
+Bundle repeats. The subsequent [acceptance assessment](issue-1-engine-results.md#acceptance-assessment-2026-11-10)
+corrects that overconstraint: their isolated feature-Off controls already meet
+the contract's anti-stacking purpose. Repeats remain unexecuted optional checks,
+not retroactive passes. Broader historical stomp coverage is not inferred from
+the existing state of #2. The owner requested sensible bounded testing; no
+further console tests are required for issue #1's representative acceptance.
 
 Run requires a cleared disposable room and no Relic, Dark Bum, Maw or Humbling
 Bundle on any actor. It records the actual difficulty, actor types, health,
