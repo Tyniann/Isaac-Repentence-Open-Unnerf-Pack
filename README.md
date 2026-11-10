@@ -1,100 +1,107 @@
-# Isaac-Repentence-Open-Unnerf-Pack
-A pack of modular balance reverts targeting **The Binding of Isaac: Repentance+ v1.9.7.17**.
+# Open Unnerf Pack
 
-Representative compatibility validation is complete for the recorded local
-Normal/Hard setups on this build. Tests cover
-fresh loading/Continue, Maw damage/cache and ring output, representative orbital
-contact, Dark Bum and Bundle outputs, Relic payout/reset, fire distributions and
-bounded stomp protection. Pack-absent controls cover orbitals, Relic, fires and
-synthetic crush damage; some other controls disable one feature within the pack.
-These results do not certify every character, interaction, exact drop rate or
-multiplayer mode. See the
-[per-feature audit and owner test matrix](docs/testing/repentance-plus-1.9.7.17.md)
-and [engine results ledger](docs/testing/issue-1-engine-results.md) for the exact
-conditions, evidence and outstanding checks. The [native batch results](docs/testing/native-batches.md)
-record the pack-absent comparisons, observed Hard-fire double rewards and the
-limits of the representative samples. The feature-Off controls also establish
-native behavior for their isolated setups; disabling the entire pack is an
-optional repeat, not an additional acceptance requirement.
-The optional MCM configuration has also been exercised with Pure v113 on this
-build: persistence, fallback, Continue/save-slot behavior, operation without MCM,
-and seven independent gate effects. See the [configuration results](docs/testing/configuration-results-1.9.7.17.md)
-for the tested scenarios and their limits.
-Steam Workshop link: https://steamcommunity.com/sharedfiles/filedetails/?id=2554325871
+Open Unnerf Pack restores selected item and mechanic buffs in **The Binding of
+Isaac: Repentance+**. Choose the adjustments you want, or play with all supported
+unnerfs enabled by default.
 
-# Feature reference
+This is the maintained fork of [KeinNiemand's original Open Unnerf
+Pack](https://github.com/KeinNiemand/Isaac-Repentence-Open-Unnerf-Pack), continued
+by [Tyniann](https://github.com/Tyniann) with compatibility fixes, configurable
+unnerfs, and updated documentation.
 
-See the [complete feature index](docs/features/README.md) for each adjustment's
-behavior, default, independent toggle, interactions and validated limits. It
-covers all seven supported gameplay adjustments plus optional configuration,
-and identifies Nail and Satanic Bible as unfinished disabled code.
+[Feature index](docs/features/README.md) · [Changelog](docs/CHANGELOG.md) ·
+[Report a bug or suggest an adjustment](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues)
 
-# What this mods tries to do
-This mod tries to unnerf things(items, mechanics, ...) that have been nerfed in the Binding of Isaac Repentence and make them work like before they got nerfed. It does so by loading other mods included in this mod.
+## Features
 
-# Suggestions/Bug Reports
-If you want to suggest new unnerfs, improvements or report bugs please create an Issue.
+The pack currently includes seven independently configurable adjustments:
 
-# How this mod is structured/works
-Individual lua mods/unnerfs are located in a sub folder in the Mods folder, they are then loaded in main.lua using require().
-main.lua should only be used for loading individual mods or handling stuff that affects all mods like config.
-Non lua mods should be where they have to be.
+- [Maw of the Void](docs/features/maw-of-the-void.md): restore bonus damage and
+  black-heart drops from qualifying dark rings.
+- [Orbitals](docs/features/orbitals.md): increase contact damage and collision
+  size for qualifying orbital familiars.
+- [Stomp immunity](docs/features/stomp-immunity.md): restore protection with
+  Host Hat and Pyromaniac, including Pyromaniac healing on crush impacts.
+- [Humbling Bundle](docs/features/humbling-bundle.md): turn eligible single
+  hearts, pennies, keys, and bombs into double packs.
+- [Dark Bum](docs/features/dark-bum.md): convert eligible pickup rewards into
+  soul hearts, with character exclusions.
+- [The Relic](docs/features/the-relic.md): adjust its room-clear counter for
+  soul-heart generation.
+- [Hard-mode blue and purple fires](docs/features/blue-fires.md): add an extra
+  soul-heart chance on eligible explosion-damage events.
 
-# Contributing
-If you want contribute to this unnerf pack by adding more unnerfs, fixing bugs or improving this mod in any other mods feel free to create pull requsts. Please follow the struce above. Do not add your unnerf directly into main.lua it should instead be added to a new folder inside the Mods folder then loading in main.lua using require().
+The [feature reference](docs/features/README.md) explains each adjustment,
+its restrictions, and its tested behavior. The Nail and Satanic Bible helpers
+remain unfinished and disabled.
 
-# Configuration
-Install [Mod Config Menu Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787)
-(optional), then open **Open Unnerf Pack → Unnerfs** in its menu (default key: L or F10).
-All seven supported unnerfs default to On, including Humbling Bundle. The Nail and
-Satanic Bible remain disabled and have no controls.
+## Compatibility
 
-Changes save immediately but apply only when you **start a new run**. Continue
-keeps that run's choices, even after exiting and relaunching. This preserves
-already-mutated orbital damage/size and Relic counters rather than attempting
-to undo them live. Maw damage is re-evaluated at run start. The menu shows choices
-for the next new run, which may differ from the current run.
+The current target is **Repentance+ v1.9.7.17**. Compatibility and configuration
+have been checked in representative local Normal and Hard runs. See the
+[validation results](docs/testing/issue-1-engine-results.md#acceptance-matrix)
+for the tested conditions and limits; other game builds, Greed modes, and
+multiplayer have separate validation requirements.
 
-Without MCM, the pack uses saved choices or all-On defaults. Data is stored via
-the pack's own Isaac `SaveData`, not in MCM. Missing/invalid JSON or an unknown
-schema version defaults all seven to On. Within version 1, missing/non-boolean
-fields default individually to On; unknown fields are ignored. Continue without
-a matching saved run seed uses saved choices (including runs predating this
-feature). Settings and the latest run snapshot are stored separately for each Isaac save
-slot and reloaded at game start, including when switching slots without
-relaunching the game.
+## Installation
 
-The integration targets **MCM Pure v113**, inspected at revision
-[`a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d`](https://github.com/Zamiell/isaac-mod-config-menu/blob/a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d/scripts/modconfig.lua).
-See [configuration validation](docs/configuration-validation.md) for reproducible
-checks and [owner/engine results](docs/testing/configuration-results-1.9.7.17.md)
-for the executed Repentance+ **1.9.7.17** configuration cases. Broader combat,
-drop-rate, character and mode limits are recorded in the accepted #1 evidence above.
-See the [dedicated configuration reference](docs/features/configuration.md) for the
-menu-to-feature mapping.
+1. Close the game and download this repository as a ZIP, or clone it.
+2. Create an `open unnerf pack` folder inside your active Repentance+
+   installation's `mods` directory.
+3. Copy the extracted repository contents into that folder. The layout should
+   include `mods/open unnerf pack/main.lua`, `metadata.xml`, `config.lua`, and
+   `Mods/` directly inside the pack folder. GitHub ZIPs add an outer directory;
+   avoid copying that as an extra nested folder.
+4. Disable duplicate copies of the original pack or standalone versions of the
+   same unnerfs. Launch the game, enable **Open Unnerf Pack** in the Mods menu,
+   and start a new run.
 
-# Install for local validation
+For manual updates, close the game and replace the files in the same pack
+folder. To uninstall a manual copy, close the game and remove that folder.
 
-1. Exit the game. Record the fork commit SHA being tested; download/extract that
-   revision (GitHub archives add an outer directory).
-2. Copy the directory containing `main.lua`, `metadata.xml` and `Mods/` into the
-   active Repentance+ installation's `mods/open unnerf pack/` directory. Avoid an
-   extra nested directory: `mods/open unnerf pack/main.lua` must exist.
-3. Disable the original Workshop pack and any duplicate standalone unnerfs so
-   callbacks are not registered twice. Enable this pack in the game's Mods menu.
-4. Start a disposable local run, then test quit/Continue. Record any console or
-   log errors and follow the linked matrix for Normal/Hard vanilla comparisons.
+## Configuration
 
-For the owner's inspected installation the intended destination is
-`D:\The.Binding.of.Isaac.Repentance.v4.0.2\mods\open unnerf pack\`.
-The coordinated validation deployment is recorded in the engine results ledger;
-further changes there must be coordinated with the active session owner. To
-uninstall a normal local copy, exit and remove the fork directory. For the shared
-validation installation, use its recorded backup/restore plan.
-Other builds, Greed modes and multiplayer require separate validation.
+All seven supported unnerfs default to **On**. To choose them individually,
+install the optional [Mod Config Menu
+Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787) and open
+**Open Unnerf Pack → Unnerfs**. The integration has been validated with
+**MCM Pure v113**.
 
-# Developer checks
+Settings save immediately and apply when you **start a new run**. Continuing a
+saved run keeps that run's choices, even after restarting the game. Settings are
+stored separately for each Isaac save slot. Without MCM, the pack uses saved
+choices or its all-On defaults.
 
-With Lua 5.3 installed, run `lua5.3 tests/compatibility.lua` from the repository
-root. Syntax-check Lua files with `luac5.3 -p <file>`. The regression harness uses
-test doubles and is not a substitute for the engine checks above.
+See the [configuration guide](docs/features/configuration.md) for menu controls,
+Continue behavior, and saved-setting details.
+
+## Bugs, suggestions, and contributions
+
+Use [this fork's issue
+tracker](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues) for
+bug reports and suggestions. For a bug, include the game version, pack revision,
+enabled unnerfs and other mods, reproduction steps, and expected versus actual
+behavior. A seed or console setup and relevant Lua errors help make reports
+reproducible.
+
+Contributions are welcome. Keep adjustments in their own modules under `Mods/`;
+use `main.lua` for loading modules and shared pack behavior. Include appropriate
+checks, feature documentation, and a [changelog](docs/CHANGELOG.md) entry for
+user-visible changes. The [compatibility test
+guide](docs/testing/repentance-plus-1.9.7.17.md) and [configuration validation
+guide](docs/configuration-validation.md) describe the existing test setups.
+
+## Credits and license
+
+**KeinNiemand** created the original Open Unnerf Pack. This fork builds on that
+work and preserves the original attribution and license.
+
+- [Original source repository](https://github.com/KeinNiemand/Isaac-Repentence-Open-Unnerf-Pack)
+- [Original Steam Workshop listing](https://steamcommunity.com/sharedfiles/filedetails/?id=2554325871)
+- [Maintained fork](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack)
+
+The Workshop link above belongs to the original project. Development and support
+for this fork take place in this repository.
+
+Released under the [MIT License](LICENSE), including the original
+`Copyright (c) 2021 KeinNiemand` notice.
