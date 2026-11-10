@@ -31,3 +31,7 @@ Before creating, updating, taking over, or merging a pull request, read `docs/ag
 ### Changelog
 
 Before making project changes or preparing a release, read `docs/agents/changelog-rules.md` for what to record in `docs/CHANGELOG.md` and how to format entries.
+
+### Game validation
+
+Before preparing engine tests, interacting with the shared game, deploying test builds, or guiding the owner through console checks, read `docs/agents/game-validation.md` for the maintained tools, interaction protocol, evidence requirements, and session handoffs.

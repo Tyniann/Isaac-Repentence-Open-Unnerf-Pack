@@ -299,6 +299,12 @@ remaining six disabled mechanics are still pending; no issue closure follows.
 
 ## Deferred owner request — reusable validation workflow
 
+Reusable knowledge was captured on 2026-11-10 in the
+[shared game-validation guide](../agents/game-validation.md), which connects the
+maintained tools and ledgers and records the owner's current interaction format.
+Broader workflow generalization remains open in #8. The original request below
+is retained as provenance.
+
 The owner explicitly liked this interactive workflow, including the question
 tool, and requested a durable context note for making it a repo workflow later.
 Generalization is deferred; the active engine validation remains the priority.
