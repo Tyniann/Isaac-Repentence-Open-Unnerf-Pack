@@ -1,0 +1,186 @@
+{
+  "pack_sha": "0bbc5d5d690b3434bdaec3c057edd01b1c885dc0",
+  "mcm_sha": "a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d",
+  "mcm_version": 113,
+  "archives": {
+    "pack": {
+      "url": "https://codeload.github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/zip/0bbc5d5d690b3434bdaec3c057edd01b1c885dc0",
+      "sha256": "1c9119619998d5550bbdba0763c0782d1c9b1986b3ce7ff914852889fa0fc5a8"
+    },
+    "mcm": {
+      "url": "https://codeload.github.com/Zamiell/isaac-mod-config-menu/zip/a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d",
+      "sha256": "ca11293b13f7f8ff1bc2229a6796631005fa7fcc0141d59963d2469633cc808e"
+    }
+  },
+  "files": {
+    "mod_config_menu_pure/LICENSE": {
+      "size": 1062,
+      "sha256": "ce1827d9d40b862322e4d30259c707729f68b66ef598e56e006be8904afdc8c9"
+    },
+    "mod_config_menu_pure/main.lua": {
+      "size": 219,
+      "sha256": "b35e35dd52c126ae7384831553c136c6fc833f2ebef0f9e60733b74fa0f71639"
+    },
+    "mod_config_menu_pure/metadata.xml": {
+      "size": 1049,
+      "sha256": "f75d591db3227fea93f1935520c24c80b7fc99e3abfe7543aa5b3d560cae1705"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/arrows.png": {
+      "size": 3039,
+      "sha256": "d5f1c6f244f745943513c6524573c457c14fa70a156a4594bf1254ad3552facb"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/backselect.png": {
+      "size": 9802,
+      "sha256": "e270648d9166ebc16444bc1c01db6db0f37a7aa39e8da47bca76b676223a4031"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/black.png": {
+      "size": 2791,
+      "sha256": "af7822aea330f0c3a4943197f93963f9d0710efeceb07d5f087f960be0e33ea6"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/menu.anm2": {
+      "size": 29858,
+      "sha256": "5fd08718fe589af9b05a8b9e1ea1e899c8ce0d6bad67d64de2071beb5213bf82"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/menu.png": {
+      "size": 7224,
+      "sha256": "a7ac34f24aea4746b03c1bcdb780c16746ea53abc3ed780bbbf474cb7a0c816d"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/menu_overlay.png": {
+      "size": 6114,
+      "sha256": "2c64312093186b70ea331563b96e4327d6863211893aedab8f815d7be927bc53"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/offset.png": {
+      "size": 2905,
+      "sha256": "e9db3f27b501008688639e23c7d0860b72a6f1822a2dceceb5064546425640a4"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/popup_thin_large.png": {
+      "size": 5803,
+      "sha256": "6c7a8b3de4afb549c094a5fa4f4d9526c988e8b7158d120fd1b2f0ae521cffa6"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/popup_thin_medium.png": {
+      "size": 5511,
+      "sha256": "c251d5befa4913d1af9633513c6b0bdcb39249ce29c7eb41c9c28c5cd107a9f9"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/popup_thin_small.png": {
+      "size": 5226,
+      "sha256": "705610fa091515c694c70f65f060fdd4e75d1dca6516ad4840edfe021dd19596"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/popup_wide_large.png": {
+      "size": 5380,
+      "sha256": "20be8c89350d4f8dd79042724237ba97f4d2c641ad12dc77f244f1e297e52ebc"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/popup_wide_medium.png": {
+      "size": 5167,
+      "sha256": "6c7c2ef407f81bdb95bb9111fa94143ac45401d6d01f99cc8b8924741e587e9a"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/popup_wide_small.png": {
+      "size": 5047,
+      "sha256": "f772da7921708490b8e308fb74a70f702357524bf75737e27642c9ffa436776a"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/slider.png": {
+      "size": 3402,
+      "sha256": "bc6d3ef01316a3e6afae1cc1452e523ebc878130a445801284ebb121ebed27ee"
+    },
+    "mod_config_menu_pure/resources/gfx/ui/modconfig/strike.png": {
+      "size": 2955,
+      "sha256": "722adbe802b5bec4a4bbf4dfccc8c97f310304035ee984dc704ae1007f8f4a20"
+    },
+    "mod_config_menu_pure/resources/previewfile_1603631350.jpg": {
+      "size": 91830,
+      "sha256": "3b372114bc7da132be0e87eb67ee9a7697daadb7e985363274c0e138661b5a37"
+    },
+    "mod_config_menu_pure/scripts/inputhelper.lua": {
+      "size": 8244,
+      "sha256": "30bc2f8c17f385eb81997fd9a119f7356da713031c38adf6acb393fa3247f661"
+    },
+    "mod_config_menu_pure/scripts/modconfig.lua": {
+      "size": 103951,
+      "sha256": "8c531cac660eb47b3645e05fa7516f6d351257e69d258ab0f151cbd7dc3e426d"
+    },
+    "mod_config_menu_pure/scripts/screenhelper.lua": {
+      "size": 3072,
+      "sha256": "b099b72da253afd123914e182a9b775944ce407345f19296018533bfabdac6a7"
+    },
+    "open_unnerf_pack_validation/LICENSE": {
+      "size": 1068,
+      "sha256": "23ca1dc3ddbbd7ce6357da69d1577ec583cfb1db69d0206c5595ebe121b3ec4c"
+    },
+    "open_unnerf_pack_validation/Mods/Humbling Bundle Unnerf/main.lua": {
+      "size": 1633,
+      "sha256": "c88658cda4b1adcc53a9c88d7a109fc93cea0114fb9519d7b32e7dbd9b2ffb95"
+    },
+    "open_unnerf_pack_validation/Mods/Magic Mushroom Unnerf/main.lua": {
+      "size": 95,
+      "sha256": "d3707e6c8e59053b72d992431ac7ad4364a3d140c6ddea4f0e38128d09fa24f0"
+    },
+    "open_unnerf_pack_validation/Mods/MawOfVoidUnnerf/main.lua": {
+      "size": 1364,
+      "sha256": "a46494eb912bb79a3f6fb38c0f0ff85c99740e50b7db3d0bf67fd7bdea5cc018"
+    },
+    "open_unnerf_pack_validation/Mods/Orbital Unnerf/main.lua": {
+      "size": 912,
+      "sha256": "479d2408734dbbbe73902fa7057883d0220f3db217d5214d1a949a4e736de14c"
+    },
+    "open_unnerf_pack_validation/Mods/Pool Rules/main.lua": {
+      "size": 5306,
+      "sha256": "7ecb00b9e40531936ade3d693eb582109991d98ee48592b3c551bee86f6e2e18"
+    },
+    "open_unnerf_pack_validation/Mods/Soul Heart Generator Unnerf/bluefireunnerf.lua": {
+      "size": 776,
+      "sha256": "18e17598e9ae3653ba3c21bb7358cb000d6d9840907ef3938827021d2eb97330"
+    },
+    "open_unnerf_pack_validation/Mods/Soul Heart Generator Unnerf/darkbumunnerf.lua": {
+      "size": 1253,
+      "sha256": "447e7aacf3eb5bbbede2be534197d6bc69ab40fea3da97474af60c34a9c44700"
+    },
+    "open_unnerf_pack_validation/Mods/Soul Heart Generator Unnerf/main.lua": {
+      "size": 2322,
+      "sha256": "58b16e66535385bcabd6672984b1ddc6da1d213f8f0ff477318f6f5f7fd8f3e2"
+    },
+    "open_unnerf_pack_validation/Mods/Soul Heart Generator Unnerf/nailunnerf.lua": {
+      "size": 315,
+      "sha256": "c420d13a1b7cefb56e5529d5e818dae3a00ab5a7eb270bb67a4ad656f3c4c6e0"
+    },
+    "open_unnerf_pack_validation/Mods/Soul Heart Generator Unnerf/relicunnerf.lua": {
+      "size": 766,
+      "sha256": "e952b692e93dad9d11ca5f98fd9cc5de8cb05458a0d2b79b8abd20087471e73b"
+    },
+    "open_unnerf_pack_validation/Mods/Soul Heart Generator Unnerf/satanicbibleunnerf.lua": {
+      "size": 530,
+      "sha256": "69cfdede4e27c3242ba2b43c2c2c20024954b24fce8b3eedadbeaa3f59f56068"
+    },
+    "open_unnerf_pack_validation/Mods/Stomp Immunity Unnerf/main.lua": {
+      "size": 1388,
+      "sha256": "4193578c378c3eb5bdbc2006f6371577d3c1c61b68cab2d37fca01668aaac2e3"
+    },
+    "open_unnerf_pack_validation/config.lua": {
+      "size": 4182,
+      "sha256": "f7274de450f617b444f115e2ca4f6ca057b2f9fff92969da7893e7addd4f66dd"
+    },
+    "open_unnerf_pack_validation/content/itempools.xml": {
+      "size": 875,
+      "sha256": "26394259e20b943963d85e2102ac872d4967aecb5cef9e28383d5d5100ac028c"
+    },
+    "open_unnerf_pack_validation/content/items.xml": {
+      "size": 382,
+      "sha256": "1f3f57201ff83cb47c5a617a86a489aa6078f654bbcdccaf87bf402fa601d239"
+    },
+    "open_unnerf_pack_validation/main.lua": {
+      "size": 359,
+      "sha256": "36f500e9abbde407c3aeffed3fcf6b22db403c908e96589678541a888d13f2f0"
+    },
+    "open_unnerf_pack_validation/metadata.xml": {
+      "size": 1479,
+      "sha256": "7322483e90fa7c26f27e531ceef005ca0514c3996b1d5c311fb33332fc478008"
+    },
+    "open_unnerf_validation_observer/main.lua": {
+      "size": 8463,
+      "sha256": "32e56e884c63ea2a3153f1b0b9b278850a0c6ebe83af2a16a26c1a3699156e2c"
+    },
+    "open_unnerf_validation_observer/metadata.xml": {
+      "size": 237,
+      "sha256": "ef6fe552fd6acc52588926e132d48cac5f37c1f91a7396c141409f27c2f00cbd"
+    }
+  },
+  "package_sha256": "437715ea7f5238c069e8b956ae76dc99b89005e060e5bd3b7009ecbfa0020010"
+}
