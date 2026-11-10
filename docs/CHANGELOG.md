@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Add a player feature index and separate references for all seven supported
+  adjustments, optional configuration and unfinished disabled helpers.
+
 - Add seven independent unnerf toggles through optional Mod Config Menu Pure,
   saved across relaunches and applied to new runs (#3, #5).
 

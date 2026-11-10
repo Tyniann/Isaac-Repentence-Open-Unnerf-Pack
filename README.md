@@ -22,17 +22,12 @@ and seven independent gate effects. See the [configuration results](docs/testing
 for the tested scenarios and their limits.
 Steam Workshop link: https://steamcommunity.com/sharedfiles/filedetails/?id=2554325871
 
-# Unnerfs Currently Included
-- Maw of the Void Unnerf
-- Humbling Bundle Unnerf
-- Orbital Unnerf
-- Stomp Immunity Unnerf
-- Soul Hearth Generator Unnerf
-  - Dark Bum Unnerf
-  - Relic Unnerf
-  - Blue Fires (hard mode) Unnerf
-  - (disabled in code) Nail Unnerf
-  - (disabled in code) Satanic Bible Unnerf 
+# Feature reference
+
+See the [complete feature index](docs/features/README.md) for each adjustment's
+behavior, default, independent toggle, interactions and validated limits. It
+covers all seven supported gameplay adjustments plus optional configuration,
+and identifies Nail and Satanic Bible as unfinished disabled code.
 
 # What this mods tries to do
 This mod tries to unnerf things(items, mechanics, ...) that have been nerfed in the Binding of Isaac Repentence and make them work like before they got nerfed. It does so by loading other mods included in this mod.
@@ -74,7 +69,9 @@ The integration targets **MCM Pure v113**, inspected at revision
 See [configuration validation](docs/configuration-validation.md) for reproducible
 checks and [owner/engine results](docs/testing/configuration-results-1.9.7.17.md)
 for the executed Repentance+ **1.9.7.17** configuration cases. Broader combat,
-drop-rate, character and mode compatibility remains tracked separately in #1.
+drop-rate, character and mode limits are recorded in the accepted #1 evidence above.
+See the [dedicated configuration reference](docs/features/configuration.md) for the
+menu-to-feature mapping.
 
 # Install for local validation
 
