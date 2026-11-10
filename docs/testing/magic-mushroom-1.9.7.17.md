@@ -65,6 +65,46 @@ returns copied descriptor tables from GetCollectiblesFromPool, and its add paths
 insert entries rather than replacing Treasure's existing entry. Editing those
 copies or appending a second Treasure entry would not meet acceptance.
 
+## Pointers from other mods
+
+The owner requested existing GitHub implementations and prioritized a simple
+player installation. These are source references, not dependencies added to the
+pack or engine-tested solutions for #4:
+
+- **Racing+**, pinned at `3dc91d15709c526461cbd345a92912c4c2f42ad2`:
+  its [partial content XML](https://github.com/Zamiell/racing-plus/blob/3dc91d15709c526461cbd345a92912c4c2f42ad2/mod/content/itempools.xml#L3-L5)
+  adds a custom Magic Mushroom Placeholder with values 0.5/0.5/0.05. Its
+  [ExtraStartingItems feature](https://github.com/Zamiell/racing-plus/blob/3dc91d15709c526461cbd345a92912c4c2f42ad2/src/classes/features/optional/gameplay/ExtraStartingItems.ts)
+  swaps helper pickups to real items, handles duplicate pickups and inventory
+  rerolls, and removes helper IDs from pools. The relevant GetCollectible and
+  RemoveCollectible calls are native APIs; **neither was reported missing** in
+  our screenshot. This is a useful configurable native pattern, but it adds
+  custom helper entries rather than changing the existing vanilla entry. Its
+  first-floor behavior is not a whole-run weight/depletion equivalence proof.
+  The repository also contains a full resource pool table; that separate
+  approach would violate this issue's whole-file-replacement restriction.
+- **Revelations**, pinned at `1ce39bf9289affb59702279d56e1ca197bfd6899`:
+  its [special-room callback](https://github.com/filloax/revelations-mirror/blob/1ce39bf9289affb59702279d56e1ca197bfd6899/scripts/revelations/chapter1/glacier/features/dante_mega_satan.lua#L222-L231)
+  redirects non-Devil selections to the Devil pool through GetCollectible.
+  This demonstrates native selection interception, not entry mutation. The
+  example's surrounding StageAPI room machinery need not be adopted to study
+  that native callback.
+
+These sources establish native workarounds worth assessing, not impossibility
+of a native solution or compliance with the exact #4 criteria. Partial XML
+addition of a new helper does not establish whether an existing vanilla ID is
+replaced or duplicated. A substitute implementation would need an explicit
+requirements decision if its actual pool definitions differ from the request.
+
+Prefer the existing pack-only installation with MCM optional. A bundled Lua
+helper need not add a player installation step, but it cannot expose missing
+engine functions on its own. An external engine extension is different:
+[REPENTOGON's installation guide](https://repentogon.com/install.html) requires
+its launcher and setup. No dependency, launcher, helper item or gameplay change
+was installed during this research.
+
+## Remaining acceptance
+
 Preserve the exact acceptance criteria while resolving the implementation path.
 Still required: effective Boss/Treasure definition evidence, unchanged unrelated
 definitions, once-only application across Continue/reload, and independent
