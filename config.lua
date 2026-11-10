@@ -9,7 +9,13 @@ local options = {
     {"darkBum", "Dark Bum"},
     {"relic", "The Relic"},
     {"blueFires", "Hard-mode blue fires"},
+    {"magicMushroom", "Magic Mushroom pools"},
 }
+
+local runStartListeners = {}
+function config.AddRunStartListener(listener)
+    runStartListeners[#runStartListeners + 1] = listener
+end
 
 local function normalize(values)
     local result = {}
@@ -80,6 +86,7 @@ openUnnerfPack:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, contin
         active = normalize(choices)
     end
     run = {seed = seed, settings = normalize(active)}
+    for _, listener in ipairs(runStartListeners) do listener(continued) end
     save()
     registerMenu() -- Also handles MCM loading after this mod.
     -- Initial cache evaluation may precede POST_GAME_STARTED. Re-evaluate Maw's

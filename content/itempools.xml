@@ -1,0 +1,19 @@
+<ItemPools>
+    <!-- Exactly one helper identity replaces the original in all five pools.
+         Greed/Ultra Secret values mirror vanilla; no unrelated rows are copied. -->
+    <Pool Name="treasure">
+        <Item Name="OUP Magic Mushroom Pool Entry" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    </Pool>
+    <Pool Name="boss">
+        <Item Name="OUP Magic Mushroom Pool Entry" Weight="1" DecreaseBy="1" RemoveOn="0.1" />
+    </Pool>
+    <Pool Name="greedTreasure">
+        <Item Name="OUP Magic Mushroom Pool Entry" Weight="0.5" DecreaseBy="0.5" RemoveOn="0.05" />
+    </Pool>
+    <Pool Name="greedBoss">
+        <Item Name="OUP Magic Mushroom Pool Entry" Weight="0.2" DecreaseBy="0.2" RemoveOn="0.02" />
+    </Pool>
+    <Pool Name="ultraSecret">
+        <Item Name="OUP Magic Mushroom Pool Entry" Weight="1" DecreaseBy="0.4" RemoveOn="0.1" />
+    </Pool>
+</ItemPools>

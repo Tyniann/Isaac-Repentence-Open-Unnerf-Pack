@@ -1,12 +1,54 @@
 # Magic Mushroom: native API prerequisite
 
 Issue [#4](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/4)
-remains open. No Magic Mushroom implementation or modified-pool engine pass is
-claimed. The required change is one normal Boss entry and an update to the
+remains open. A helper-backed implementation is now in development; no
+modified-pool engine pass or release is claimed. The required change is one normal Boss entry and an update to the
 existing normal Treasure entry for collectible 12, both at Weight 1,
 DecreaseBy 1 and RemoveOn 0.1. Other entries/pools/effects stay intact. The
 independent persistent toggle is required now that configuration issue #3 has
 landed, including its next-new-run and Continue semantics.
+
+## Owner-approved helper implementation
+
+The owner explicitly approved helper-backed behavior if exact weighting,
+one-item availability, unrelated pools and toggle/Continue behavior are verified.
+The physical record for collectible 12 is therefore not rewritten: one private
+native identity mirrors all five of its pools, and generated outputs map to 12.
+All other acceptance conditions remain unchanged.
+
+`Mods/Pool Rules/main.lua` provides one registration interface for future
+pool-only reverts. Its contract requires a helper definition that mirrors every
+pool of the real item, because native RemoveCollectible is global. On runs
+exclude the original identity; Off runs exclude the helper. No runtime entries
+are appended or reset, including on Continue. Configuration selects active run
+settings before notifying rule listeners. MCM stays optional; this adds the
+eighth default-On choice while preserving all seven prior defaults and the
+disabled Nail/Satanic Bible.
+
+The helper uses quality 4 and `summonable mushroom offensive`, verified from the
+current checksum-validated `repentance.a` metadata record (SHA256
+`42b3eb47a2f39d7120708ad32a790fc0c1129dd845f3cbdc969d702a5f17152e`).
+At run start, a type/quality/tag mismatch excludes the helper and retains the
+original item instead of silently applying mismatched selection metadata.
+Inventory and direct-pedestal fallback paths prevent a private helper escaping
+the normal selection callback. Temporary wisps/modifiers are excluded from the
+inventory ownership conversion; broader interactions still need engine checks.
+
+Local checks pass: configuration (15 cases including eight independent gates),
+compatibility regressions, pool-rule/diagnostic contracts, asset definitions,
+existing batch/Maw/stomp harnesses, and Lua syntax. These are source and harness
+evidence only. The diagnostic `tools/validation/pool-rule-probe.lua` checks
+metadata before mutation and then, only on explicit Run, isolates a disposable
+run to a single identity and checks bounded depletion against an explicit
+fallback. It must not be used in a valuable run. It permits one destructive
+pool check per fresh run; its Continue query does not isolate or reset pools.
+Its early native-pick trace also records selections before game-start settings
+are chosen. No engine check has run yet, including the collection exclusion
+and early-generation paths.
+
+The feature-reference documentation thread owns `docs/features/**` and the
+root README index. Those files are intentionally unchanged here; hand off
+actual behavior, the eighth option and final evidence after implementation lands.
 
 ## Current evidence, 2026-11-10
 
