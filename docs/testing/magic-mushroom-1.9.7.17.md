@@ -68,11 +68,61 @@ finite fingerprints alone are not an enumeration of every engine entry/weight.
 Native helper XML/metadata plus per-pool controlled depletion remain separate
 parts of the exact-definition evidence. Fingerprint excludes only Magic Mushroom
 and Run is destructive to the rest of the disposable pools; use fresh runs
-between those tests. No baseline fingerprint has yet been captured in Isaac.
+between those tests. The completed baseline capture is recorded below.
 
 The feature-reference documentation thread owns `docs/features/**` and the
 root README index. Those files are intentionally unchanged here; hand off
 actual behavior, the eighth option and final evidence after implementation lands.
+
+## Native baseline captured, 2026-11-10
+
+The owner started a fresh disposable Normal Isaac run and executed the staged
+baseline wrapper. The wrapper loaded mid-run, so fresh setup is owner evidence;
+no game-start callback was observed. This is a control with the existing pack
+and MCM, before the Magic Mushroom feature was installed, plus nil-returning
+diagnostic callbacks. It is not an uninstrumented or whole-pack-absent control.
+
+![Owner baseline completion output](evidence/magic-mushroom-baseline.png)
+
+Screenshot SHA256: `43c7b6391f7f95f149df4fcf36152e1f33d361121ede83f69c1a0fff2a672744`.
+
+The preserved raw output establishes:
+
+- Label `MM_BASELINE`, frame 17, difficulty 0, seed **SVW0 6RZE** / numeric
+  **2299138499**. The captured run snapshot uses that same seed.
+- Exactly 31 `full` and 31 `without_magic` profiles, 64 outputs each; 64 selected
+  JSON records total, one successful completion and no malformed payloads.
+- Helper ID -1 (not installed), real item quality 4/type 1/hidden false,
+  tags 17826048, MCM 113, and all seven existing saved choices/run settings On.
+  The legacy config has no Magic Mushroom key; its false lookup is not a test
+  of the new Off toggle.
+- No probe-bounded Lua error/traceback. Completion means the baseline was
+  captured; it does not establish the feature's modified weights or behavior.
+
+The initial collector hit a sharing violation before copying the log.
+`tools/validation/collect-pool-profile.ps1` corrected this by using
+FileShare.ReadWrite for every live source read, including hashes. No engine
+test was replayed. Its first native capture succeeded with source length 54,413,
+mtime `2026-11-10T04:02:20.2965282Z`, and identical before/after SHA256.
+The main agent inspected the actual capture command's raw JSON result.
+
+Artifacts are retained outside the game at
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T041352297Z-60f10ba8`:
+
+| File | SHA256 |
+| --- | --- |
+| `log.txt` | `c6ad5466cf2f0a75e49c919763c15e24c42c0891908f6f47d9f015b1922eb241` |
+| `pool-records.jsonl` | `dd7017f5a86f735d355b35eef849113c007ff6ff7c8f31b32e68a5206a9a10aa` |
+| `capture.json` | `4dc8e06571a496b145d391f7bb7600b3057b3097f035fa821bc171d93016e5c9` |
+
+Executable hash remains `e5faf6f513c6de9cc9ff1c335ef9c541e2b33fc623aa3b8ffbd2e6a6c0027bb0`.
+Legacy deployed main/config hashes are respectively
+`caedfc800e679e5b094bcdf38fd4380a7a3a859f7b9891ea9d6eb3e73ba4a530` and
+`a6c2443f863914c140134b663259d226e91dbd1e118789851f240c3ed3c811d5`.
+PID 26076 was left running during collection. The owner is now asked to close
+the game for the reversible update. StageOnly verified 42 payload files for
+runtime source `0bbc5d5`, preserving installed pack/MCM hashes; no feature
+deployment or feature engine pass has yet occurred.
 
 ## Current evidence, 2026-11-10
 

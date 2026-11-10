@@ -39,6 +39,7 @@ records its later cleanup. Neither establishes the current live state.
 | `tools/validation/test-build.manifest.json` | Historical pinned deployment evidence; compare actual installed files, not an operator's SHA label. |
 | `tools/compatibility-observer.lua` | Separate read-only observer mod. Records settings, game/player/familiar context and events to the game log. Production does not load it. |
 | `tools/validation/compatibility-batch.lua` | Native frame-driven fixture runner for bounded existing compatibility cases. Mutates disposable fixtures and can clear map rooms/alter terrain. It does not test arbitrary future features. |
+| `tools/validation/collect-pool-profile.ps1` | Scoped pool-log collector. Copies a live log using shared reads, hashes it before/after, and preserves exact-label JSON plus malformed payloads. Does not execute game commands or alter the source log. |
 
 The runner's smallest engine smoke precedes a broader batch. Main-agent
 verification of a new recipe is required before delegating routine execution.
@@ -85,8 +86,8 @@ Preserve raw evidence, hashes and source metadata; distinguish a stable capture
 from one that raced a live write. Observe sensitive save data without publishing
 it into the repository.
 
-There is no maintained general log collector or cleanup driver in
-`tools/validation/`. Design the smallest read-only capture on the actual remote
+Pool diagnostics have the scoped collector above; there is no general collector
+or cleanup driver covering every feature. For other logs, design the smallest read-only capture on the actual remote
 environment before delegating it: resolve the real log/data paths, record source
 length/mtime/hash before and after the copy, and hash the preserved artifacts.
 Extract JSON records by exact prefix and test label/seed; retain malformed payloads
