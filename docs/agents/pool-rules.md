@@ -56,7 +56,8 @@ two restored normal rows and inadvertently lose the Greed/Ultra Secret rows.
 
 On excludes the original identity; Off excludes the helper. Type, quality and
 tags must match the real item. At preparation, a mismatch excludes the helper
-and leaves vanilla behavior. A post-selection mismatch removes the helper and
+rather than removing the original; it cannot reconstruct an original entry
+already excluded in saved pool state. A post-selection mismatch removes the helper and
 retries the native last pool rather than exposing it. Hidden status is not used
 to hide the helper from selection: the tested helper is a selectable passive
 with quality 4 and `summonable mushroom offensive` tags, without direct stat or
