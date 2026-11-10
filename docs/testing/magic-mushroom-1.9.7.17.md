@@ -443,6 +443,64 @@ Stable capture:
 log SHA256 `af01f9ec5416d7a02d9bfb8310387cc44917f7a9f430a9405fcccfc0d5ebbcf0`,
 record SHA256 `b10483c1a99c133199f6dbe49f5e069b787eabf7799a303512d36bcf65fc62f8`.
 
+### Enabled weight and Treasure depletion: pass
+
+The On pilot was invoked twice without decreasing weights. Both completed at
+frame 196 with the same 8,192 fixed-seed samples: 21 translated target / 32
+reference / 8,139 other, native target **21** from helper 733, 263 distinct
+other items, no unexpected identities/fallbacks/Lua errors, one repick warning
+each; elapsed 58 and 55 ms. These are repeated samples, not independent extra
+observations. The latest pilot was reviewed before the full call. A capture
+summary incorrectly required fingerprint completion records and misread the
+native counter as 28; direct raw-record inspection corrected both statements.
+The profiler's `weight_profile` is its result record. Stable pilot capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T161953201Z-9bbe74b5`,
+log SHA256 `a12e8431c224b79f14231d2d33d2c1cf411952a59e3bddc59ad8153d0086f586`,
+record SHA256 `39e53de44a35f333e12bafbf261c7b9186b7e4057c60085a34d987d31aff173f`.
+
+`MM_ON_FULL_WEIGHT` **passes**: 262,144 queries, 992 target / 1,058 reference /
+260,094 others, focal 2,050; expected share 0.5, observed 0.48390243902439,
+z-score -1.457696144188 within bound 4. Native helper counter 992 matches all
+992 returned item-12 results; unexpected identities and fallback counts are
+zero. There are 263 distinct others, four native warnings and no Lua errors;
+elapsed 1,750 ms. The pilot-review event is present. All eight active/saved
+settings are On, matching metadata and seed `2299138499`, observed fresh.
+This corroborates helper Weight 1 against the Weight-1 reference, alongside
+the exact XML values. It does not enumerate raw native entry descriptors.
+Stable capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T163619216Z-5e853944`,
+log SHA256 `dfd0e5c1f6bdd21847b7605003f89c3da9d8750b453c65ad9346f4489ee8f983`,
+record SHA256 `ec6974a6b9b28c5282fe7f1310d4146af6d799a3efdc7e6327313d0c21e8a786`.
+
+The same run's `MM_ON_TREASURE` **passes one-item availability/depletion**:
+isolation keeps 733; raw 733 with decrease true returns 12, followed by raw
+and returned fallback 668 with decrease false. Result expected 1, outputs
+`[12]`, after 668, pass true. Stable five-record capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T165514048Z-555eb5f4`,
+log SHA256 `8868facded155aa82863578f8edb19f8ba3dd35ea161fa3be8399502031805d6`,
+record SHA256 `0684d7a5d6f1e59fa888fa1d97524b44246f82c825748390be6cbde96ab65665`.
+No actual Magic Mushroom was granted during these pool checks.
+
+### Full process boundary verified; reload check pending
+
+After changing only the next-run Magic Mushroom choice to Off and saving,
+the owner fully closed Isaac. Read-only process verification at
+`2026-11-10T17:35:41.1022259Z` found no Isaac process, with old PID 31116 gone
+and the executable hash unchanged. Proof:
+`C:\Users\Mario\.t3\scratch\2026-11-10-act-as-the-test-sub-a4d07916\shutdown-proof.json`.
+
+`tools/validation/pool-reload-check.lua` will Continue this On snapshot and
+require next-run Off, matching metadata and zero owned real/helper copies.
+It re-excludes **only non-target IDs**, leaving both 12 and the helper
+untouched. Thus it does not depend on serialization of the diagnostic's other
+bulk exclusions, and cannot itself hide a reappearing original or reset a
+helper weight. It expects spent Treasure to return 668, previously unspent
+Boss to return 12 from raw helper once, then 668. The early callback captures
+all three identities and is removed on pass/failure. Local contracts cover
+reset-helper, reappearing-original, missing-Boss and ownership-confound failures;
+syntax passes and focused review found zero findings. Native execution after
+reopening the application remains pending.
+
 ### Actual-grant fixture prepared: engine pending
 
 `tools/validation/pool-grant-probe.lua` starts with one explicit actual helper
