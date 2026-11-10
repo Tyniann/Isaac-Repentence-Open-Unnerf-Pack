@@ -31,3 +31,15 @@ Before creating, updating, taking over, or merging a pull request, read `docs/ag
 ### Changelog
 
 Before making project changes or preparing a release, read `docs/agents/changelog-rules.md` for what to record in `docs/CHANGELOG.md` and how to format entries.
+
+## Documentation
+
+Before creating, updating, or reorganizing documentation, read [documentation rules](docs/agents/documentation-rules.md).
+
+### Technical documentation
+
+Technical and agent-facing documentation lives in [docs/agents/](docs/agents/README.md). Use its index for tools, development and validation workflows, and operational guidance. Read the relevant guides before working in those areas.
+
+### User documentation
+
+Player-facing feature documentation lives in [docs/features/](docs/features/README.md), with an index and a separate page for each mod feature. Keep these pages aligned with user-visible behavior and configuration.
