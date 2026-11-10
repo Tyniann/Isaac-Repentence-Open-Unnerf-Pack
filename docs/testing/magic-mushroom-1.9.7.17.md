@@ -14,7 +14,8 @@ full-process Continue, and the saved On snapshot stays independent of next-run
 Off. Actual grants convert one and two owned helper copies correctly while a
 forced helper wisp remains a modifier. The forced-wisp fixture's cleanup fails;
 that failure is preserved separately below. Both final review axes and local
-checks pass; disposal/removal of the diagnostic session remains pending. Early starting-item generation and
+checks pass; the diagnostic run is discarded and the observer archived with
+protected files unchanged. Early starting-item generation and
 separate Greed/Ultra Secret exhaustion recipes have not been engine-tested.
 
 ## Owner-approved helper implementation
@@ -882,7 +883,7 @@ These local checks are not engine evidence. After fetch, default `origin/master`
 is still the starting `3be8e611c96cb6a48d0d5b8c64f38b06a4ea0829`; the scoped
 diff is nonempty and the checkout remains owned by this issue.
 
-Diagnostic session cleanup remains outstanding. At the read-only check around
+Before final cleanup, at the read-only check around
 `2026-11-10T21:50Z`, PID 32068 is still running and the log has no fresh start
 or exit after `MM_MODIFIER_CLEANUP`. The owner has been asked to set Magic
 Mushroom On, discard the disposable run through an ordinary new run, save/quit
@@ -890,11 +891,60 @@ and fully close Isaac before reversible observer removal. No further cleanup
 commands are guessed and no mod directory is moved while it is running.
 Feature-reference files remain with their
 owner; supply the actual loader, eighth default-On key and final evidence for
-that handoff. Do not close the issue or claim release before assessment and
-cleanup. No early starting-item, co-op or every-item-reroll matrix is claimed
+that handoff. No early starting-item, co-op or every-item-reroll matrix is claimed
 from the Normal Isaac checks. The owner explicitly requested a reasonable
 manual-test budget; retain valid evidence and limit additional checks to a
 specific unresolved acceptance condition.
+
+## Final cleanup and reviewable-PR handoff
+
+The owner restored Magic Mushroom On, started a fresh ordinary run to discard
+the forced modifier, saved/quitted and fully closed Isaac. The preserved log
+confirms a fresh `continued=false` start after the cleanup marker, active On,
+then exit; no freshness conclusion depends on the retained diagnostic label.
+At `2026-11-10T23:16:07Z`, no Isaac process remains and the executable hash is
+unchanged. Prerequisite proof:
+`C:\Users\Mario\.t3\scratch\2026-11-10-act-as-the-test-sub-a5ffc631\scratchlogcopy.proof.json`,
+SHA256 `3e24ea5c74635495d97fda30476c6d1d086488ab66b7050e8236410cc8cfe92c`;
+log SHA256 `df47be62e1957e1b7370ab1abf0f584e1443490ad78b410ab9870e3a0eaab204`.
+
+The two-file observer is reversibly archived at
+`D:\T3ValidationArchives\issue4-cleanup-20261110T232734137Z-e78f7f7c\open_unnerf_validation_observer`.
+The installed source directory is absent, its archived hashes match, the
+unrelated mod-directory listing is unchanged, and Isaac remains closed. All
+before/after protected inventory strings and parsed path/size/SHA256 maps match:
+pack **18**, MCM **22**, game data **5**, user data **183** files (**228 total**).
+No save was deleted/restored and no engine launched after removal. Original
+deployment backups remain intact.
+
+The executed archive script is pinned at `fd893f85ff0e2ed7ecbc5bbd1f8238017cc00635`,
+SHA256 `88b5084ec7e36a17e99f0043cebc721616e20ae0b9b32c73b6ce599d544e1c10`;
+native PowerShell parser errors zero. Its result's four file counts were
+incorrectly reported as 1 because of array handling; the protection comparison
+itself covered the full inventories. Offline parsing confirms the actual counts
+above in a new `inventory-counts.json`, retaining the original result. The
+maintained script fixes reporting only and was not rerun against an absent
+observer. Earlier aborted guards/invalid command encoding moved no files; the
+pinned raw-file recipe avoids those transfer errors.
+
+Cleanup session proof hashes:
+
+- `before.json`: `6a517298e7637667737034e2a9f0691b761df2775b11edac5dc26cb78659469a`.
+- `after.json`: `61e8bc3184a2f3a09d0ff2e743cc31a4fd2867763c03cac30aac577b08127dbb`.
+- `result.json`: `61ee7807e9ee34f988c13066d4ab7d62c326ff402af2c778c313840e9ad26a73`.
+
+The tested pack and optional MCM remain installed. Both final review axes report
+zero findings; all local checks above pass. The additional
+[technical contract](../agents/pool-rules.md) has a clear focused source review,
+and its/shared-guide **25 local links** pass. The feature-documentation owner
+received exact behavior, key/default, evidence limits and technical pointers;
+their reviewed player draft and deferred PR #15 integration checklist are
+prepared without advertising unmerged work.
+
+Implementation, validation and diagnostic cleanup are complete for a reviewable
+PR #14 handoff. The issue stays open pending merge; unexecuted supplementary
+paths and all failed experiments remain explicitly recorded. No release or
+merge of the separate PR #15 is claimed.
 
 Use the [shared validation guide](../agents/game-validation.md) for future
 owner interaction and evidence collection. No production deployment, restart,

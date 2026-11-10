@@ -68,7 +68,10 @@ if ((Hash $exe) -ne $exeHash) { throw 'Executable changed' }
 Assert-Closed
 Write-Json (Join-Path $session 'after.json') ([ordered]@{protected=$afterProtected; observer=$observerAfter; mods=$modsAfter; executableSha256=(Hash $exe)})
 $counts = [ordered]@{}
-foreach ($key in $roots.Keys) { $counts[$key] = @(ConvertFrom-Json $beforeProtected[$key]).Count }
+foreach ($key in $roots.Keys) {
+    $inventory = ConvertFrom-Json -InputObject $beforeProtected[$key]
+    $counts[$key] = $inventory.Count
+}
 $result = [ordered]@{status='observer-archived'; session=$session; archive=$destination; gameClosed=$true; protectedUnchanged=$true; observerFiles=2; protectedFiles=$counts; beforeSha256=(Hash (Join-Path $session 'before.json')); afterSha256=(Hash (Join-Path $session 'after.json'))}
 Write-Json (Join-Path $session 'result.json') $result
 $result | ConvertTo-Json -Depth 6
