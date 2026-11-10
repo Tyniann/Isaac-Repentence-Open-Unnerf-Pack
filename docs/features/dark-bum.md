@@ -3,7 +3,7 @@
 [All features](README.md) · [Configuration](configuration.md)
 
 **Affected:** Dark Bum rewards. **Default:** On. **Setting:** `darkBum`,
-shown as **Dark Bum: On/Off** under **Open Unnerf Pack → Unnerfs**.
+shown as **Dark Bum: On/Off** under **Open Unnerf Pack 2 → Unnerfs**.
 **Target build:** Repentance+ v1.9.7.17 (owner executable 1.9.7.17.J460).
 
 ## What changes

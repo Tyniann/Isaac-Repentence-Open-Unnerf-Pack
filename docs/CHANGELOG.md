@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Rename the displayed pack and configuration menu to Open Unnerf Pack 2 while
+  preserving existing saved settings and internal identifiers.
+
 - Rewrite the project README for the maintained fork with original-author
   attribution, installation and configuration guidance, optional-menu screenshot
   and F10 instructions, and feature/changelog links.

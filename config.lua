@@ -50,11 +50,11 @@ local menuRegistered = false
 local function registerMenu()
     if menuRegistered or ModConfigMenu == nil then return end
     menuRegistered = true
-    ModConfigMenu.AddText("Open Unnerf Pack", "Unnerfs", "Changes apply to a NEW RUN only.")
-    ModConfigMenu.AddText("Open Unnerf Pack", "Unnerfs", "Continue keeps that run's settings.")
+    ModConfigMenu.AddText("Open Unnerf Pack 2", "Unnerfs", "Changes apply to a NEW RUN only.")
+    ModConfigMenu.AddText("Open Unnerf Pack 2", "Unnerfs", "Continue keeps that run's settings.")
     for _, option in ipairs(options) do
         local key, label = option[1], option[2]
-        ModConfigMenu.AddSetting("Open Unnerf Pack", "Unnerfs", {
+        ModConfigMenu.AddSetting("Open Unnerf Pack 2", "Unnerfs", {
             Type = ModConfigMenu.OptionType.BOOLEAN,
             CurrentSetting = function() return choices[key] end,
             Display = function() return label .. ": " .. (choices[key] and "On" or "Off") end,

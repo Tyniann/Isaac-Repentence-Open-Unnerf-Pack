@@ -3,7 +3,7 @@
 [All features](README.md) · [Configuration](configuration.md)
 
 **Affected:** Maw of the Void. **Default:** On. **Setting:** `mawOfTheVoid`,
-shown as **Maw of the Void: On/Off** under **Open Unnerf Pack → Unnerfs**.
+shown as **Maw of the Void: On/Off** under **Open Unnerf Pack 2 → Unnerfs**.
 **Target build:** Repentance+ v1.9.7.17 (owner executable 1.9.7.17.J460).
 
 ## What changes

@@ -1,6 +1,6 @@
 # Feature reference
 
-Open Unnerf Pack targets **The Binding of Isaac: Repentance+ v1.9.7.17**
+Open Unnerf Pack 2 targets **The Binding of Isaac: Repentance+ v1.9.7.17**
 (owner executable **1.9.7.17.J460**). These pages describe the currently loaded
 adjustments, rather than promising an exact recreation of every earlier Isaac
 version. [Return to the project README](../../README.md).
@@ -8,7 +8,7 @@ version. [Return to the project README](../../README.md).
 ## Supported adjustments
 
 All seven gameplay adjustments default to **On**. Each has its own saved toggle
-under **Open Unnerf Pack → Unnerfs** in optional Mod Config Menu Pure. Turn any
+under **Open Unnerf Pack 2 → Unnerfs** in optional Mod Config Menu Pure. Turn any
 off for native behavior in a new run; **Continue retains the run's choices**.
 See [configuration](configuration.md) for menu names, persistence and fallback.
 

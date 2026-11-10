@@ -10,7 +10,7 @@ it does not supply the pack's persistence or add more gameplay features.
 ## Menu controls
 
 Install [Mod Config Menu Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787),
-then open **Open Unnerf Pack → Unnerfs** (MCM's default key: L or F10).
+then open **Open Unnerf Pack 2 → Unnerfs** (MCM's default key: L or F10).
 Each entry displays its name followed by `: On` or `: Off`.
 
 | Menu name | Saved key | Feature |

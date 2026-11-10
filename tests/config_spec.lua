@@ -48,7 +48,7 @@ local function boot(data, withMenu)
     ModConfigMenu = withMenu and {
         OptionType = {BOOLEAN = 1}, AddText = function() end,
         AddSetting = function(category, tab, setting)
-            assert(category == "Open Unnerf Pack" and tab == "Unnerfs")
+            assert(category == "Open Unnerf Pack 2" and tab == "Unnerfs")
             assert(setting.Type == 1)
             menu[#menu + 1] = setting
         end,
@@ -79,6 +79,27 @@ local count = 0
 local function test(name, fn)
     fn(); count = count + 1; print("ok " .. count .. " - " .. name)
 end
+
+test("renamed display preserves registered identity and saved Continue choices", function()
+    local data = '{"version":1,"settings":{"orbitals":false},' ..
+        '"run":{"seed":12345,"settings":{"orbitals":false,"relic":false}}}'
+    boot(data, true)
+    assert(mods["Open Unnerf Pack"] == openUnnerfPack)
+    assert(mods["Open Unnerf Pack 2"] == nil)
+    start(true)
+    assert(not openUnnerfPack.Config.IsEnabled("orbitals"))
+    assert(not openUnnerfPack.Config.IsEnabled("relic"))
+    local saved = dkjson.decode(storage)
+    assert(saved.version == 1)
+    assert(saved.settings.orbitals == false)
+    assert(saved.run.settings.orbitals == false and saved.run.settings.relic == false)
+    if upstreamAPI then
+        local category = ModConfigMenu.GetCategoryIDByName("Open Unnerf Pack 2")
+        assert(category and ModConfigMenu.MenuData[category].Name == "Open Unnerf Pack 2")
+        assert(ModConfigMenu.GetCategoryIDByName("Open Unnerf Pack") == nil)
+        assert(#ModConfigMenu.MenuData == 1)
+    end
+end)
 
 test("absent MCM, first install defaults, exit and reload", function()
     boot(nil, false); start(false); checkDefaults()

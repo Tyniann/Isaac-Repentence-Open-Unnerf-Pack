@@ -1,6 +1,6 @@
-# Open Unnerf Pack
+# Open Unnerf Pack 2
 
-Open Unnerf Pack restores selected item and mechanic buffs in **The Binding of
+Open Unnerf Pack 2 restores selected item and mechanic buffs in **The Binding of
 Isaac: Repentance+**. Choose the adjustments you want, or play with all supported
 unnerfs enabled by default.
 
@@ -53,7 +53,7 @@ multiplayer have separate validation requirements.
    `Mods/` directly inside the pack folder. GitHub ZIPs add an outer directory;
    avoid copying that as an extra nested folder.
 4. Disable duplicate copies of the original pack or standalone versions of the
-   same unnerfs. Launch the game, enable **Open Unnerf Pack** in the Mods menu,
+   same unnerfs. Launch the game, enable **Open Unnerf Pack 2** in the Mods menu,
    and start a new run.
 
 For manual updates, close the game and replace the files in the same pack
@@ -64,10 +64,10 @@ folder. To uninstall a manual copy, close the game and remove that folder.
 All seven supported unnerfs default to **On**. To choose them individually,
 install the optional [Mod Config Menu
 Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787). In game,
-press **F10**, then select **Open Unnerf Pack → Unnerfs**. The integration has
+press **F10**, then select **Open Unnerf Pack 2 → Unnerfs**. The integration has
 been validated with **MCM Pure v113**.
 
-![Open Unnerf Pack in Mod Config Menu, showing individual unnerf toggles and the new-run settings notice](docs/images/mod-config-menu.png)
+![Mod Config Menu showing individual unnerf toggles and the new-run settings notice](docs/images/mod-config-menu.png)
 
 Settings save immediately and apply when you **start a new run**. Continuing a
 saved run keeps that run's choices, even after restarting the game. Settings are

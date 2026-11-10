@@ -3,7 +3,7 @@
 [All features](README.md) · [Configuration](configuration.md)
 
 **Affected:** Blue and purple fireplaces. **Default:** On. **Setting:** `blueFires`,
-shown as **Hard-mode blue fires: On/Off** under **Open Unnerf Pack → Unnerfs**.
+shown as **Hard-mode blue fires: On/Off** under **Open Unnerf Pack 2 → Unnerfs**.
 **Target build:** Repentance+ v1.9.7.17 (owner executable 1.9.7.17.J460).
 
 ## What changes
