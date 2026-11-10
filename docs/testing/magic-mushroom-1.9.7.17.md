@@ -391,6 +391,48 @@ pilot review states block further queries. Those pass with synthetic counts; nat
 and weighting acceptance remain **PENDING**. Production remains at source
 `0bbc5d5`; these corrections affect validation tooling only.
 
+### Off Boss and intact-pool weight control: pass
+
+`MM_OFF_BOSS` passes direct native absence: expected zero, outputs empty,
+native Boss pool 2 returns fallback 668. The observed fresh Normal run has
+Magic Mushroom Off in both choices and snapshot, with the other seven On.
+Stable capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T134026354Z-3c6af083`,
+log SHA256 `cf83b76b78b60ddf871c9697de7937ad52e1ad734cbb248ed315f70b1043e449`,
+record SHA256 `889bac320ff7fb70108d0ad35af877f0697a3633a6e6d88ce7167e97072d0fcd`.
+
+The intact-pool Off pilot is usable: 8,192 queries, 12 target / 32 reference /
+8,148 others, 263 distinct other items, zero unexpected identities/fallbacks
+or Lua errors, one native repick warning and elapsed 49 ms. Stable capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T154427317Z-10cfbe9d`,
+log SHA256 `5d1b2336a514153e30958e51cf3eb858198d12d78d095c86774122998bd07e06`,
+record SHA256 `13e7acfe0719ca15d7fdf5db3418fadf76b5b255e93033ed919dff380430ee1b`.
+The first capture setup stopped on an expected-hash typo missing its initial
+character; correcting that setup reused the existing log without replaying
+gameplay. The verified collector is now reusable at
+`D:\T3ValidationArchives\issue4-shared-tools-5dc2f625\collect-pool-profile.ps1`.
+
+After main-agent native-warning review, `MM_OFF_FULL_WEIGHT` **passes the
+bounded relative-weight consistency check** on that same untouched pool:
+262,144 queries, 533 target / 1,061 reference / 260,550 others. Focal count
+1,594, observed target share 0.33437892095358 versus expected one third,
+z-score 0.088554543371981 (bound 4). Native counts agree with returned IDs;
+unexpected identities and fallback counts are zero. There are 263 distinct
+other items, seven repick warnings, no Lua errors, elapsed 1,663 ms. The
+preceding `weight_pilot_reviewed` event is present. Settings remain Off with
+the other seven On, seed `2299138499`, observed fresh, MCM 113 and matching
+helper/real metadata.
+
+Stable full capture:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T154839650Z-6716070e`,
+log SHA256 `792e251eba7e72543a296372eac040ee31312f72850872b58897260dc3b74c37`,
+record SHA256 `3386b3baf36322f588fcb1d9df6594448ea9249ec58563747bcf5f741cec1cff`.
+This validates the native Off control against the archive's 0.5-to-1 values;
+it does not yet validate the enabled helper's 1-to-1 behavior. Treasure
+depletion, enabled weighting, Greed/Ultra Secret checks, actual grants and full
+process restart remain pending. Queries did not decrease weights, so the
+same Off run can now be used for its separate depletion check.
+
 ### Historical environment and native API research
 
 The issue worktree started clean at then-current default SHA
