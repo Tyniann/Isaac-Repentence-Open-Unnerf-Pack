@@ -583,6 +583,27 @@ after depletion and callback cleanup; syntax passes and focused review reports
 zero findings. Engine execution remains
 pending.
 
+The replacement **Prepare phase now passes natively**, with the target still
+unspent. The staged source `046a77ec3a013f4782d0507f293c8145919f32e3` at
+`D:\T3ValidationArchives\issue4-reload-046a77e\pool-reload-check.lua`
+matches SHA256 `8ca03a8f9049a37f4a31e037173f614581dc8c796ee47e6e8566a3f26280f0a1`.
+The owner reports `MM_RELOAD_READY 5 2299138499`; the stable capture contains
+one state and one passing `reload_anchor`, zero malformed records, observed
+fresh seed `2299138499`, zero owned real/helper copies and both target identities
+untouched by the fixture's exclusions. Each of the five raw picks selects 733
+with decrease false and returns 12. All eight choices are On, active Magic
+Mushroom is On, MCM 113, and helper metadata matches. There are no native
+warnings or Lua errors in the bounded check. The run-start rule trace is On,
+excluding 12, frame 0, matching seed.
+
+Anchor evidence:
+`D:\T3ValidationArchives\issue4-evidence\capture-20261110T192207235Z-fd0f094d`,
+records SHA256 `e2b23b494663eb34984024c867f1f0bec02913a9c914d89108fa748b7f81fac8`.
+The raw log is preserved alongside the records. Pre-shutdown process anchor
+is PID 34156, creation `2026-11-10T18:08:17Z`, at the tested executable path.
+The owner has not yet changed the next-run choice, saved or exited for this
+new anchor. The actual cold Verify phase is still pending.
+
 ### Actual-grant fixture prepared: engine pending
 
 `tools/validation/pool-grant-probe.lua` starts with one explicit actual helper
