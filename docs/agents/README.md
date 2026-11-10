@@ -17,7 +17,8 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 - [Triage labels](triage-labels.md)
 - [Domain documentation](domain.md)
 - [Changelog rules](changelog-rules.md)
-- [Documentation rules](documentation-rules.md)
+- [Documentation rules](documentation-rules.md): creation/update/removal triggers,
+  templates, and indexes for player and technical documentation.
 
 ## Tools and validation
 
