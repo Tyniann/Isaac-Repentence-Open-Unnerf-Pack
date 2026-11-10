@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 
 - Rewrite the project README for the maintained fork with original-author
-  attribution, installation and configuration guidance, and feature/changelog links.
+  attribution, installation and configuration guidance, optional-menu screenshot
+  and F10 instructions, and feature/changelog links.
 
 ### Fixed
 

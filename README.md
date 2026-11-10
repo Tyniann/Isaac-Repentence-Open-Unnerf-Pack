@@ -63,9 +63,11 @@ folder. To uninstall a manual copy, close the game and remove that folder.
 
 All seven supported unnerfs default to **On**. To choose them individually,
 install the optional [Mod Config Menu
-Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787) and open
-**Open Unnerf Pack → Unnerfs**. The integration has been validated with
-**MCM Pure v113**.
+Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787). In game,
+press **F10**, then select **Open Unnerf Pack → Unnerfs**. The integration has
+been validated with **MCM Pure v113**.
+
+![Open Unnerf Pack in Mod Config Menu, showing individual unnerf toggles and the new-run settings notice](docs/images/mod-config-menu.png)
 
 Settings save immediately and apply when you **start a new run**. Continuing a
 saved run keeps that run's choices, even after restarting the game. Settings are
