@@ -14,7 +14,7 @@ unnerfs, and updated documentation.
 
 ## Features
 
-The pack currently includes seven independently configurable adjustments:
+The pack currently includes eight independently configurable adjustments:
 
 - [Maw of the Void](docs/features/maw-of-the-void.md): restore bonus damage and
   black-heart drops from qualifying dark rings.
@@ -30,6 +30,8 @@ The pack currently includes seven independently configurable adjustments:
   soul-heart generation.
 - [Hard-mode blue and purple fires](docs/features/blue-fires.md): add an extra
   soul-heart chance on eligible explosion-damage events.
+- [Magic Mushroom pools](docs/features/magic-mushroom.md): restore normal Boss
+  availability and full normal Treasure weight, keeping the item's effects.
 
 The [feature reference](docs/features/README.md) explains each adjustment,
 its restrictions, and its tested behavior. The Nail and Satanic Bible helpers
@@ -37,11 +39,11 @@ remain unfinished and disabled.
 
 ## Compatibility
 
-The current target is **Repentance+ v1.9.7.17**. Compatibility and configuration
-have been checked in representative local Normal and Hard runs. See the
-[validation results](docs/testing/issue-1-engine-results.md#acceptance-matrix)
-for the tested conditions and limits; other game builds, Greed modes, and
-multiplayer have separate validation requirements.
+The current target is **Repentance+ v1.9.7.17**. The original seven adjustments
+and configuration have [recorded local Normal/Hard checks](docs/testing/issue-1-engine-results.md#acceptance-matrix).
+Magic Mushroom has its own [pool and Continue validation](docs/testing/magic-mushroom-1.9.7.17.md).
+Each feature page explains its tested conditions and limits; other game builds,
+Greed modes, and multiplayer have separate validation requirements.
 
 ## Installation
 
@@ -50,18 +52,19 @@ multiplayer have separate validation requirements.
    installation's `mods` directory.
 3. Copy the extracted repository contents into that folder. The layout should
    include `mods/open unnerf pack/main.lua`, `metadata.xml`, `config.lua`, and
-   `Mods/` directly inside the pack folder. GitHub ZIPs add an outer directory;
+   `Mods/` and `content/` directly inside the pack folder. GitHub ZIPs add an outer directory;
    avoid copying that as an extra nested folder.
 4. Disable duplicate copies of the original pack or standalone versions of the
    same unnerfs. Launch the game, enable **Open Unnerf Pack 2** in the Mods menu,
    and start a new run.
 
 For manual updates, close the game and replace the files in the same pack
-folder. To uninstall a manual copy, close the game and remove that folder.
+folder, then start a new run to use changed content and new settings. To
+uninstall a manual copy, close the game and remove that folder.
 
 ## Configuration
 
-All seven supported unnerfs default to **On**. To choose them individually,
+All eight supported unnerfs default to **On**. To choose them individually,
 install the optional [Mod Config Menu
 Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787). In game,
 press **F10**, then select **Open Unnerf Pack 2 → Unnerfs**. The integration has

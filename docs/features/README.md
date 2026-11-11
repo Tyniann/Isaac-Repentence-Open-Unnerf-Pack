@@ -7,7 +7,7 @@ version. [Return to the project README](../../README.md).
 
 ## Supported adjustments
 
-All seven gameplay adjustments default to **On**. Each has its own saved toggle
+All eight gameplay adjustments default to **On**. Each has its own saved toggle
 under **Open Unnerf Pack 2 → Unnerfs** in optional Mod Config Menu Pure. Turn any
 off for native behavior in a new run; **Continue retains the run's choices**.
 See [configuration](configuration.md) for menu names, persistence and fallback.
@@ -21,10 +21,12 @@ See [configuration](configuration.md) for menu names, persistence and fallback.
 | [Dark Bum](dark-bum.md) | Convert eligible familiar-attributed pickup rewards to soul hearts, with character exclusions | On | `darkBum` |
 | [The Relic](the-relic.md) | Advance/reset its room-clear counter to 2 | On | `relic` |
 | [Hard-mode blue and purple fires](blue-fires.md) | Extra 17% soul-heart roll per eligible explosion-damage event on Hard | On | `blueFires` |
+| [Magic Mushroom pools](magic-mushroom.md) | Restore normal Boss availability and full normal Treasure weight | On | `magicMushroom` |
 
 Dark Bum, The Relic and blue fires share a source folder, but are independent
-features with separate toggles and pages. No item-pool weights are changed by
-these seven adjustments.
+features with separate toggles and pages. Magic Mushroom's independent pool
+adjustment changes normal Boss/Treasure availability and weight without changing
+its item effects; see its page for the helper-backed implementation and limits.
 
 ## Optional configuration support
 
@@ -48,28 +50,26 @@ supported working features. Wishlist requests are not included in this inventory
 This inventory was checked against [registered settings](../../config.lua), the
 [root loader](../../main.lua), and all modules it loads, including the
 [soul-heart feature loader](../../Mods/Soul%20Heart%20Generator%20Unnerf/main.lua).
-The seven keys above each map to one supported feature page; neither disabled
+The eight keys above each map to one supported feature page; neither disabled
 helper has a registered setting.
 
 Compatibility (#1) and optional configuration (#3) are resolved for their bounded
-acceptance scope. The [current acceptance matrix and assessment](../testing/issue-1-engine-results.md#acceptance-matrix)
+acceptance scope covering the original seven adjustments. The
+[current acceptance matrix and assessment](../testing/issue-1-engine-results.md#acceptance-matrix)
 cover representative native behavior and anti-stacking controls. The
 [configuration results](../testing/configuration-results-1.9.7.17.md) cover all
-seven independent gates, persistence and fallback. [Native batches](../testing/native-batches.md)
+seven original independent gates, persistence and fallback. [Native batches](../testing/native-batches.md)
 retain pack-absent comparisons and observed fire double rewards. A feature-Off
 control and a pack-absent control are identified separately in those records.
+
+The [Magic Mushroom validation ledger](../testing/magic-mushroom-1.9.7.17.md)
+separately records the eighth feature's native weight/availability, independent
+On/Off behavior and full-process Continue evidence. It retains the failed
+cross-build comparison and scripted cleanup fixture separately from valid
+same-content comparisons and item conversions. See the [pool-rule technical
+reference](../agents/pool-rules.md) for its implementation contract.
 
 The pages distinguish source behavior from observed results. They do not claim
 exact total drop probabilities, every character or reward source, all orbital
 or stomp variants, Greed modes, general multiplayer, or compatibility with every
 other mod. Avoid enabling duplicate Workshop/standalone copies of these unnerfs.
-
-## Pending integration handoff
-
-[Magic Mushroom issue #4](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/4)
-is separate work and is **not included in this documented baseline**. When its
-implementation is merged, verify its actual loader, configuration key/default,
-Boss/Treasure definitions and target-build evidence before adding
-`magic-mushroom.md` and a row above. Do not infer released behavior or a working
-toggle from the issue's requested pool values. Update the configuration inventory
-and this coverage statement at the same time.
