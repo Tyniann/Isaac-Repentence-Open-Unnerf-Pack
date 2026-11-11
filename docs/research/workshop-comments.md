@@ -1,0 +1,15 @@
+# Original Workshop listing: comment evidence
+
+Inspected 2026-11-08 via the T3 shared browser: [Open Unnerf Pack listing](https://steamcommunity.com/sharedfiles/filedetails/?id=2554325871) and its [comments page](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871). The listing displayed 12 comments; all 12 were present on the single comments page, from 23 July 2021 through 28 June 2024. No older pagination was presented. The listing says it was updated 10 August 2023. Comments are reports, not gameplay verification; the commenters' game, DLC, mod versions and other active mods are unknown.
+
+## Reported symptom
+
+- **Stomp immunity:** Ate_my_grandpa_as_a_snack, 9 September 2023, [comment 3823048293515491246](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_3823048293515491246): “stomp Immunity doesn't work”. No character, item, enemy, steps, expected scope, frequency, or version was supplied. Investigate which implemented stomp immunity the reporter meant and attempt reproduction; this comment alone does not establish a cause or that the current code is affected.
+
+## Questions and feature requests, not established bugs
+
+- Blessing, 4 October 2021, [comment 2959418921942859719](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_2959418921942859719): “Soymilk + libra ?” The question supplies no symptom or reproduction, so it cannot establish a broken synergy.
+- medo brundo, 1–2 August 2021, [checklist request](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_3058492678370666286) and [selective nerf request](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_3058492678373150507): requested a mod-config checklist and an option to retain individual nerfs. The author [said it was planned](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_3058492678373155720); this historical statement does not establish current status.
+- mata, 14–25 June 2024, asked about [damage multiplier reverts](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_6471190240004437360) and [EID support](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_6471190240004461057), then [requested EID support](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_4349995904926785160) for the separate Humbling Bundle revert mod. The author [said the pack lacked EID support](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_4349995730780009373) and [was not currently being worked on](https://steamcommunity.com/sharedfiles/filedetails/comments/2554325871#comment_4413046572166075374). These are historical scope/support statements, not evidence of malfunction.
+
+Coverage is limited to visible comments on this specific listing; deleted comments, other listings, discussions, and gameplay were not inspected. Steam's displayed timestamps are used above.
