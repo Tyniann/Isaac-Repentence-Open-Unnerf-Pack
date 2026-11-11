@@ -142,9 +142,10 @@ required. The original item effects and unrelated pool rows remain native.
 - [Native validation batches](../testing/native-batches.md)
 - [Magic Mushroom evidence and assessment](../testing/magic-mushroom-1.9.7.17.md)
 
-The technical index introduced by PR #15 should link this guide, shared game
-validation and the ledger. Its owner maintains the player page and feature
-inventory; keep the two audiences separate during integration.
+See the [technical index](README.md) for the module and validation references,
+and the [Magic Mushroom feature page](../features/magic-mushroom.md) for player
+behavior and configuration. Implementation contracts and diagnostic procedures
+remain separate from the player-facing feature inventory.
 
 ---
 *Last updated: 2026-11-10*

@@ -1,33 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-    <name>Open Unnerf Pack</name>
+    <name>Open Unnerf Pack 2</name>
     <directory>open unnerf pack</directory>
     <id>2554325871</id>
-    <description>A mod for The Binding of Isaac Repentance that combines diffrent unnerf mods into a single mod.
-This mod is Opensource and has a Github Repo: https://github.com/KeinNiemand/Isaac-Repentence-Open-Unnerf-Pack
+    <description>Open Unnerf Pack 2 is a maintained fork for The Binding of Isaac: Repentance+ v1.9.7.17. Its eight adjustments are Maw of the Void, Orbitals, Stomp Immunity, Humbling Bundle, Dark Bum, The Relic, Hard-mode blue and purple fires, and Magic Mushroom pools. Optional Mod Config Menu Pure (F10) provides per-feature settings that apply to new runs; Continue retains the current run's choices.
 
-# Unnerfs Currently Included
-- Maw of the Void Unnerf
-- Orbital Unnerf
-- Stomp Immunity Unnerf
-- Soul Hearth Generator Unnerf
-  - Dark Bum Unnerf
-  - Relic Unnerf
-  - Blue Fires (hard mode) Unnerf
-  - (disabled in code) Nail Unnerf
-  - (disabled in code) Satanic Bible Unnerf 
-- Humbling Bundle Unnerf
+Report bugs or suggest adjustments: https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues
 
-# What this mods tries to do
-This mod tries to unnerf things(items, mechanics, ...) that have been nerfed in the Binding of Isaac Repentence and make them work like before they got nerfed. It does so by loading other mods included in this mod.
-
-# Suggestions/Bug Reports
-If you want to suggest new unnerfs, improvements or report bugs please create an Issue on Github: https://github.com/KeinNiemand/Isaac-Repentence-Open-Unnerf-Pack.
-
-
-# Contributing
-If you want contribute to this unnerf pack by adding more unnerfs, fixing bugs or improving this mod in any other mods feel free to do so on Github: https://github.com/KeinNiemand/Isaac-Repentence-Open-Unnerf-Pack
-</description>
+Original Open Unnerf Pack by KeinNiemand; maintained fork by Tyniann. Original project: https://github.com/KeinNiemand/Isaac-Repentence-Open-Unnerf-Pack</description>
     <version>1.2</version>
     <visibility>Public</visibility>
     <tag id="Lua"/>
