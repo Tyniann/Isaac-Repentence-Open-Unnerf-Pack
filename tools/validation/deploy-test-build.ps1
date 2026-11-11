@@ -3,14 +3,25 @@ param(
     [Parameter(Mandatory=$true)][string]$ObserverPath,
     [Parameter(Mandatory=$true)][string]$ObserverMetadataPath,
     [Parameter(Mandatory=$true)][string]$SessionRoot,
-    [string]$GameRoot = 'D:\The.Binding.of.Isaac.Repentance.v4.0.2'
+    [string]$GameRoot = 'D:\The.Binding.of.Isaac.Repentance.v4.0.2',
+    [switch]$UpdatePack,
+    [switch]$StageOnly
 )
 $ErrorActionPreference = 'Stop'
-if (Get-Process | Where-Object { $_.ProcessName -like 'isaac*' }) { throw 'Isaac must be closed' }
+if (-not $StageOnly -and (Get-Process | Where-Object { $_.ProcessName -like 'isaac*' })) { throw 'Isaac must be closed' }
 $manifest = Get-Content -Raw -LiteralPath $ManifestPath | ConvertFrom-Json
 $folders = @('open_unnerf_pack_validation','mod_config_menu_pure','open_unnerf_validation_observer')
 $mods = Join-Path $GameRoot 'mods'
+if ($UpdatePack) {
+    if ([IO.Path]::GetPathRoot([IO.Path]::GetFullPath($SessionRoot)) -ne [IO.Path]::GetPathRoot([IO.Path]::GetFullPath($GameRoot))) {
+        throw 'Update session must share the game volume for reversible directory moves'
+    }
+    if (-not (Test-Path -LiteralPath (Join-Path $mods 'open_unnerf_pack_validation'))) { throw 'Expected existing pack absent' }
+    if (-not (Test-Path -LiteralPath (Join-Path $mods 'mod_config_menu_pure'))) { throw 'Expected existing MCM absent' }
+    $folders = @('open_unnerf_pack_validation','open_unnerf_validation_observer')
+}
 foreach ($folder in $folders) {
+    if ($UpdatePack -and $folder -eq 'open_unnerf_pack_validation') { continue }
     if (Test-Path -LiteralPath (Join-Path $mods $folder)) { throw "Destination already exists: $folder" }
 }
 $deployment = Join-Path $SessionRoot 'deployment'
@@ -48,6 +59,21 @@ foreach ($entry in $manifest.files.PSObject.Properties) {
     New-Item -ItemType Directory -Force -Path (Split-Path -Parent $target) | Out-Null
     Copy-Item -LiteralPath $source -Destination $target
 }
+if ($UpdatePack) {
+    foreach ($entry in $manifest.files.PSObject.Properties) {
+        if ($entry.Name.StartsWith('mod_config_menu_pure/')) {
+            $current = Join-Path $mods $entry.Name
+            if (-not (Test-Path -LiteralPath $current) -or (Get-FileHash -Algorithm SHA256 -LiteralPath $current).Hash.ToLower() -ne $entry.Value.sha256) {
+                throw "Installed MCM differs; it will not be replaced: $($entry.Name)"
+            }
+        }
+    }
+}
+if ($StageOnly) {
+    @{status='staged-files-verified'; sourceSha=$manifest.pack_sha; payload=$payload;
+        updatePack=[bool]$UpdatePack; gameDirectoryChanged=$false; engineVerified=$false} | ConvertTo-Json
+    return
+}
 # All downloaded/runtime bytes are verified before any game-directory mutation.
 if (Get-Process | Where-Object { $_.ProcessName -like 'isaac*' }) { throw 'Isaac opened during staging; stop' }
 $backup = Join-Path $SessionRoot 'backup'
@@ -60,15 +86,38 @@ if (Test-Path -LiteralPath $gameData) {
     Copy-Item -LiteralPath $gameData -Destination (Join-Path $backup 'game-mod-data') -Recurse
 }
 $before = @{gameRoot=$GameRoot; userData=$userData; sourceSha=$manifest.pack_sha;
-    createdFolders=$folders; originalFolderAbsence=$true; optionsChanged=$false;
+    createdFolders=$folders; originalFolderAbsence=(-not $UpdatePack); updatePack=[bool]$UpdatePack; optionsChanged=$false;
     originalMods=@(Get-ChildItem -LiteralPath $mods -Directory | Select-Object -ExpandProperty Name)}
 $before | ConvertTo-Json -Depth 5 | Set-Content -Encoding UTF8 (Join-Path $backup 'before.json')
-foreach ($folder in $folders) {
-    Copy-Item -LiteralPath (Join-Path $payload $folder) -Destination (Join-Path $mods $folder) -Recurse
+if (Get-Process | Where-Object { $_.ProcessName -like 'isaac*' }) { throw 'Isaac opened during backup; stop' }
+$originalPack = Join-Path $backup 'original-pack'
+if ($UpdatePack) {
+    Move-Item -LiteralPath (Join-Path $mods 'open_unnerf_pack_validation') -Destination $originalPack
 }
-foreach ($entry in $manifest.files.PSObject.Properties) {
-    $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $mods $entry.Name)).Hash.ToLower()
-    if ($actual -ne $entry.Value.sha256) { throw "Installed hash mismatch: $($entry.Name)" }
+try {
+    foreach ($folder in $folders) {
+        if ($UpdatePack) {
+            Move-Item -LiteralPath (Join-Path $payload $folder) -Destination (Join-Path $mods $folder)
+        } else {
+            Copy-Item -LiteralPath (Join-Path $payload $folder) -Destination (Join-Path $mods $folder) -Recurse
+        }
+    }
+    foreach ($entry in $manifest.files.PSObject.Properties) {
+        $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $mods $entry.Name)).Hash.ToLower()
+        if ($actual -ne $entry.Value.sha256) { throw "Installed hash mismatch: $($entry.Name)" }
+    }
+} catch {
+    $deploymentError = $_
+    if ($UpdatePack) {
+        foreach ($folder in $folders) {
+            $installed = Join-Path $mods $folder
+            if (Test-Path -LiteralPath $installed) {
+                Move-Item -LiteralPath $installed -Destination (Join-Path $backup ("failed-" + $folder))
+            }
+        }
+        Move-Item -LiteralPath $originalPack -Destination (Join-Path $mods 'open_unnerf_pack_validation')
+    }
+    throw $deploymentError
 }
 Copy-Item -LiteralPath $ManifestPath -Destination (Join-Path $SessionRoot 'installed-manifest.json')
 @{status='installed-files-verified'; sourceSha=$manifest.pack_sha; mcmVersion=$manifest.mcm_version;

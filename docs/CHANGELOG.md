@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Restore Magic Mushroom's normal Boss availability and full Treasure weight
+  with an independent default-On toggle through optional MCM, using native
+  helper-backed pool rules without changing its item effects
+  ([#4](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/4),
+  [#14](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/pull/14)).
 - Add seven independent unnerf toggles through optional Mod Config Menu Pure
   v113, with all supported adjustments enabled by default
   ([#3](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/3),
@@ -17,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   runs, and preserve each continued run's choices across relaunches. Keep saved
   choices usable without MCM and use safe defaults for missing or invalid data
   ([#5](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/pull/5)).
-- Add a player feature index and separate references for all seven supported
+- Add a player feature index and separate references for all supported gameplay
   adjustments, optional configuration, and unfinished disabled helpers
   ([#15](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/pull/15)).
 

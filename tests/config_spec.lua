@@ -26,13 +26,17 @@ end
 for _, name in ipairs({"ModCallbacks", "CacheFlag", "FamiliarVariant", "PlayerType",
     "CollectibleType", "EntityType", "PickupVariant", "HeartSubType", "CoinSubType",
     "KeySubType", "BombSubType", "Difficulty", "DamageFlag"}) do _G[name] = enum() end
-local storage, mods, menu, seed, player
+local storage, mods, menu, seed, player, excluded
 local game = {Difficulty = Difficulty.DIFFICULTY_HARD}
+local gameFrame = 0
+function game:GetFrameCount() return gameFrame end
+function game:GetItemPool() return {RemoveCollectible = function(_, id) excluded[id] = true end} end
 function game:GetSeeds() return {GetStartSeed = function() return seed end} end
 function game:GetNumPlayers() return 1 end
 function game:GetPlayer() return player end
 function Game() return game end
-Isaac = {GetPlayer = function() return player end}
+Isaac = {GetPlayer = function() return player end, GetItemIdByName = function() return 1001 end,
+    GetItemConfig = function() return {GetCollectible = function() return {Quality = 4, Tags = 7, Type = 1} end} end}
 function RegisterMod(name)
     local mod = {callbacks = {}}
     function mod:AddCallback(id, fn) self.callbacks[id] = fn end
@@ -43,8 +47,9 @@ function RegisterMod(name)
     return mod
 end
 local function boot(data, withMenu)
-    storage, mods, menu, seed = data, {}, {}, 12345
-    player = {Damage = 3.5, AddCacheFlags = function() end, EvaluateItems = function() end}
+    storage, mods, menu, seed, excluded = data, {}, {}, 12345, {}
+    player = {Damage = 3.5, AddCacheFlags = function() end, EvaluateItems = function() end,
+        HasCollectible = function() return false end}
     ModConfigMenu = withMenu and {
         OptionType = {BOOLEAN = 1}, AddText = function() end,
         AddSetting = function(category, tab, setting)
@@ -68,8 +73,9 @@ local function boot(data, withMenu)
     end
     dofile("main.lua")
 end
-local keys = {"mawOfTheVoid", "orbitals", "stompImmunity", "humblingBundle", "darkBum", "relic", "blueFires"}
+local keys = {"mawOfTheVoid", "orbitals", "stompImmunity", "humblingBundle", "darkBum", "relic", "blueFires", "magicMushroom"}
 local function start(continued)
+    if not continued then excluded = {} end -- Isaac creates fresh native pools.
     openUnnerfPack.callbacks[ModCallbacks.MC_POST_GAME_STARTED](openUnnerfPack, continued)
 end
 local function checkDefaults()
@@ -101,6 +107,20 @@ test("renamed display preserves registered identity and saved Continue choices",
     end
 end)
 
+test("early pool generation reads choices for fresh runs and snapshots for Continue", function()
+    local data = '{"version":1,"settings":{"magicMushroom":false},"run":{"seed":12345,"settings":{"magicMushroom":true}}}'
+    boot(data, true)
+    gameFrame = 0
+    assert(not openUnnerfPack.Config.IsEnabledForPoolGeneration("magicMushroom"), "same seed fresh uses choices")
+    assert(storage == data, "preview never writes save data")
+    gameFrame = 321
+    assert(openUnnerfPack.Config.IsEnabledForPoolGeneration("magicMushroom"), "Continue uses snapshot")
+    storage = '{"version":1,"settings":{"magicMushroom":true},"run":{"seed":67890,"settings":{"magicMushroom":false}}}'
+    seed = 67890
+    assert(not openUnnerfPack.Config.IsEnabledForPoolGeneration("magicMushroom"), "reload selected slot")
+    gameFrame = 0
+end)
+
 test("absent MCM, first install defaults, exit and reload", function()
     boot(nil, false); start(false); checkDefaults()
     openUnnerfPack.callbacks[ModCallbacks.MC_PRE_GAME_EXIT]()
@@ -115,8 +135,8 @@ test("malformed, wrong schema and invalid fields fall back safely", function()
     start(false); assert(not openUnnerfPack.Config.IsEnabled("orbitals"))
     assert(openUnnerfPack.Config.IsEnabled("relic"))
 end)
-test("menu has exactly seven independent booleans; changes save immediately, defer to new run", function()
-    boot(nil, true); start(false); assert(#menu == 7)
+test("menu has exactly eight independent booleans; changes save immediately, defer to new run", function()
+    boot(nil, true); start(false); assert(#menu == 8)
     for i, key in ipairs(keys) do
         assert(menu[i].CurrentSetting() == true)
         menu[i].OnChange(false)
@@ -136,7 +156,7 @@ test("late MCM initialization registers once and reflects persisted choices", fu
     ModConfigMenu = {OptionType = {BOOLEAN = 1}, AddText = function() end,
         AddSetting = function(_, _, setting) menu[#menu + 1] = setting end}
     start(false); start(false)
-    assert(#menu == 7 and menu[6].CurrentSetting() == false)
+    assert(#menu == 8 and menu[6].CurrentSetting() == false)
 end)
 test("continue with no matching snapshot uses saved choices", function()
     boot('{"version":1,"settings":{"relic":false},"run":{"seed":999,"settings":{"relic":true}}}', false)
@@ -208,6 +228,8 @@ local function exercise(key)
     elseif key == "humblingBundle" then
         player.HasCollectible = function() return true end
         return mods["Humbleing Bundle Unnerf Unnerf"]:pickUpSelection({}, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY) ~= nil
+    elseif key == "magicMushroom" then
+        return not excluded[1001] and excluded[12] == true
     else
         local called = false
         local soul = soulheartgeneratorUnnerf

@@ -28,9 +28,13 @@ DamageFlag = {DAMAGE_EXPLOSION=4, DAMAGE_CRUSH=8}
 Difficulty = {DIFFICULTY_HARD=1, DIFFICULTY_NORMAL=0}
 local players, spawned = {}, 0
 local game = {Difficulty=1, GetNumPlayers=function() return #players end,
+    GetFrameCount=function() return 0 end,
+    GetItemPool=function() return {RemoveCollectible=function() end} end,
     GetSeeds=function() return {GetStartSeed=function() return 12345 end} end}
 function Game() return game end
 Isaac = {GetPlayer=function(i) assert(i >= 0 and i < #players); return players[i+1] end,
+    GetItemIdByName=function() return 1001 end,
+    GetItemConfig=function() return {GetCollectible=function() return {Quality=4,Tags=7,Type=1} end} end,
     Spawn=function() spawned = spawned + 1 end}
 function Vector(x,y) return {X=x,Y=y} end
 function RegisterMod(name)

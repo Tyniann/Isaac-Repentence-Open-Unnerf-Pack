@@ -30,6 +30,10 @@ Single-context: root `GLOSSARY.md` and `docs/adr/`. Before exploring the codebas
 
 Before creating, updating, taking over, or merging a pull request, read `docs/agents/pull-requests.md` if present. Own the review and fix cycle through integration or an explicit handoff.
 
+### Game validation
+
+Before preparing engine tests, interacting with the shared game, deploying test builds, or guiding the owner through console checks, read `docs/agents/game-validation.md` for the maintained tools, interaction protocol, evidence requirements, and session handoffs.
+
 ### Changelog
 
 Before making user-visible behavior or notable player-facing documentation changes, auditing or editing changelog coverage, or preparing a release, apply the [changelog-rules skill](.agents/skills/changelog-rules/SKILL.md). It determines what belongs in `docs/CHANGELOG.md`; its exclusions apply to development-only, cosmetic, and other non-qualifying changes.
