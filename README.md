@@ -47,20 +47,25 @@ Greed modes, and multiplayer have separate validation requirements.
 
 ## Installation
 
-1. Close the game and download this repository as a ZIP, or clone it.
-2. Create an `open unnerf pack` folder inside your active Repentance+
-   installation's `mods` directory.
-3. Copy the extracted repository contents into that folder. The layout should
-   include `mods/open unnerf pack/main.lua`, `metadata.xml`, `config.lua`, and
-   `Mods/` and `content/` directly inside the pack folder. GitHub ZIPs add an outer directory;
-   avoid copying that as an extra nested folder.
-4. Disable duplicate copies of the original pack or standalone versions of the
+1. Close the game and download the `Open-Unnerf-Pack-2-vX.Y.Z.zip` asset from the
+   [latest release](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/releases/latest).
+2. Extract its `Open Unnerf Pack 2` folder into your active Repentance+
+   installation's `mods` directory. The layout should include
+   `mods/Open Unnerf Pack 2/main.lua`, with `metadata.xml`, `config.lua`, `Mods/`,
+   and `content/` directly inside the same pack folder.
+3. Disable duplicate copies of the original pack or standalone versions of the
    same unnerfs. Launch the game, enable **Open Unnerf Pack 2** in the Mods menu,
    and start a new run.
 
 For manual updates, close the game and replace the files in the same pack
-folder, then start a new run to use changed content and new settings. To
-uninstall a manual copy, close the game and remove that folder.
+folder, keeping its existing folder name if you used `open unnerf pack` before.
+The release preserves the internal settings identifiers. Start a new run to
+use changed content and new settings. To uninstall a manual copy, close the
+game and remove that folder.
+
+Use the named release asset above for installation; GitHub's automatic source
+archives contain the development checkout. To package a source checkout or
+prepare a Workshop upload, follow the [release guide](docs/agents/releasing.md).
 
 ## Configuration
 

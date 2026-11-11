@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-11-11
+
 ### Added
 
+- Provide an installable release ZIP with an `Open Unnerf Pack 2` folder, also
+  usable for this fork's first Steam Workshop upload without the original
+  project's Workshop ID.
 - Restore Magic Mushroom's normal Boss availability and full Treasure weight
   with an independent default-On toggle through optional MCM, using native
   helper-backed pool rules without changing its item effects
