@@ -49,9 +49,9 @@ release asset is the installation package.
 uploader; it uploads a mod folder through `metadata.xml`, rather than accepting a
 ZIP directly. A separate internal release is unnecessary.
 
-The source metadata retains the original project's ID `2554325871` as a legacy
-identifier. The builder removes that specific ID from the packaged metadata so
-the first upload can create this fork's own listing. The metadata directory and
+The source metadata has no Workshop ID until this fork receives its own listing.
+The builder also removes the original project's ID `2554325871` when packaging
+an older compatible snapshot that still contains it. The metadata directory and
 Lua registration are unchanged, preserving their settings identity. Once the
 fork has its own ID, record it in source metadata; the builder preserves IDs
 other than the original project's ID.
@@ -82,6 +82,20 @@ Preparing a GitHub release does not upload anything to Steam or exercise the
 uploader. Record the assigned Workshop URL after the owner publishes it, then
 update the public README and metadata to point to the maintained listing.
 
+## Steam ownership and initialization failures
+
+The uploading account needs a Steam license for the game. A GOG purchase does
+not provide that license, and Valve explicitly excludes temporary licenses such
+as Family Sharing from Workshop uploads. GitHub/manual releases remain usable
+without a Workshop listing; leave the metadata ID absent until one is created.
+
+An uploader message saying Steam API initialization failed is a general startup
+failure, not a diagnosis of Steam being closed. Valve also documents missing
+application ID information, differing Windows user/administrator contexts, and
+missing ownership as possible causes. If the owner has a Steam license, check
+those prerequisites before investigating the mod files. Launch Steam and the
+uploader under the same Windows user and privilege level.
+
 ## Sources
 
 - [IsaacScript directory structure](https://isaacscript.github.io/main/directory-structure/):
@@ -96,6 +110,10 @@ update the public README and metadata to point to the maintained listing.
   uses its bundled uploader.
 - [Valve ISteamUGC reference](https://partner.steamgames.com/doc/api/isteamugc):
   upload content, preview images, visibility, and Workshop terms.
+- [Valve Steam API initialization](https://partner.steamgames.com/doc/api/steam_api?l=french&language=english#SteamAPI_Init):
+  ownership and other conditions required for initialization.
+- [Valve Workshop FAQ](https://partner.steamgames.com/doc/features/workshop):
+  temporary licenses and Family Sharing do not permit uploads.
 
 ---
 *Last updated: 2026-11-11*

@@ -12,8 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Provide an installable release ZIP with an `Open Unnerf Pack 2` folder, also
-  usable for this fork's first Steam Workshop upload without the original
-  project's Workshop ID.
+  usable as the Steam Workshop upload payload.
 - Restore Magic Mushroom's normal Boss availability and full Treasure weight
   with an independent default-On toggle through optional MCM, using native
   helper-backed pool rules without changing its item effects
@@ -33,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Clear the inherited Workshop publishing ID so this fork can receive its own
+  listing while preserving existing saved settings.
 - Document verified Repentance+ v1.9.7.17 local Normal/Hard behavior and MCM Pure
   v113 configuration, including the tested conditions and remaining limits
   ([#10](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/pull/10),
