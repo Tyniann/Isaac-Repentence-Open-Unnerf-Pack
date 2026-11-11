@@ -1,0 +1,196 @@
+{
+  "frame": 105,
+  "pass": true,
+  "seed": 212727584,
+  "results": [
+    {
+      "frame": 82,
+      "invokedCallbacks": 1,
+      "observed": {
+        "playerType": 0,
+        "roomType": 18,
+        "clear": true,
+        "roomIndex": -12,
+        "enemies": 0,
+        "stage": 1,
+        "soulHearts": 0,
+        "nextChoice": true,
+        "roomVariant": 1000,
+        "dimension": -1,
+        "owned": {
+          "58": 0,
+          "78": 0
+        },
+        "voidRngSeed": 1926095164,
+        "enabled": true,
+        "mcm": true,
+        "safeGridIndex": -1,
+        "ambushActive": false,
+        "shield": 0,
+        "repentogon": false,
+        "maxCharges": 4,
+        "charge": 6,
+        "stats": {
+          "shotSpeed": 1,
+          "delay": 10,
+          "range": 260,
+          "speed": 1,
+          "damage": 3.5,
+          "luck": 0
+        },
+        "pickups": [
+          {
+            "touched": false,
+            "seed": 2114088534,
+            "price": 0,
+            "group": 0,
+            "item": 287
+          },
+          {
+            "touched": false,
+            "seed": 2386467869,
+            "price": 0,
+            "group": 916,
+            "item": 58
+          },
+          {
+            "touched": false,
+            "seed": 3786622171,
+            "price": 0,
+            "group": 916,
+            "item": 78
+          },
+          {
+            "touched": false,
+            "seed": 3862804210,
+            "price": 0,
+            "group": 0,
+            "item": 559
+          },
+          {
+            "touched": false,
+            "seed": 3918059795,
+            "price": 0,
+            "group": 0,
+            "item": 257
+          }
+        ],
+        "stageType": 0
+      },
+      "kind": "case_result",
+      "case": "genesis-exclusion",
+      "seed": 1581425775,
+      "label": "VOID16_MATRIX",
+      "name": "genesis-exclusion",
+      "scope": "native entry and production exclusion gate; native return untested",
+      "pass": true
+    },
+    {
+      "frame": 82,
+      "invokedCallbacks": 1,
+      "observed": {
+        "playerType": 0,
+        "roomType": 1,
+        "clear": true,
+        "roomIndex": 80,
+        "enemies": 0,
+        "stage": 1,
+        "soulHearts": 0,
+        "nextChoice": true,
+        "roomVariant": 100,
+        "dimension": 2,
+        "owned": {
+          "58": 0,
+          "78": 0
+        },
+        "voidRngSeed": 1860341407,
+        "enabled": true,
+        "mcm": true,
+        "safeGridIndex": 80,
+        "ambushActive": false,
+        "shield": 0,
+        "repentogon": false,
+        "maxCharges": 4,
+        "charge": 4,
+        "stats": {
+          "shotSpeed": 1,
+          "delay": 16.074186325073,
+          "range": 260,
+          "speed": 1,
+          "damage": 3.5,
+          "luck": 0
+        },
+        "pickups": [
+          {
+            "touched": false,
+            "seed": 224763570,
+            "price": 0,
+            "group": 916,
+            "item": 78
+          },
+          {
+            "touched": false,
+            "seed": 2299455928,
+            "price": 0,
+            "group": 916,
+            "item": 58
+          }
+        ],
+        "stageType": 1
+      },
+      "kind": "case_result",
+      "case": "certificate-exclusion",
+      "seed": 1852458596,
+      "label": "VOID16_MATRIX",
+      "name": "certificate-exclusion",
+      "scope": "native entry and production exclusion gate; native return untested",
+      "pass": true
+    },
+    {
+      "frame": 105,
+      "pass": true,
+      "observed": {
+        "playerType": 15,
+        "roomType": 1,
+        "clear": true,
+        "roomIndex": 84,
+        "enemies": 0,
+        "stage": 1,
+        "soulHearts": 4,
+        "nextChoice": true,
+        "roomVariant": 2,
+        "dimension": 0,
+        "owned": {
+          "58": 0,
+          "78": 0
+        },
+        "voidRngSeed": 80311973,
+        "enabled": true,
+        "mcm": true,
+        "safeGridIndex": 84,
+        "ambushActive": false,
+        "shield": 2,
+        "repentogon": false,
+        "maxCharges": 4,
+        "charge": 4,
+        "stats": {
+          "shotSpeed": 1,
+          "delay": 10,
+          "range": 260,
+          "speed": 1,
+          "damage": 3.5,
+          "luck": 0
+        },
+        "pickups": [],
+        "stageType": 0
+      },
+      "seed": 212727584,
+      "label": "VOID16_MATRIX",
+      "name": "continue-anchor",
+      "case": "continue-anchor",
+      "kind": "case_result"
+    }
+  ],
+  "kind": "batch_result",
+  "label": "VOID16_MATRIX"
+}

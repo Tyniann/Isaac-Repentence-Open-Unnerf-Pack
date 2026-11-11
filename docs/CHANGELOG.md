@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Restore absorption of eligible items in ordinary linked choice groups for
+  Void, with an independent default-On toggle while retaining Repentance+'s
+  four-room charge (#16).
+
 ## [2.0.0] - 2026-11-11
 
 ### Added

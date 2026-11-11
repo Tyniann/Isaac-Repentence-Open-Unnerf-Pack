@@ -2,7 +2,7 @@
 
 [All features](README.md) · [Project configuration overview](../../README.md#configuration)
 
-The pack's eight gameplay adjustments default to **On** on Repentance+
+The pack's nine gameplay adjustments default to **On** on Repentance+
 **v1.9.7.17** (owner executable **1.9.7.17.J460**). Optional **Mod Config Menu
 Pure v113** lets you choose each independently. Installing MCM adds the menu;
 it does not supply the pack's persistence or add more gameplay features.
@@ -23,6 +23,7 @@ Each entry displays its name followed by `: On` or `: Off`.
 | The Relic | `relic` | [Room-clear counter](the-relic.md) |
 | Hard-mode blue fires | `blueFires` | [Blue and purple fires](blue-fires.md) |
 | Magic Mushroom pools | `magicMushroom` | [Boss availability and Treasure weight](magic-mushroom.md) |
+| Void choice absorption | `voidChoiceAbsorption` | [Linked choice absorption](void.md) |
 
 Nail and Satanic Bible have no menu controls. These keys are reference names for
 saved data, not console commands. There is no supported live per-feature switch.
@@ -53,12 +54,14 @@ MCM is optional: without it, the pack uses its saved choices, or all-On defaults
 when none are available. Removing MCM does not reset the choices. The pack stores
 them through its own Isaac `SaveData`, independently of MCM's settings files.
 
-Missing or malformed JSON, or an unknown schema version, falls back to all eight
+Missing or malformed JSON, or an unknown schema version, falls back to all nine
 On. In version 1 data, missing or non-boolean fields default individually to On;
 unknown keys are ignored. A matching run snapshot follows the same boolean
 normalization. A fallback is not a promise to reconstruct lost historical run
 choices. A saved choice or run snapshot that predates `magicMushroom` defaults
-that missing field to On while preserving the other valid Boolean choices.
+that missing field to On while preserving the other valid Boolean choices. An
+older save without `voidChoiceAbsorption` likewise defaults it to On in saved
+choices and matching Continue snapshots without changing existing choices.
 
 ## Validation and limits
 
@@ -76,6 +79,12 @@ next-run choice was Off. Its weight, availability and conversion results have
 their own limits, including a failed cross-build comparison and scripted cleanup
 fixture; these are not additional passes in the historical seven-gate record.
 See the [feature page](magic-mushroom.md) and [pool-rule technical reference](../agents/pool-rules.md).
+
+The ninth control is Void choice absorption. Its
+[validation record](../testing/void-choice-1.9.7.17.md) includes feature On/Off
+comparisons and a process-restart Continue with active On and next-run Off.
+The configuration harness covers MCM absent/present and migration of the new
+key; those harness checks are distinct from native game observations.
 
 Source: [configuration implementation](../../config.lua). For reproducible
 checks see [configuration validation](../configuration-validation.md); for the

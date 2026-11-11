@@ -7,7 +7,7 @@ version. [Return to the project README](../../README.md).
 
 ## Supported adjustments
 
-All eight gameplay adjustments default to **On**. Each has its own saved toggle
+All nine gameplay adjustments default to **On**. Each has its own saved toggle
 under **Open Unnerf Pack 2 → Unnerfs** in optional Mod Config Menu Pure. Turn any
 off for native behavior in a new run; **Continue retains the run's choices**.
 See [configuration](configuration.md) for menu names, persistence and fallback.
@@ -22,6 +22,7 @@ See [configuration](configuration.md) for menu names, persistence and fallback.
 | [The Relic](the-relic.md) | Advance/reset its room-clear counter to 2 | On | `relic` |
 | [Hard-mode blue and purple fires](blue-fires.md) | Extra 17% soul-heart roll per eligible explosion-damage event on Hard | On | `blueFires` |
 | [Magic Mushroom pools](magic-mushroom.md) | Restore normal Boss availability and full normal Treasure weight | On | `magicMushroom` |
+| [Void choice absorption](void.md) | Absorb eligible items from ordinary linked choice groups while retaining the four-room charge | On | `voidChoiceAbsorption` |
 
 Dark Bum, The Relic and blue fires share a source folder, but are independent
 features with separate toggles and pages. Magic Mushroom's independent pool
@@ -50,7 +51,7 @@ supported working features. Wishlist requests are not included in this inventory
 This inventory was checked against [registered settings](../../config.lua), the
 [root loader](../../main.lua), and all modules it loads, including the
 [soul-heart feature loader](../../Mods/Soul%20Heart%20Generator%20Unnerf/main.lua).
-The eight keys above each map to one supported feature page; neither disabled
+The nine keys above each map to one supported feature page; neither disabled
 helper has a registered setting.
 
 Compatibility (#1) and optional configuration (#3) are resolved for their bounded
@@ -68,6 +69,10 @@ On/Off behavior and full-process Continue evidence. It retains the failed
 cross-build comparison and scripted cleanup fixture separately from valid
 same-content comparisons and item conversions. See the [pool-rule technical
 reference](../agents/pool-rules.md) for its implementation contract.
+
+Void choice absorption has an [issue-specific validation record](../testing/void-choice-1.9.7.17.md).
+It records native 1.9.7.17 absorption comparisons, room checks, process-restart
+Continue, physical charge use and their unexecuted limits.
 
 The pages distinguish source behavior from observed results. They do not claim
 exact total drop probabilities, every character or reward source, all orbital

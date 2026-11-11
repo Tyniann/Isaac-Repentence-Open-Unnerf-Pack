@@ -10,6 +10,7 @@ local options = {
     {"relic", "The Relic"},
     {"blueFires", "Hard-mode blue fires"},
     {"magicMushroom", "Magic Mushroom pools"},
+    {"voidChoiceAbsorption", "Void choice absorption"},
 }
 
 local runStartListeners = {}

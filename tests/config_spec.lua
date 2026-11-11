@@ -27,16 +27,30 @@ for _, name in ipairs({"ModCallbacks", "CacheFlag", "FamiliarVariant", "PlayerTy
     "CollectibleType", "EntityType", "PickupVariant", "HeartSubType", "CoinSubType",
     "KeySubType", "BombSubType", "Difficulty", "DamageFlag"}) do _G[name] = enum() end
 local storage, mods, menu, seed, player, excluded
+local voidPickups = {}
 local game = {Difficulty = Difficulty.DIFFICULTY_HARD}
 local gameFrame = 0
+local roomDesc = {SafeGridIndex = 84, ListIndex = 0, Data = {}}
+local level = {
+    GetCurrentRoomIndex = function() return 84 end,
+    GetCurrentRoomDesc = function() return roomDesc end,
+    GetRoomByIdx = function(_, index, dimension)
+        if index == 84 and dimension == 2 then return {Data = nil} end
+        return roomDesc
+    end,
+}
 function game:GetFrameCount() return gameFrame end
+function game:GetLevel() return level end
 function game:GetItemPool() return {RemoveCollectible = function(_, id) excluded[id] = true end} end
 function game:GetSeeds() return {GetStartSeed = function() return seed end} end
 function game:GetNumPlayers() return 1 end
 function game:GetPlayer() return player end
 function Game() return game end
 Isaac = {GetPlayer = function() return player end, GetItemIdByName = function() return 1001 end,
+    FindByType = function() return voidPickups end,
     GetItemConfig = function() return {GetCollectible = function() return {Quality = 4, Tags = 7, Type = 1} end} end}
+GetPtrHash = function(value) return value end
+GridRooms = {ROOM_GENESIS_IDX = -1}
 function RegisterMod(name)
     local mod = {callbacks = {}}
     function mod:AddCallback(id, fn) self.callbacks[id] = fn end
@@ -48,6 +62,7 @@ function RegisterMod(name)
 end
 local function boot(data, withMenu)
     storage, mods, menu, seed, excluded = data, {}, {}, 12345, {}
+    voidPickups = {}
     player = {Damage = 3.5, AddCacheFlags = function() end, EvaluateItems = function() end,
         HasCollectible = function() return false end}
     ModConfigMenu = withMenu and {
@@ -73,7 +88,7 @@ local function boot(data, withMenu)
     end
     dofile("main.lua")
 end
-local keys = {"mawOfTheVoid", "orbitals", "stompImmunity", "humblingBundle", "darkBum", "relic", "blueFires", "magicMushroom"}
+local keys = {"mawOfTheVoid", "orbitals", "stompImmunity", "humblingBundle", "darkBum", "relic", "blueFires", "magicMushroom", "voidChoiceAbsorption"}
 local function start(continued)
     if not continued then excluded = {} end -- Isaac creates fresh native pools.
     openUnnerfPack.callbacks[ModCallbacks.MC_POST_GAME_STARTED](openUnnerfPack, continued)
@@ -135,8 +150,8 @@ test("malformed, wrong schema and invalid fields fall back safely", function()
     start(false); assert(not openUnnerfPack.Config.IsEnabled("orbitals"))
     assert(openUnnerfPack.Config.IsEnabled("relic"))
 end)
-test("menu has exactly eight independent booleans; changes save immediately, defer to new run", function()
-    boot(nil, true); start(false); assert(#menu == 8)
+test("menu has exactly nine independent booleans; changes save immediately, defer to new run", function()
+    boot(nil, true); start(false); assert(#menu == 9)
     for i, key in ipairs(keys) do
         assert(menu[i].CurrentSetting() == true)
         menu[i].OnChange(false)
@@ -156,11 +171,23 @@ test("late MCM initialization registers once and reflects persisted choices", fu
     ModConfigMenu = {OptionType = {BOOLEAN = 1}, AddText = function() end,
         AddSetting = function(_, _, setting) menu[#menu + 1] = setting end}
     start(false); start(false)
-    assert(#menu == 8 and menu[6].CurrentSetting() == false)
+    assert(#menu == 9 and menu[6].CurrentSetting() == false)
 end)
 test("continue with no matching snapshot uses saved choices", function()
     boot('{"version":1,"settings":{"relic":false},"run":{"seed":999,"settings":{"relic":true}}}', false)
     start(true); assert(not openUnnerfPack.Config.IsEnabled("relic"))
+end)
+test("older version-1 saves migrate Void choice absorption to On", function()
+    boot('{"version":1,"settings":{"mawOfTheVoid":false},' ..
+        '"run":{"seed":12345,"settings":{"mawOfTheVoid":false}}}', true)
+    start(true)
+    assert(not openUnnerfPack.Config.IsEnabled("mawOfTheVoid"))
+    assert(openUnnerfPack.Config.IsEnabled("voidChoiceAbsorption"))
+    assert(menu[9].CurrentSetting() == true)
+    local saved = dkjson.decode(storage)
+    assert(saved.settings.mawOfTheVoid == false and saved.run.settings.mawOfTheVoid == false)
+    assert(saved.settings.voidChoiceAbsorption == true)
+    assert(saved.run.settings.voidChoiceAbsorption == true)
 end)
 
 test("save-slot switches reload choices and Continue snapshots without reloading Lua", function()
@@ -230,6 +257,20 @@ local function exercise(key)
         return mods["Humbleing Bundle Unnerf Unnerf"]:pickUpSelection({}, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY) ~= nil
     elseif key == "magicMushroom" then
         return not excluded[1001] and excluded[12] == true
+    elseif key == "voidChoiceAbsorption" then
+        local function pickup(seedValue)
+            local value = {InitSeed = seedValue, SubType = 58 + seedValue,
+                Price = 0, Touched = false, OptionsPickupIndex = 916, exists = true}
+            function value:ToPickup() return self end
+            function value:Exists() return self.exists end
+            return value
+        end
+        local first, second = pickup(1), pickup(2)
+        voidPickups = {first, second}
+        mods["Void Choice Unnerf"]:preUseItem(CollectibleType.COLLECTIBLE_VOID)
+        local detached = first.OptionsPickupIndex == 916 and second.OptionsPickupIndex == 0
+        mods["Void Choice Unnerf"]:restoreChoices()
+        return detached and first.OptionsPickupIndex == 916 and second.OptionsPickupIndex == 916
     else
         local called = false
         local soul = soulheartgeneratorUnnerf
@@ -265,6 +306,10 @@ for i, key in ipairs(keys) do
             soulheartgeneratorUnnerf.darkbumunnerf.pickupInit = function() end
             soulheartgeneratorUnnerf:PickupInit({})
             assert(not relicCalled)
+        elseif key == "voidChoiceAbsorption" then
+            assert(voidPickups[1].OptionsPickupIndex == 916
+                and voidPickups[2].OptionsPickupIndex == 916,
+                "disabled Void choice absorption must preserve the option group")
         end
         assert(not soulheartgeneratorUnnerf.enableNailUnnerf)
         assert(not soulheartgeneratorUnnerf.enableSatanicBibleUnnerf)

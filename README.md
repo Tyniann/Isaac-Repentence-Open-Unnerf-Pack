@@ -14,7 +14,7 @@ unnerfs, and updated documentation.
 
 ## Features
 
-The pack currently includes eight independently configurable adjustments:
+The pack currently includes nine independently configurable adjustments:
 
 - [Maw of the Void](docs/features/maw-of-the-void.md): restore bonus damage and
   black-heart drops from qualifying dark rings.
@@ -32,6 +32,8 @@ The pack currently includes eight independently configurable adjustments:
   soul-heart chance on eligible explosion-damage events.
 - [Magic Mushroom pools](docs/features/magic-mushroom.md): restore normal Boss
   availability and full normal Treasure weight, keeping the item's effects.
+- [Void choice absorption](docs/features/void.md): absorb eligible items from
+  ordinary linked choice groups while retaining Repentance+'s four-room charge.
 
 The [feature reference](docs/features/README.md) explains each adjustment,
 its restrictions, and its tested behavior. The Nail and Satanic Bible helpers
@@ -42,6 +44,7 @@ remain unfinished and disabled.
 The current target is **Repentance+ v1.9.7.17**. The original seven adjustments
 and configuration have [recorded local Normal/Hard checks](docs/testing/issue-1-engine-results.md#acceptance-matrix).
 Magic Mushroom has its own [pool and Continue validation](docs/testing/magic-mushroom-1.9.7.17.md).
+Void choice absorption has separate [native matrix, Continue and charge checks](docs/testing/void-choice-1.9.7.17.md).
 Each feature page explains its tested conditions and limits; other game builds,
 Greed modes, and multiplayer have separate validation requirements.
 
@@ -69,7 +72,7 @@ prepare a Workshop upload, follow the [release guide](docs/agents/releasing.md).
 
 ## Configuration
 
-All eight supported unnerfs default to **On**. To choose them individually,
+All nine supported unnerfs default to **On**. To choose them individually,
 install the optional [Mod Config Menu
 Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787). In game,
 press **F10**, then select **Open Unnerf Pack 2 → Unnerfs**. The integration has

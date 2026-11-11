@@ -1,0 +1,79 @@
+{
+  "archive": "D:\\T3ValidationArchives\\issue16-20261111-024721-780\\cleanup-20261111T044240Z-cf3459",
+  "gameClosed": true,
+  "log": {
+    "bytes": 32701,
+    "sha256": "55007ae028eaabe4faaa19d29fb97bd03ea2b32d50e24ae511e5805fc3068921",
+    "physical": [
+      "[INFO] - Lua Debug: VOID16_PHYSICAL_CHARGE=0"
+    ],
+    "stable": true
+  },
+  "restored": [
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\gamestate1.dat",
+      "sha256": "68c2f5115dcfba00a8a561b511b4a02a87382a0e4c38d2b54a4474d650e1b60b"
+    },
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\persistentgamedata1.dat",
+      "sha256": "b350261250ca6e37fe8211ff1f246c674c59dea3fa3f0f0ffccdf21b967d26ff"
+    },
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\options.ini",
+      "sha256": "2c7f7e9603c9c12a71f734ad50312a7915cdf8327781181356a0f79282da355f"
+    },
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\cmd_history.txt",
+      "sha256": "a5f1d1f587be6b45cb1e91ed0965192e9f2e5e19701b6b22f29e1430c25fb13e"
+    },
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\save_backups\\20261111.persistentgamedata1.dat",
+      "sha256": "c4154fddc03d32644d31c3462e170b3433c253e032de379a79dd1cf55bac1842"
+    }
+  ],
+  "movedData": [
+    {
+      "originalPath": "D:\\The.Binding.of.Isaac.Repentance.v4.0.2\\data\\open unnerf pack\\save1.dat",
+      "archivePath": "D:\\T3ValidationArchives\\issue16-20261111-024721-780\\cleanup-20261111T044240Z-cf3459\\new-slot1-data\\open unnerf pack\\save1.dat",
+      "sha256": "b22e9ce05e58396dd082e98611d1bf4e0749238f6052e448550b9a2d9386fea8"
+    },
+    {
+      "originalPath": "D:\\The.Binding.of.Isaac.Repentance.v4.0.2\\data\\!!mod config menu\\save1.dat",
+      "archivePath": "D:\\T3ValidationArchives\\issue16-20261111-024721-780\\cleanup-20261111T044240Z-cf3459\\new-slot1-data\\!!mod config menu\\save1.dat",
+      "sha256": "b1344189cda940f797f906710feaea82205bac32a689b3ef184a76d069eeba0e"
+    }
+  ],
+  "diagnosticArchive": "D:\\T3ValidationArchives\\issue16-20261111-024721-780\\cleanup-20261111T044240Z-cf3459\\oup_void_issue16_probe",
+  "diagnosticFiles": {
+    "main.lua": {
+      "bytes": 26671,
+      "sha256": "a2b7778c07353d8f91da3da18f1026f71479d56c95d20a7af6c70c2ff401347b"
+    },
+    "manual-recovery.lua": {
+      "bytes": 2486,
+      "sha256": "ad76365b2149906507499fd9df2d8952ec53259702713de3be8f398e33546c3f"
+    },
+    "metadata.xml": {
+      "bytes": 169,
+      "sha256": "d551ad084adedbf1eed1441e5fb65db925364874c76465fb2ed31f1a2e02b821"
+    },
+    "special-recovery.lua": {
+      "bytes": 28363,
+      "sha256": "38e3e5f507ad028238bb1bc464ac15f40769d7ff2f8326628308b930fcf6ad93"
+    }
+  },
+  "diagnosticAbsent": true,
+  "protectedFiles": 491,
+  "protectedUnchanged": true,
+  "productionHashes": {
+    "main.lua": "da3e94da108b3a06f2505e80bbcd28b20529462894f70cca6653e78c32ac89c4",
+    "config.lua": "e261369050f074324329d5191b98bc806477e299492852267d1f6031ecf0ec09",
+    "Mods/Void Choice Unnerf/main.lua": "69a2562786f15642030df823016bf0d317eaa7e3adfe88aa895017300575a44e"
+  },
+  "otherSlotsPreserved": {
+    "gamestate2.dat": "828deaa19c1438f79f77d170c8f7eee309a1d607d2d638197aa1fd42fecff2e8",
+    "persistentgamedata2.dat": "29957451513ee730ca7ea5ae3504608f2515c50d35f1eb3c8ceb92eb1fd7d386",
+    "gamestate3.dat": "ac41451565213aa63d34298244c6e6799e5e6d4b46ecf3a5640cdefe3bb95b34",
+    "persistentgamedata3.dat": "07d3f0306f97b04a15fce88b6491cea7ebe6644303f1ffc00bfe9afd8742fc8f"
+  }
+}

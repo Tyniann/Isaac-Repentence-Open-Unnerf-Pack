@@ -31,6 +31,8 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
   checks, evidence collection, and session handoffs.
 - [Native pool rules](pool-rules.md): helper-backed pool adjustments, registration
   contracts, configuration and saved-state behavior.
+- [Void choice absorption](void-choice-absorption.md): native pre-use unlinking,
+  special-room exclusions, temporary state and disposable batch validation.
 - [Configuration validation](../configuration-validation.md): MCM integration
   details and reproducible configuration checks.
 - [Repentance+ v1.9.7.17 validation](../testing/repentance-plus-1.9.7.17.md):
@@ -45,5 +47,7 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 - [Compatibility results](../testing/issue-1-engine-results.md)
 - [Configuration results](../testing/configuration-results-1.9.7.17.md)
 - [Magic Mushroom results](../testing/magic-mushroom-1.9.7.17.md)
+- [Void choice absorption validation](../testing/void-choice-1.9.7.17.md): API
+  feasibility probe, environment evidence and pending issue #16 acceptance cases.
 - [Installed-game API and balance evidence](../research/repentance-plus-installed-evidence.md)
 - [Stomp-immunity diagnosis and validation](../research/issue-2-stomp-validation.txt)

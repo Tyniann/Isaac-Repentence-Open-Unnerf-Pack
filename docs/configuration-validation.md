@@ -25,19 +25,23 @@ The game supplies its own `json`; dkjson is only a test dependency.
 ```sh
 lua tests/config_spec.lua
 lua tests/compatibility.lua
+lua tests/void_choice_probe_spec.lua
 curl -fsSL https://raw.githubusercontent.com/Zamiell/isaac-mod-config-menu/a4c15349c8ed8c38f31bf45bdf5d2896f4e9d23d/scripts/modconfig.lua -o /tmp/ounp-modconfig.lua
 lua tests/config_spec.lua /tmp/ounp-modconfig.lua
 find . -name '*.lua' -print0 | xargs -0 -n1 luac -p
 ```
 
-Both harness modes pass 14 checks. Optional source mode executes the upstream
-registration helpers from OptionType through AddText, rather than substituting
-those helpers. It does **not** execute MCM's rendering/input loop or Isaac.
-The suite also switches save-slot backing data without reloading Lua to check
-that one slot cannot overwrite another's choices or Continue snapshot.
-Fixtures test all seven callback gates independently; soul-heart helper spies
-verify dispatch isolation, not the helpers' engine behavior. Existing gameplay
-bugs remain in scope for issue #1/#2, not fixed or certified by these tests.
+The configuration contract harness currently passes 19 checks, including nine
+independent controls, an older-save migration case and the Void callback gate.
+The separate Void test covers disposable-probe state restoration. Optional
+source mode executes the upstream registration helpers from OptionType through
+AddText, rather than substituting those helpers. It does **not** execute MCM's
+rendering/input loop or Isaac. The suite also switches save-slot backing data
+without reloading Lua to check that one slot cannot overwrite another's choices
+or Continue snapshot. Fixtures test each registered callback gate
+independently; soul-heart helper spies verify dispatch isolation, not the
+helpers' engine behavior. Existing gameplay bugs remain in scope for issue
+#1/#2, not fixed or certified by these tests.
 
 ## Executed owner/engine verification
 
@@ -48,7 +52,7 @@ inspection was vanilla; the later coordinated deployment and mod-enabled tests
 are separate evidence. Package inputs, installed-file hashes, backups, settings,
 seeds, exact event values and immutable log hashes are recorded there.
 
-Configuration cases exercised: seven controls/defaults; deferred choice versus
+Historical issue #3 engine cases exercised: seven controls/defaults; deferred choice versus
 active run; exit/relaunch/Continue and fresh-run application; absent MCM; missing
 and truncated JSON fallback; distinct-seed save-slot isolation without Lua
 reload; and each component disabled with the other six active. Engine comparisons
@@ -70,6 +74,17 @@ provide console-assisted item access; no item-access seeds are claimed here.
 The following are reproduction and broader comparison recipes, not a claim that
 every variant or rate comparison below was executed. Use the ledger's actual
 conditions when reusing evidence.
+
+## Issue #16 — Void choice absorption
+
+The config harness checks the ninth saved setting's default, migration,
+Continue snapshot and independent callback gate. `tests/void_choice_probe_spec.lua`
+checks fixture cleanup for baseline and experimental-detach probe modes. Neither
+executes Isaac's native callbacks or establishes Void's absorption behavior.
+Use the separate
+[Void validation record](testing/void-choice-1.9.7.17.md) for the production
+run conditions and acceptance status. Its diagnostic owner observations are
+not production feature passes.
 
 1. With pack data absent/backed up, start Isaac. Open MCM with F10.
    Confirm exactly seven On toggles; Nail and Satanic Bible absent. Record logs.
