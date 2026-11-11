@@ -24,8 +24,9 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 
 ## Tools and validation
 
-- [Releases and Steam Workshop](releasing.md): build and verify installable
-  archives, publish GitHub releases, and prepare a new Workshop listing.
+- [Releases and Steam Workshop](releasing.md): synchronize/version the source,
+  build a pinned archive, tag and publish it, verify downloaded assets, and
+  prepare Workshop uploads with the correct ownership and metadata ID.
 - [Shared game validation](game-validation.md): maintained tools, owner-guided
   checks, evidence collection, and session handoffs.
 - [Native pool rules](pool-rules.md): helper-backed pool adjustments, registration

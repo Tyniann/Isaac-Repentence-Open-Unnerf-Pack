@@ -38,6 +38,12 @@ Before preparing engine tests, interacting with the shared game, deploying test 
 
 Before making user-visible behavior or notable player-facing documentation changes, auditing or editing changelog coverage, or preparing a release, apply the [changelog-rules skill](.agents/skills/changelog-rules/SKILL.md). It determines what belongs in `docs/CHANGELOG.md`; its exclusions apply to development-only, cosmetic, and other non-qualifying changes.
 
+### Releases
+
+Before preparing, packaging, or publishing a release, read
+[the release workflow](docs/agents/releasing.md) for source/version alignment,
+artifact verification, GitHub publication, and Steam Workshop identity.
+
 ## Documentation
 
 Before implementing feature, tool, or workflow changes, or creating, updating, or reorganizing documentation, apply the [documentation-rules skill](.agents/skills/documentation-rules/SKILL.md). It determines which user and technical pages and indexes need to be created or updated.
