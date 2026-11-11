@@ -9,7 +9,13 @@ local options = {
     {"darkBum", "Dark Bum"},
     {"relic", "The Relic"},
     {"blueFires", "Hard-mode blue fires"},
+    {"magicMushroom", "Magic Mushroom pools"},
 }
+
+local runStartListeners = {}
+function config.AddRunStartListener(listener)
+    runStartListeners[#runStartListeners + 1] = listener
+end
 
 local function normalize(values)
     local result = {}
@@ -46,6 +52,16 @@ function config.IsEnabled(key)
     return active[key] == true
 end
 
+function config.IsEnabledForPoolGeneration(key)
+    -- Starting items can roll before POST_GAME_STARTED. Read the selected
+    -- slot now without persisting or changing the other features' active cache.
+    -- A fresh run has frame zero (including a new run with the same seed).
+    load()
+    local game = Game()
+    local snapshot = run and run.seed == game:GetSeeds():GetStartSeed() and game:GetFrameCount() > 0
+    return normalize(snapshot and run.settings or choices)[key] == true
+end
+
 local menuRegistered = false
 local function registerMenu()
     if menuRegistered or ModConfigMenu == nil then return end
@@ -80,6 +96,7 @@ openUnnerfPack:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, contin
         active = normalize(choices)
     end
     run = {seed = seed, settings = normalize(active)}
+    for _, listener in ipairs(runStartListeners) do listener(continued) end
     save()
     registerMenu() -- Also handles MCM loading after this mod.
     -- Initial cache evaluation may precede POST_GAME_STARTED. Re-evaluate Maw's
