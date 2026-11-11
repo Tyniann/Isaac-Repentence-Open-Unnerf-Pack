@@ -83,7 +83,7 @@ folder name, including 'open unnerf pack' if you used that name previously.
 The internal saved-settings identifiers are unchanged.
 
 CONFIGURATION
-All eight supported adjustments default to On. Optional Mod Config Menu Pure:
+All supported adjustments default to On. Optional Mod Config Menu Pure:
 https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787
 Press F10, then choose {MOD_NAME} > Unnerfs. Choices save immediately and
 apply to new runs. Continue keeps the current run's choices, including after
