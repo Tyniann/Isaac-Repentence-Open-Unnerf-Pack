@@ -1,2 +1,2 @@
-# Keep the local skill catalog ignored.
-/.agents/skills/*
+# Keep local agent configuration and skills ignored.
+/.agents/
