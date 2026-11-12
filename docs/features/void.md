@@ -57,9 +57,11 @@ Multiplayer and other modes are untested. A native Angel Room pair was not
 tested directly; the owner selected Boss Rush as its substitute. Death
 Certificate and Genesis checks verify the exclusions after native entry;
 their full return sequences were not exercised.
-A naturally hidden active item's later stored effects and full photo-gated
-route transitions were not separately exercised. Generic stored-active timing
-and Continue have their own controlled book tests.
+A naturally hidden active item (ID 65) in one untouched Treasure Room pair was
+tested on the supported build: Void did not trigger it immediately; the stored
+effect spawned bombs on each of two later Void uses. Off, On, and native-unlinked
+controls were compared. This selected-item result does not establish behavior
+for all hidden actives. Full photo-gated route transitions remain untested.
 
 ## Related features and technical reference
 

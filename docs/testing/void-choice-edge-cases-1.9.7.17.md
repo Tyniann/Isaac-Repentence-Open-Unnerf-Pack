@@ -1,7 +1,7 @@
 # Void native edge-case regressions
 
 Issue: [#17](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/17).
-Session started: 2026-11-12. Status: **photo/passive native comparisons captured and first-session cleanup verified; naturally hidden-active engine follow-up pending**.
+Session started: 2026-11-12. Status: **photo/passive and selected naturally hidden-active native comparisons captured; first-session cleanup verified; final active-session cleanup and formal rereview pending**.
 
 ## Purpose and source
 
@@ -56,7 +56,8 @@ native rewards, rendering, Mom reward generation or item eligibility.
 
 `lua tests/void_choice_batch_spec.lua` still passes, including the existing
 Continue protocol check. Lua syntax checks pass for the modified runner.
-The local harnesses do not establish native hidden-active timing.
+The local harnesses do not establish native hidden-active timing; see the
+captured engine results below.
 
 After native capture, a logging-only correction adds `cohortSeed` to comparison
 records. Their ordinary `seed` field describes the final emission run, which
@@ -190,9 +191,9 @@ new `cohortSeed` field.
 | Untouched mystery identity and natural hidden presentation | Pass; original hidden ID 222 recorded before use |
 | Mystery Off / native-unlinked / On comparison | Pass; On equals native unlinked rewards for the original passive pair |
 
-Neither full Chapter 6 route transitions nor a naturally hidden active-item
-timing case is claimed by these fixtures. Progression implications must be
-stated using the actual ownership/consumption result without equating stat
+Neither full Chapter 6 route transitions nor behavior across all naturally
+hidden active items is claimed by these fixtures. Progression implications must
+be stated using the actual ownership/consumption result without equating stat
 conversion with obtaining a route item.
 
 ## Session ownership and cleanup
@@ -231,35 +232,73 @@ missing protected files. The game was closed and session ownership returned to
 the owner; no diagnostic callbacks survived process exit. This verifies cleanup
 for that session only.
 
-## Naturally hidden-active follow-up (pending)
+## Fixed hidden-active native results
 
-The missing coverage is a naturally hidden active's deferred native Void effect.
-The maintained runner now exposes `OUPBatch.RunEdges(pilot, 'active')`. Its pilot
-is one native-unlinked control; full coverage runs three fresh cases: feature
-Off with original links, Off with links cleared as the native-unlinked control,
-and feature On with original links.
+`OUPBatch.RunEdges(true, 'active')` is the one-case native-unlinked pilot;
+`OUPBatch.RunEdges(false, 'active')` compares Off, native-unlinked, and On.
+The active cohort uses one fixed, recorded natural fixture rather than searching
+for alternate seeds: seed `1344027651`, stage 1 / StageType 4, Treasure Room
+grid 111 / variant 11, native group 1. The hidden subject is original item 65,
+`TypeACTIVE`, naturally blind, entity seed `4235812924`. The visible subject is
+original item 113, `TypeFAMILIAR`, not blind, entity seed `2973825556`. Both
+subjects remain native and untouched; there are no Morph or spawn calls. Any
+fixture mismatch stops before Void use. The familiar companion is converted by
+the engine natively and remains unowned.
 
-Each case searches automatically from candidate seed `1344027539`, with at most
-256 candidates and a hard limit of 36,000 update ticks. It requires an untouched
-native Treasure Room pair with a shared nonzero option link: exactly one
-naturally hidden `TypeACTIVE` with a safe room-local observable and one visible
-passive. The diagnostic records originals and natural presentation and must not
-Morph or spawn the subjects. Capture EID version and source hashes for its
-vanilla `IsAltChoice` observer.
+All three captured cases use the same starting stats (range 260, luck 0, speed
+1). The initial native absorption changes each to range 360, luck 1, speed 1;
+the other recorded stats remain unchanged. Both original pedestals are consumed
+and neither ID 65 nor 113 becomes owned. No active effect runs immediately.
 
-Acceptance records matching PRE_USE and POST_USE `USE_VOID` counts, no
-immediate stored-active execution, storage after first use for On and the
-unlinked control, the expected observable effect on a later native use, and
-count persistence through the next use. The observable must remain room-local;
-the run seed and room must remain unchanged. **No native active result is yet
-available.**
+| Case | Later PRE_USE / POST_USE `USE_VOID` calls | Settled bomb counts | Result |
+| --- | --- | --- | --- |
+| Off, original links | 0 / 0 on each use | 0 → 0 → 0 | No stored active effect |
+| Off, native-unlinked | 1 / 1 on each use | 0 → 4 → 8 | Deferred effect repeats; stored count persists |
+| On, original links | 1 / 1 on each use | 0 → 4 → 8 | Matches native-unlinked timing and effect |
 
-The prior session is closed and ownership has been returned, but the prior
-archive is not the follow-up restore point. Before any deployment, verify the
-game is closed and make a fresh complete backup/archive of the current state,
-record original file presence, and protect production and other mod data. Keep
-the earlier photo/passive records and cleanup receipt as valid historical
-evidence; record new staging and cleanup separately.
+The seed and room remain unchanged across later uses. This establishes deferred
+execution for this naturally hidden active and visible familiar pair on the
+captured build. It does not establish all hidden-active items or full
+photo-gated route transitions.
+
+### Staging and evidence provenance
+
+The initial fresh archive is
+`D:\T3ValidationArchives\issue17-active-20261112T010151Z-afad76`. The fixed
+runner was staged at
+`D:\T3ValidationArchives\issue17-active-20261112T010151Z-afad76\fixed-runner-stage-20261112T012340Z-59acf9`;
+503 protected files were unchanged, diagnostic metadata was unchanged, and the
+original restore point was retained. The executed runner source is commit
+`a2b2c39cc671a37604a47fb41a86b41bd5386dc9`, 40,519 bytes, SHA-256
+`f13a9449bf24d0c3487e3258c61bdd8f5d507c5e8d8b51ac03581fbeb5384ab2`.
+
+The pilot stable capture is 44,647 bytes, SHA-256
+`5eea5f10324e1e44adf2ae211dd55a72285d1e84691b5c356185740367d94790`, at
+`D:\T3ValidationArchives\issue17-active-20261112T010151Z-afad76\capture-fixed-pilot-20261112T012646Z-801b77`.
+Its 19 records include 18 `VOID17_ACTIVE_PILOT` records; there are no malformed
+records, rejected candidates, or warning matches. Runtime was Repentance+
+v1.9.7.17.J460, MCM Pure 113, EID present, and REPENTOGON absent.
+
+The full matrix stable capture is 115,244 bytes, SHA-256
+`8cde8765b6070da8a4125172c128b5d643ae599aee237d41db0caf19b680ed0c`, at
+`D:\T3ValidationArchives\issue17-active-20261112T010151Z-afad76\capture-fixed-matrix-20261112T012933Z-399983`.
+It has 69 valid records, including 50 `VOID17_ACTIVE` records, zero seed
+rejections, and no warning matches. Three passing `case_result` records and a
+passing `edge_comparison` at frame 167 are retained in
+[void17-active.jsonl](evidence/void17-active.jsonl). The owner observed
+`OUP_VOID_BATCH_PASS`. The raw combined terminal exceeded the native log's
+10 KB line limit and ends mid-JSON; it is preserved as captured. Therefore the
+raw matrix is **not** described as wholly well-formed or as having a valid
+complete terminal. The four exported records preserve the complete passing
+case results and comparison without fabricating or repairing that terminal.
+
+After capture, a logging-only correction compacted the combined terminal into
+case-name/pass/seed references plus a `caseResultsLogged` marker; the complete
+per-case records and internal result object remain unchanged. A meaningful
+regression first reproduced the oversized terminal failure and then passed
+with the compact summary under 8 KB. This does not change or relabel the
+executed source hash or native captures; fixture, native uses and acceptance
+conditions are unchanged.
 
 ### Fresh active diagnostic stage
 
@@ -304,7 +343,9 @@ spawn, then makes two later native Void uses. The first later use must have one
 PRE_USE and POST_USE `USE_VOID` observation and a real increase in bomb count;
 the stored count must persist through the next use. The room and run seed must
 remain unchanged. Status now reports phase and seed, and the same 3,600-update
-bound used by the regular batch applies. The owner stopped and closed the game;
-the fresh original backups remain in the parent archive and have not been
-restored. The game is closed awaiting the runner replacement. **The fixed-fixture
-native pilot remains pending.**
+bound used by the regular batch applies. The owner stopped and closed the game
+after the failed search attempt, then reopened it for the fixed-fixture pilot
+and matrix. The fresh original backups remain in the parent archive and have
+not been restored. The shared game is currently open pending final review,
+closure and cleanup. No second cleanup is claimed; the fixed-fixture native
+pilot and matrix results are captured above.

@@ -42,8 +42,9 @@ serializing absorbed effects on Continue.
 The target-build probe showed partial native choice cleanup at `MC_USE_ITEM`;
 restoring there would assume a completion order the game did not exhibit.
 The free active-pair experiment instead verified unlinking before use and
-restoration on the next update, with both stored effects firing once on the
-subsequent use. This evidence does not replace production regression coverage.
+restoration on the next update. The separate naturally hidden-active cohort
+below confirms deferred native effects and their repeated execution; see its
+capture record and limits.
 
 ## Validation
 
@@ -102,13 +103,13 @@ The active attempt uses the same 3,600-update tick bound as the normal batch.
 The case makes one native absorption use followed by two native Void uses. The
 newly absorbed active must not execute or spawn bombs immediately. On and
 unlinked-native must each record one matching PRE_USE and POST_USE `USE_VOID`
-call on the first later use, with an actual bomb-count increase. The stored
-count must persist through the next use; room and run seed must remain
-unchanged. Status output includes the current phase and seed. The fixed-fixture
-pilot remains **pending** native validation. Use a fresh closed-game archive
-and backup before any new Windows deployment. The earlier issue #17 cleanup
-receipt remains valid for its own session, but is not a restore point for this
-follow-up.
+call on each later use; the room-local bomb count must increase on both uses,
+and the stored count must persist. Room and run seed must remain unchanged. The
+captured pilot and full matrix pass this fixture contract. See the
+[native evidence ledger](../testing/void-choice-edge-cases-1.9.7.17.md#fixed-hidden-active-native-results)
+and [four retained records](../testing/evidence/void17-active.jsonl). This
+validates the selected native fixture on the tested build; it does not establish
+all hidden actives, characters, modes or full photo-gated route transitions.
 
 The diagnostic uses the installed EID `IsAltChoice` sprite observer, whose
 vanilla path compares question-mark graphics with `Sprite:GetTexel`. EID's
@@ -119,10 +120,10 @@ substitute Curse of the Blind for natural hidden presentation.
 The controls preserve the same seed, native identity, initial group, hidden
 state and starting stats. Only the unlinked control explicitly clears the
 subjects' links. Each native Void use receives the recorded controlled Void
-RNG seed. On must match unlinked-native rewards and consumption; surviving
+RNG seed. On must match unlinked-native effects and consumption; surviving
 On choices must recover their original indices. The
-[edge-case ledger](../testing/void-choice-edge-cases-1.9.7.17.md) distinguishes
-protocol checks, pending engine observations and eventual acceptance.
+[edge-case ledger](../testing/void-choice-edge-cases-1.9.7.17.md) records the
+captured result, executed-source provenance, and remaining limits.
 
 See the [Void ledger](../testing/void-choice-1.9.7.17.md) for exact deployed hashes,
 capture paths, passing comparisons and unexecuted limits. Follow the

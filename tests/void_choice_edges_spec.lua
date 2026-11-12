@@ -144,7 +144,13 @@ local function drive()
         end
         handlers[3][0](mod)
         for i = start + 1, #records do
-            if records[i].kind == "batch_result" then return records[i] end
+            if records[i].kind == "batch_result" then
+                local cases = {}
+                for j = start + 1, i - 1 do
+                    if records[j].kind == "case_result" then cases[#cases + 1] = records[j] end
+                end
+                return records[i], cases
+            end
         end
     end
     error("fixture protocol did not finish")
@@ -182,17 +188,20 @@ corruptOn = false
 local effectsBefore = nativeEffects
 fixedActive = true
 OUPVoidBatch.RunEdges(true, "active")
-local activePilot = drive()
+local activePilot, activePilotCases = drive()
 assert(activePilot.pass and #activePilot.results == 1)
-assert(activePilot.results[1].fixture.pickups[1].item == 65 and activePilot.results[1].fixture.pickups[1].blind)
-assert(activePilot.results[1].fixture.seed == 1344027651)
-assert(#activePilot.results[1].effects == 2 and nativeEffects == effectsBefore + 2)
+assert(activePilot.caseResultsLogged and activePilot.results[1].seed == 1344027651)
+assert(activePilotCases[1].fixture.pickups[1].item == 65 and activePilotCases[1].fixture.pickups[1].blind)
+assert(activePilotCases[1].fixture.seed == 1344027651)
+assert(#activePilotCases[1].effects == 2 and nativeEffects == effectsBefore + 2)
 assert(fixedSeedCommands == 1, "fixed pilot must select only one seed")
 OUPVoidBatch.RunEdges(false, "active")
-local activeSuite = drive()
+local activeSuite, activeCases = drive()
 assert(activeSuite.pass and #activeSuite.results == 3)
+assert(#json.encode(activeSuite) < 8192,
+    "hidden-active terminal must stay below native log-line truncation size")
 assert(fixedSeedCommands == 4, "three controls must each select the same fixed seed once")
-for _, result in ipairs(activeSuite.results) do
+for _, result in ipairs(activeCases) do
     assert(#result.effects == 2)
     for _, effect in ipairs(result.effects) do assert(effect.preCount == 1 and effect.postCount == 1) end
 end

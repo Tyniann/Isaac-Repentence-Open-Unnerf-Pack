@@ -221,7 +221,18 @@ local function finish(ok, message)
             end
         end
     end
-    emit("batch_result", {pass = ok, error = message, results = active.results})
+    -- Full active snapshots are already emitted as separate case_result records.
+    -- Repeating all of them exceeds the native DebugString log-line limit.
+    local loggedResults = active.results
+    if active.activeCohort then
+        loggedResults = {}
+        for _, entry in ipairs(active.results) do
+            loggedResults[#loggedResults + 1] = {name = entry.name, pass = entry.pass,
+                seed = entry.fixture.seed}
+        end
+    end
+    emit("batch_result", {pass = ok, error = message, results = loggedResults,
+        caseResultsLogged = active.activeCohort or nil})
     result = {pass = ok, error = message, results = active.results}
     if not ok and player():Exists() and not player():IsDead() then
         player():SetMinDamageCooldown(3600) -- Time to inspect a failed disposable fixture safely.

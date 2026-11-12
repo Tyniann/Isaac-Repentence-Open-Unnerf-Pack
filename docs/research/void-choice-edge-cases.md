@@ -158,10 +158,16 @@ The [native edge-case ledger](../testing/void-choice-edge-cases-1.9.7.17.md) and
   controlled Void RNG intervention is explicit. This is target-build evidence
   for the selected passive pair, not a natural-rate or every-item survey.
 
-The production module needs no change for these cases. Full photo-gated route
-entry and a naturally hidden active item's later effects remain unexecuted;
-the earlier book timing tests remain separate evidence. The diagnostic was
-removed reversibly and this session's scoped state restored from fresh backups.
+The production module needs no change for these cases. The later hidden-active
+follow-up used the untouched natural pair at seed `1344027651` (hidden active
+65, visible familiar 113) and captured passing Off, native-unlinked and On
+results: the active had no immediate effect, then produced its room-local bomb
+effect on each of two subsequent Void uses in the enabled cases. See the
+[active capture ledger](../testing/void-choice-edge-cases-1.9.7.17.md#fixed-hidden-active-native-results)
+and [retained records](../testing/evidence/void17-active.jsonl). This closes
+only the selected fixture case; full photo-gated route entry, other hidden
+active items and the broader character/mode matrix remain untested. The earlier
+book timing tests remain separate evidence.
 
 ---
 
