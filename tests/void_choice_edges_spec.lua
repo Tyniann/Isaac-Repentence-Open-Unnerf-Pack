@@ -2,15 +2,17 @@
 local json = require("dkjson")
 package.preload.json = function() return json end
 CollectibleType = {COLLECTIBLE_VOID = 477}
-EntityType, PickupVariant = {ENTITY_PICKUP = 5}, {PICKUP_COLLECTIBLE = 100}
-ItemType, ItemConfig = {ITEM_PASSIVE = 1}, {TAG_QUEST = 32768}
-ModCallbacks = {MC_POST_GAME_STARTED = 1, MC_PRE_USE_ITEM = 2, MC_POST_UPDATE = 3, MC_PRE_GAME_EXIT = 4}
+EntityType, PickupVariant = {ENTITY_PICKUP = 5, ENTITY_TEAR = 2, ENTITY_BOMBDROP = 4, ENTITY_FAMILIAR = 3}, {PICKUP_COLLECTIBLE = 100}
+ItemType, ItemConfig = {ITEM_PASSIVE = 1, ITEM_ACTIVE = 3}, {TAG_QUEST = 32768}
+ModCallbacks = {MC_POST_GAME_STARTED = 1, MC_PRE_USE_ITEM = 2, MC_POST_UPDATE = 3, MC_PRE_GAME_EXIT = 4, MC_USE_ITEM = 5}
 CallbackPriority, UseFlag = {EARLY = -100, LATE = 100}, {USE_VOID = 64, USE_OWNED = 4}
 RoomType = {ROOM_BOSS = 5, ROOM_TREASURE = 4}
 Seeds = {Seed2String = function(seed) return tostring(seed) end}
 local handlers, commands, records, found = {}, {}, {}, {}
 local gameSeed, stage, stageType, roomType, writes, uses = 1, 1, 0, 1, 0, 0
 local corruptOn, range = false, 260
+local stored, shield, nativeEffects = {}, 0, 0
+local suppressPost, suppressEffect = false, false
 local data = {version = 1, settings = {voidChoiceAbsorption = true, mawOfTheVoid = false}}
 openUnnerfPack = {Config = {IsEnabled = function() return data.settings.voidChoiceAbsorption end}}
 function openUnnerfPack:HasData() return true end
@@ -51,16 +53,23 @@ function p:GetCollectibleNum() return 0 end
 function p:GetActiveCharge() return 4 end
 function p:SetActiveCharge() end
 function p:GetSoulHearts() return 0 end
-function p:GetEffects() return {GetCollectibleEffectNum = function() return 0 end} end
+function p:GetEffects() return {GetCollectibleEffectNum = function(_, id) return id == 58 and shield or 0 end} end
 function p:GetCollectibleRNG() return rng end
 function p:UseActiveItem(item, flags, slot)
     assert(item == 477 and flags == 4 and slot == 0)
     uses = uses + 1
+    for id in pairs(stored) do
+        handlers[2][0](mod, id, rng, self, 64)
+        nativeEffects = nativeEffects + 1
+        if id == 58 and not suppressEffect then shield = shield + 1 end
+        if not suppressPost then handlers[5][0](mod, id, rng, self, 64) end
+    end
+    for _, value in ipairs(found) do if value.SubType == 58 then stored[58] = true end end
     self.TearRange = range + (corruptOn and data.settings.voidChoiceAbsorption and 1 or 0)
     found = {} -- Fixed mock outcome; no claim about native consumption.
 end
 local function pickup(id, group, blind)
-    local value = {InitSeed = gameSeed + id, SubType = id, OptionsPickupIndex = group,
+    local value = {Type = 5, InitSeed = gameSeed + id, SubType = id, OptionsPickupIndex = group,
         Price = 0, Touched = false, blind = blind}
     function value:Exists() return true end
     function value:ToPickup() return self end
@@ -82,6 +91,8 @@ function game:ChangeRoom(index)
         found = {pickup(327, 0, false), pickup(328, 0, false)}
     elseif gameSeed == 1344027538 then
         found = {pickup(101, 916, false), pickup(201, 916, true)}
+    elseif gameSeed == 1344027540 then
+        found = {pickup(58, 916, true), pickup(101, 916, false)}
     else found = {pickup(101, 916, false), pickup(102, 916, true)} end
 end
 function Game() return game end
@@ -91,7 +102,7 @@ Isaac = {GetPlayer = function() return p end, FindByType = function() return fou
     DebugString = function(s) records[#records + 1] = json.decode(s:sub(#"OUP_VOID_BATCH " + 1)) end,
     ExecuteCommand = function(s) commands[#commands + 1] = s end,
     GetItemConfig = function() return {GetCollectible = function(_, id)
-        return {MaxCharges = 4, Type = (id == 201 or id == 477) and 2 or 1,
+        return {MaxCharges = 4, Type = (id == 201 or id == 477 or id == 58) and 3 or 1,
             Tags = (id == 327 or id == 328) and 32768 or 0}
     end} end}
 dofile("tools/validation/void-choice-batch.lua")
@@ -106,7 +117,7 @@ local function drive()
             local command = table.remove(commands, 1)
             if command:match("^restart") or command:match("^seed") then
                 gameSeed = tonumber(command:match("^seed (%d+)$")) or 99
-                found, p.TearRange, range = {}, 260, 260
+                found, p.TearRange, range, stored, shield = {}, 260, 260, {}, 0
                 roomType, current.Data.Type = 1, 1
                 handlers[1][CallbackPriority.EARLY](mod, false)
                 handlers[1][CallbackPriority.LATE](mod, false)
@@ -152,4 +163,29 @@ local failure = drive()
 assert(not failure.pass and failure.error:find("differs from native unlinked rewards"),
     "comparator must catch a changed On reward rather than merely disappearing pedestals")
 assert(data.settings.voidChoiceAbsorption and not data.settings.mawOfTheVoid)
+corruptOn = false
+local effectsBefore = nativeEffects
+OUPVoidBatch.RunEdges(true, "active")
+local activePilot = drive()
+assert(activePilot.pass and #activePilot.results == 1)
+assert(activePilot.results[1].fixture.pickups[1].item == 58 and activePilot.results[1].fixture.pickups[1].blind)
+assert(activePilot.results[1].fixture.seed == 1344027540)
+assert(#activePilot.results[1].effects == 2 and nativeEffects == effectsBefore + 2)
+OUPVoidBatch.RunEdges(false, "active")
+local activeSuite = drive()
+assert(activeSuite.pass and #activeSuite.results == 3)
+for _, result in ipairs(activeSuite.results) do
+    assert(#result.effects == 2)
+    for _, effect in ipairs(result.effects) do assert(effect.preCount == 1 and effect.postCount == 1) end
+end
+suppressPost = true
+OUPVoidBatch.RunEdges(true, "active")
+local missingExecution = drive()
+assert(not missingExecution.pass and missingExecution.error:find("pre/post use count differs"),
+    "pre-use intent alone is not evidence that the stored ability executed")
+suppressPost, suppressEffect = false, true
+OUPVoidBatch.RunEdges(true, "active")
+local missingEffect = drive()
+assert(not missingEffect.pass and missingEffect.error:find("no expected observable effect"),
+    "callbacks alone must not substitute for an observable stored effect")
 print("Void edge fixture protocol passed; native identity, rendering and rewards still require engine evidence")

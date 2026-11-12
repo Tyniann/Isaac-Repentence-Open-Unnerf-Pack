@@ -73,7 +73,7 @@ Isaac's sandbox exposes `require` but not `package`. Special-room fixtures find
 the actual production callback through `Isaac.GetCallbacks`; they do not reload
 the module or expose a production-only testing interface.
 
-### Native photo and mystery-item regressions
+### Native photo, mystery-item and hidden-active regressions
 
 `RunEdges(true)` is a one-case Mom reward pilot; `RunEdges(false)` runs the
 photo and naturally blind alternate-path cohorts with feature Off, an Off
@@ -85,10 +85,26 @@ not assume that the pair uses ordinary choice links.
 
 The alternate-path cohort selects a natural two-passive pair with exactly one
 hidden presentation, checking at most eight seeds. Selection and rejected
-fixtures are logged. This keeps passive reward comparison bounded without
-executing an arbitrary unknown stored active that could restart or teleport
-the run. Generic stored-active timing remains covered separately; this cohort
-does not claim a hidden-active timing case.
+fixtures are logged. This passive cohort does not claim hidden-active timing.
+
+For hidden-active coverage, call `OUPBatch.RunEdges(pilot, 'active')`. The pilot
+uses one native-unlinked control; the full run compares Off, native-unlinked,
+and On. It searches at most 256 automatic candidate seeds starting at
+`1344027539`, with a hard bound of 36,000 update ticks. The fixture must be an
+untouched, naturally linked Treasure Room pair: one naturally hidden
+`TypeACTIVE` with a safe room-local observable and one visible passive. The
+diagnostic records the original identities and presentation; it does not Morph
+or spawn either subject. EID's vanilla `IsAltChoice` sprite observer remains a
+test-only dependency.
+
+The active case records matching PRE_USE and POST_USE `USE_VOID` counts. Newly
+absorbed actives must not execute immediately. On and unlinked-native must store
+one copy. A later native use must produce that item's expected observable
+effect, and the stored count must persist through another use. Room and run seed
+must remain unchanged. Engine observations are **pending**; this path has no
+native result yet. Use a fresh closed-game archive and backup before any new
+Windows deployment. The earlier issue #17 cleanup receipt remains valid for
+its own session, but is not a restore point for this follow-up.
 
 The diagnostic uses the installed EID `IsAltChoice` sprite observer, whose
 vanilla path compares question-mark graphics with `Sprite:GetTexel`. EID's

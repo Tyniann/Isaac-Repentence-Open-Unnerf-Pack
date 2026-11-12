@@ -1,7 +1,7 @@
 # Void native edge-case regressions
 
 Issue: [#17](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/17).
-Session started: 2026-11-12. Status: **pilot and all six native comparisons captured; session cleanup verified; PR review pending**.
+Session started: 2026-11-12. Status: **photo/passive native comparisons captured and first-session cleanup verified; naturally hidden-active engine follow-up pending**.
 
 ## Purpose and source
 
@@ -56,6 +56,7 @@ native rewards, rendering, Mom reward generation or item eligibility.
 
 `lua tests/void_choice_batch_spec.lua` still passes, including the existing
 Continue protocol check. Lua syntax checks pass for the modified runner.
+The local harnesses do not establish native hidden-active timing.
 
 After native capture, a logging-only correction adds `cohortSeed` to comparison
 records. Their ordinary `seed` field describes the final emission run, which
@@ -226,5 +227,36 @@ The two diagnostic files were moved into the archive and their hashes verified;
 were unchanged during cleanup, including production, other mod sources/data,
 executables and other save slots. Production remains at the staged hashes.
 The different stage/cleanup counts reflect the separately restored scope, not
-missing protected files. The game is closed and session ownership is returned
-to the owner; no diagnostic callbacks survive process exit.
+missing protected files. The game was closed and session ownership returned to
+the owner; no diagnostic callbacks survived process exit. This verifies cleanup
+for that session only.
+
+## Naturally hidden-active follow-up (pending)
+
+The missing coverage is a naturally hidden active's deferred native Void effect.
+The maintained runner now exposes `OUPBatch.RunEdges(pilot, 'active')`. Its pilot
+is one native-unlinked control; full coverage runs three fresh cases: feature
+Off with original links, Off with links cleared as the native-unlinked control,
+and feature On with original links.
+
+Each case searches automatically from candidate seed `1344027539`, with at most
+256 candidates and a hard limit of 36,000 update ticks. It requires an untouched
+native Treasure Room pair with a shared nonzero option link: exactly one
+naturally hidden `TypeACTIVE` with a safe room-local observable and one visible
+passive. The diagnostic records originals and natural presentation and must not
+Morph or spawn the subjects. Capture EID version and source hashes for its
+vanilla `IsAltChoice` observer.
+
+Acceptance records matching PRE_USE and POST_USE `USE_VOID` counts, no
+immediate stored-active execution, storage after first use for On and the
+unlinked control, the expected observable effect on a later native use, and
+count persistence through the next use. The observable must remain room-local;
+the run seed and room must remain unchanged. **No native active result is yet
+available.**
+
+The prior session is closed and ownership has been returned, but the prior
+archive is not the follow-up restore point. Before any deployment, verify the
+game is closed and make a fresh complete backup/archive of the current state,
+record original file presence, and protect production and other mod data. Keep
+the earlier photo/passive records and cleanup receipt as valid historical
+evidence; record new staging and cleanup separately.
