@@ -1,0 +1,71 @@
+{
+  "archive": "D:\\T3ValidationArchives\\issue17-active-20261112T010151Z-afad76\\cleanup-20261112T014142Z-c0c68f",
+  "gameClosed": true,
+  "log": {
+    "bytes": 128350,
+    "sha256": "915610227cc607c3bf8b16c3117e60544746d97e741e9bebeaabf78dae5edc1f",
+    "stable": true,
+    "parsed": 69,
+    "malformed": 1,
+    "activeCasesPass": true,
+    "activeComparisonPass": true,
+    "truncatedTerminalPreserved": true
+  },
+  "restored": [
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\cmd_history.txt",
+      "sha256": "014d1a454edfee31a4d861c655a82cd6b1236987a1d7fc7734348f7cd5bf8fd8"
+    },
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\gamestate1.dat",
+      "sha256": "e36229c7158479467f15e5f0b107d62b8f79491dc63969d7bed2c16b030e1304"
+    },
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\options.ini",
+      "sha256": "a86c6288bf3175b26142836b8a0560dde5c4db8cee40bf65bf39108d43945e05"
+    },
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\persistentgamedata1.dat",
+      "sha256": "e0fa9c6f807a76501483a0ab08ae6603661d373ddc4bb69f3ae96f2d98c5c778"
+    },
+    {
+      "path": "C:\\Users\\Mario\\Documents\\My Games\\Binding of Isaac Repentance+\\save_backups\\20261112.persistentgamedata1.dat",
+      "sha256": "e507c150d4ada34ee07a14c566e987915b67b1d66e987103e82404d3bdc8f0ef"
+    },
+    {
+      "path": "D:\\The.Binding.of.Isaac.Repentance.v4.0.2\\data\\external item descriptions\\save1.dat",
+      "sha256": "92de887078c84a2a3f3362e63debab7a16ae4043c22e4187da9d484cf9abbbc5"
+    },
+    {
+      "path": "D:\\The.Binding.of.Isaac.Repentance.v4.0.2\\data\\open unnerf pack\\save1.dat",
+      "sha256": "cf49b4179f39cee75b6e9e0a774040d88bec9c6b1e14ed514d09a6e6fb689e0a"
+    }
+  ],
+  "moved": [],
+  "originalFilesVerified": 65,
+  "diagnosticArchive": "D:\\T3ValidationArchives\\issue17-active-20261112T010151Z-afad76\\cleanup-20261112T014142Z-c0c68f\\oup_void_edge_probe",
+  "diagnosticFiles": {
+    "main.lua": {
+      "bytes": 40519,
+      "sha256": "f13a9449bf24d0c3487e3258c61bdd8f5d507c5e8d8b51ac03581fbeb5384ab2"
+    },
+    "metadata.xml": {
+      "bytes": 132,
+      "sha256": "f308268976f085d86bcad5e84f82537e069d45cbceb4f8750b45f767e0ff4255"
+    }
+  },
+  "diagnosticAbsent": true,
+  "protectedFiles": 436,
+  "protectedUnchanged": true,
+  "productionHashes": {
+    "main.lua": "da3e94da108b3a06f2505e80bbcd28b20529462894f70cca6653e78c32ac89c4",
+    "config.lua": "e261369050f074324329d5191b98bc806477e299492852267d1f6031ecf0ec09",
+    "Mods/Void Choice Unnerf/main.lua": "69a2562786f15642030df823016bf0d317eaa7e3adfe88aa895017300575a44e"
+  },
+  "otherSlotsPreserved": {
+    "gamestate2.dat": "038d7245ad012cc54df21897823f3d1fa3697ba500ae6eeefff184497e23f46e",
+    "persistentgamedata2.dat": "b5437803d09f473b9931a24b5ac0439a44a965063782acdf6f55964ea29d9193",
+    "gamestate3.dat": "ac41451565213aa63d34298244c6e6799e5e6d4b46ecf3a5640cdefe3bb95b34",
+    "persistentgamedata3.dat": "07d3f0306f97b04a15fce88b6491cea7ebe6644303f1ffc00bfe9afd8742fc8f"
+  }
+}

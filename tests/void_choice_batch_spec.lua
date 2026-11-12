@@ -4,7 +4,7 @@ package.preload.json = function() return json end
 CollectibleType = {COLLECTIBLE_VOID = 477}
 EntityType = {ENTITY_PICKUP = 5}
 PickupVariant = {PICKUP_COLLECTIBLE = 100}
-ModCallbacks = {MC_POST_GAME_STARTED = 1, MC_PRE_USE_ITEM = 2, MC_POST_UPDATE = 3, MC_PRE_GAME_EXIT = 4}
+ModCallbacks = {MC_POST_GAME_STARTED = 1, MC_PRE_USE_ITEM = 2, MC_POST_UPDATE = 3, MC_PRE_GAME_EXIT = 4, MC_USE_ITEM = 5}
 CallbackPriority = {EARLY = -100, LATE = 100}
 UseFlag = {USE_VOID = 64, USE_OWNED = 4}
 RoomType = {ROOM_ANGEL = 15, ROOM_BOSSRUSH = 17, ROOM_TREASURE = 4, ROOM_BOSS = 5}

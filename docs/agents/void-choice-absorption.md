@@ -42,8 +42,9 @@ serializing absorbed effects on Continue.
 The target-build probe showed partial native choice cleanup at `MC_USE_ITEM`;
 restoring there would assume a completion order the game did not exhibit.
 The free active-pair experiment instead verified unlinking before use and
-restoration on the next update, with both stored effects firing once on the
-subsequent use. This evidence does not replace production regression coverage.
+restoration on the next update. The separate naturally hidden-active cohort
+below confirms deferred native effects and their repeated execution; see its
+capture record and limits.
 
 ## Validation
 
@@ -72,6 +73,57 @@ engine seed before logging; logging must not supply fields required by a check.
 Isaac's sandbox exposes `require` but not `package`. Special-room fixtures find
 the actual production callback through `Isaac.GetCallbacks`; they do not reload
 the module or expose a production-only testing interface.
+
+### Native photo, mystery-item and hidden-active regressions
+
+`RunEdges(true)` is a one-case Mom reward pilot; `RunEdges(false)` runs the
+photo and naturally blind alternate-path cohorts with feature Off, an Off
+unlinked control, and feature On. Each case starts Isaac afresh, then uses the
+native seed command to select the cohort before generating its target floor.
+The diagnostic never morphs or hand-spawns the subjects. The photo fixture
+records whatever native option indices Mom assigns, including zero; it does
+not assume that the pair uses ordinary choice links.
+
+The alternate-path cohort selects a natural two-passive pair with exactly one
+hidden presentation, checking at most eight seeds. Selection and rejected
+fixtures are logged. This passive cohort does not claim hidden-active timing.
+
+For hidden-active coverage, call `OUPBatch.RunEdges(pilot, 'active')`. The pilot
+uses one native-unlinked control; the full run compares Off, native-unlinked,
+and On. It uses one recorded natural fixture in the stage 1 Treasure Room
+(stage 1, StageType 4, room grid 111 / variant 11): hidden item 65 (`TypeACTIVE`,
+entity seed 4235812924) and visible item 113 (`TypeFAMILIAR`, entity seed
+2973825556), both originally linked in group 1. EID's vanilla `IsAltChoice`
+observer must report the hidden state as true for item 65 and false for item
+113. Exact fixture mismatch stops before any Void use; there is no active seed
+search or replacement fixture. The passive/photos path still has its separate
+eight-candidate bound. Neither subject is Morphed or spawned by the diagnostic.
+The active attempt uses the same 3,600-update tick bound as the normal batch.
+
+The case makes one native absorption use followed by two native Void uses. The
+newly absorbed active must not execute or spawn bombs immediately. On and
+unlinked-native must each record one matching PRE_USE and POST_USE `USE_VOID`
+call on each later use; the room-local bomb count must increase on both uses,
+and the stored count must persist. Room and run seed must remain unchanged. The
+captured pilot and full matrix pass this fixture contract. See the
+[native evidence ledger](../testing/void-choice-edge-cases-1.9.7.17.md#fixed-hidden-active-native-results)
+and [four retained records](../testing/evidence/void17-active.jsonl). This
+validates the selected native fixture on the tested build; it does not establish
+all hidden actives, characters, modes or full photo-gated route transitions.
+
+The diagnostic uses the installed EID `IsAltChoice` sprite observer, whose
+vanilla path compares question-mark graphics with `Sprite:GetTexel`. EID's
+version and source hashes must be captured; this is a test-only observer
+dependency, not a production dependency or a REPENTOGON requirement. Do not
+substitute Curse of the Blind for natural hidden presentation.
+
+The controls preserve the same seed, native identity, initial group, hidden
+state and starting stats. Only the unlinked control explicitly clears the
+subjects' links. Each native Void use receives the recorded controlled Void
+RNG seed. On must match unlinked-native effects and consumption; surviving
+On choices must recover their original indices. The
+[edge-case ledger](../testing/void-choice-edge-cases-1.9.7.17.md) records the
+captured result, executed-source provenance, and remaining limits.
 
 See the [Void ledger](../testing/void-choice-1.9.7.17.md) for exact deployed hashes,
 capture paths, passing comparisons and unexecuted limits. Follow the

@@ -10,6 +10,10 @@ OUPVoidBatch = batch
 local C = CollectibleType
 local books = {58, 78, 34, 287} -- Repeatable effects without random pickup rewards.
 local originalSettings
+-- Fixed seed cohorts make original native identities comparable without Morph.
+local activeFixture = {seed = 1344027651, hidden = 65, visible = 113}
+local edgeSeeds = {photos = 212727584, alt = 1344027538, active = activeFixture.seed}
+local edgeDiscovered = {}
 
 local function emit(kind, fields)
     fields = fields or {}
@@ -67,12 +71,18 @@ local function state()
     end
     local items = {}
     for _, pickup in ipairs(pickups()) do
-        items[#items + 1] = {item = pickup.SubType, seed = pickup.InitSeed,
+        local entry = {item = pickup.SubType, seed = pickup.InitSeed,
             group = pickup.OptionsPickupIndex, price = pickup.Price, touched = pickup.Touched}
+        if active and active.edge then
+            local config = Isaac.GetItemConfig():GetCollectible(pickup.SubType)
+            entry.itemType, entry.quest = config.Type, config.Tags & ItemConfig.TAG_QUEST ~= 0
+            entry.blind = active.case.edgeKind ~= "photos" and EID:IsAltChoice(pickup) or false
+        end
+        items[#items + 1] = entry
     end
     local owned = {}
     for _, id in ipairs(active and active.fixtureIds or books) do owned[tostring(id)] = p:GetCollectibleNum(id, true) end
-    return {seed = Game():GetSeeds():GetStartSeed(),
+    local observed = {seed = Game():GetSeeds():GetStartSeed(),
         playerType = p:GetPlayerType(), roomType = Game():GetRoom():GetType(),
         roomIndex = level:GetCurrentRoomIndex(), roomVariant = current.Data and current.Data.Variant,
         stage = level:GetStage(), stageType = level:GetStageType(),
@@ -87,6 +97,16 @@ local function state()
         mcm = ModConfigMenu ~= nil, repentogon = REPENTOGON ~= nil,
         enemies = Game():GetRoom():GetAliveEnemiesCount(), clear = Game():GetRoom():IsClear(),
         ambushActive = Game():GetRoom():IsAmbushActive()}
+    if active and active.case and active.case.edgeKind == "active" then
+        observed.entityCounts = {tears = 0, bombs = 0, familiars = 0}
+        for _, entity in ipairs(Isaac.GetRoomEntities()) do
+            local metric = entity.Type == EntityType.ENTITY_TEAR and "tears"
+                or entity.Type == EntityType.ENTITY_BOMBDROP and "bombs"
+                or entity.Type == EntityType.ENTITY_FAMILIAR and "familiars"
+            if metric then observed.entityCounts[metric] = observed.entityCounts[metric] + 1 end
+        end
+    end
+    return observed
 end
 local function check(condition, message)
     if not condition then error(message) end
@@ -116,10 +136,12 @@ local function useVoid()
     -- Match the observed physical-use flags (4) and slot (0). This invokes the
     -- native item code; API discharge is recorded separately from manual charge evidence.
     p:GetCollectibleRNG(C.COLLECTIBLE_VOID):SetSeed(160477, 35)
-    active.invocations = {}
+    active.invocations, active.executions = {}, {}
+    active.preUseState = state()
     emit("before_use", state())
     p:UseActiveItem(C.COLLECTIBLE_VOID, UseFlag.USE_OWNED, 0)
-    emit("after_use", state())
+    active.postUseState = state()
+    emit("after_use", active.postUseState)
 end
 local function schedule(phase, frames)
     active.phase, active.wait = phase, frames or 20
@@ -146,7 +168,44 @@ local function enterNativeRoom(case)
 end
 local nextCase
 local function finish(ok, message)
-    if ok and not active.pilot then
+    if ok and active.edge and not active.pilot then
+        local byName = {}
+        for _, entry in ipairs(active.results) do byName[entry.name] = entry end
+        for _, cohort in ipairs(active.cohorts) do
+            local off, control, on = byName[cohort .. "-off"], byName[cohort .. "-unlinked"], byName[cohort .. "-on"]
+            check(off and control and on, "missing edge comparison: " .. cohort)
+            for _, observed in ipairs({control, on}) do
+                check(observed.fixture.seed == off.fixture.seed, "edge cohort seed changed")
+                check(#observed.fixture.pickups == #off.fixture.pickups, "edge fixture count changed")
+                for i, original in ipairs(off.fixture.pickups) do
+                    local same = observed.fixture.pickups[i]
+                    check(same.item == original.item and same.seed == original.seed
+                        and same.group == original.group and same.blind == original.blind,
+                        "original identity/group/blind state changed between controls")
+                end
+                for key, value in pairs(off.beforeStats) do
+                    check(math.abs(value - observed.beforeStats[key]) < 0.00001, "edge starting stats changed")
+                end
+            end
+            for key, value in pairs(control.afterStats) do
+                check(math.abs(value - on.afterStats[key]) < 0.00001,
+                    "linked On differs from native unlinked rewards: " .. cohort .. "/" .. key)
+            end
+            check(#control.observed.pickups == #on.observed.pickups, "edge consumption differs from native control")
+            for i, pickup in ipairs(control.observed.pickups) do
+                check(pickup.item == on.observed.pickups[i].item, "edge surviving identity differs")
+            end
+            if cohort == "active" then
+                for i, effect in ipairs(control.effects) do
+                    check(effect.preCount == on.effects[i].preCount
+                        and effect.postCount == on.effects[i].postCount,
+                        "stored hidden-active multiplicity differs from native control")
+                end
+            end
+            emit("edge_comparison", {cohort = cohort, cohortSeed = off.fixture.seed, pass = true,
+                off = off.afterStats, unlinked = control.afterStats, on = on.afterStats})
+        end
+    elseif ok and not active.pilot then
         local byName = {}
         for _, entry in ipairs(active.results) do byName[entry.name] = entry end
         for _, pair in ipairs({{"passive-single", "passive-linked-off"},
@@ -162,7 +221,18 @@ local function finish(ok, message)
             end
         end
     end
-    emit("batch_result", {pass = ok, error = message, results = active.results})
+    -- Full active snapshots are already emitted as separate case_result records.
+    -- Repeating all of them exceeds the native DebugString log-line limit.
+    local loggedResults = active.results
+    if active.activeCohort then
+        loggedResults = {}
+        for _, entry in ipairs(active.results) do
+            loggedResults[#loggedResults + 1] = {name = entry.name, pass = entry.pass,
+                seed = entry.fixture.seed}
+        end
+    end
+    emit("batch_result", {pass = ok, error = message, results = loggedResults,
+        caseResultsLogged = active.activeCohort or nil})
     result = {pass = ok, error = message, results = active.results}
     if not ok and player():Exists() and not player():IsDead() then
         player():SetMinDamageCooldown(3600) -- Time to inspect a failed disposable fixture safely.
@@ -184,6 +254,7 @@ nextCase = function()
     active.case = active.cases[active.index]
     if not active.case then finish(true); return end
     active.fixtureIds, active.invocations = {}, {}
+    active.seededCase, active.rewardWait, active.effects = false, 0, {}
     active.phase, active.wait = "starting", 180
     Isaac.ExecuteCommand("restart " .. (active.case.actor or 0))
 end
@@ -193,6 +264,15 @@ local function startCase()
     check(openUnnerfPack.Config.IsEnabled("voidChoiceAbsorption") == a.case.enabled,
         "new-run setting not selected")
     check(p:GetPlayerType() == (a.case.actor or 0), "wrong character after restart")
+    if a.edge then
+        if not a.seededCase then
+            a.seededCase = true
+            a.phase, a.wait = "starting", 180
+            Isaac.ExecuteCommand("seed " .. Seeds.Seed2String(edgeSeeds[a.case.edgeKind]))
+            return
+        end
+        check(Game():GetSeeds():GetStartSeed() == edgeSeeds[a.case.edgeKind], "seed command did not select cohort")
+    end
     if p:GetActiveItem(0) ~= C.COLLECTIBLE_VOID then p:AddCollectible(C.COLLECTIBLE_VOID, 4, true) end
     p.Position = Game():GetRoom():GetCenterPos() + Vector(0, 100)
     check(p:GetEffects():GetCollectibleEffectNum(58) == 0, "shield leaked across runs")
@@ -234,7 +314,7 @@ local function tick()
         local a = active
         if player():Exists() and not player():IsDead() then player():SetMinDamageCooldown(120) end
         a.ticks = a.ticks + 1
-        check(a.ticks < 3600, "batch exceeded two-minute frame budget")
+        check(a.ticks < 3600, "batch exceeded its frame budget")
         if a.phase == "starting" then
             a.wait = a.wait - 1
             check(a.wait > 0, "restart callback not observed")
@@ -304,6 +384,64 @@ local function tick()
                 end
                 schedule("room", 10); return
             end
+            if a.edge then
+                a.fixtureIds = {}
+                for _, pickup in ipairs(found) do a.fixtureIds[#a.fixtureIds + 1] = pickup.SubType end
+                local fixture = state()
+                if a.case.edgeKind == "photos" then
+                    local ids = {}
+                    for _, pickup in ipairs(fixture.pickups) do ids[pickup.item] = true end
+                    check(#found == 2 and ids[327] and ids[328], "native Mom did not produce both unlocked photos")
+                    check(fixture.stage == 6, "photo fixture is not on Depths II")
+                else
+                    check(fixture.stage == 1 and (fixture.stageType == 3 or fixture.stageType == 4),
+                        "mystery fixture is not a native alternate-path first floor")
+                    local hidden, passive, hiddenItem, visibleItem = 0, #found == 2
+                    for _, pickup in ipairs(fixture.pickups) do
+                        hidden = hidden + (pickup.blind and 1 or 0)
+                        passive = passive and pickup.itemType == ItemType.ITEM_PASSIVE
+                        if pickup.blind then hiddenItem = pickup else visibleItem = pickup end
+                    end
+                    local acceptable = hidden == 1 and passive
+                    if a.activeCohort then
+                        -- This untouched pair is recorded in the stopped native
+                        -- search. Select it directly; never search for a replacement.
+                        check(#found == 2 and hidden == 1 and hiddenItem and visibleItem
+                            and hiddenItem.itemType == ItemType.ITEM_ACTIVE
+                            and hiddenItem.item == activeFixture.hidden
+                            and visibleItem.itemType == ItemType.ITEM_FAMILIAR
+                            and visibleItem.item == activeFixture.visible,
+                            "recorded hidden-active fixture changed; no seed search will run")
+                    elseif not acceptable then
+                        check(not edgeDiscovered[a.case.edgeKind], "previously selected natural mystery fixture changed")
+                        a.candidates = (a.candidates or 0) + 1
+                        emit("edge_seed_rejected", {fixture = fixture, attempt = a.candidates,
+                            reason = "need an untouched naturally blind passive pair for bounded stat comparison"})
+                        check(a.candidates < 8, "no suitable natural pair within bounded seed search")
+                        edgeSeeds[a.case.edgeKind] = edgeSeeds[a.case.edgeKind] + 1
+                        a.phase, a.wait = "starting", 180
+                        Isaac.ExecuteCommand("seed " .. Seeds.Seed2String(edgeSeeds[a.case.edgeKind]))
+                        return
+                    end
+                    edgeDiscovered[a.case.edgeKind] = true
+                    if a.activeCohort then a.hiddenActiveId = hiddenItem.item end
+                    check(found[1].OptionsPickupIndex ~= 0
+                        and found[1].OptionsPickupIndex == found[2].OptionsPickupIndex,
+                        "natural alternate-path pair has no native choice link")
+                end
+                for _, pickup in ipairs(found) do
+                    check(pickup.Price == 0 and not pickup.Touched, "native fixture was touched or priced")
+                end
+                a.fixture = fixture
+                emit("edge_native_fixture", {fixture = fixture, blindOracle = "EID:IsAltChoice (vanilla sprite comparison)",
+                    eidVersion = EID.ModVersion, eidCommit = EID.ModVersionCommit,
+                    intervention = a.case.unlinked and "clear option links only; preserve identities and presentation" or "none"})
+                if a.case.unlinked then
+                    for _, pickup in ipairs(found) do pickup.OptionsPickupIndex = 0 end
+                end
+                schedule("first_use", 20)
+                return
+            end
             check(#found >= 2, "native room did not generate choice pedestals")
             local groups = {}
             for _, pickup in ipairs(found) do
@@ -331,9 +469,36 @@ local function tick()
             a.beforeStats = stats()
             useVoid()
             check(next(a.invocations) == nil, "newly absorbed active executed immediately")
+            check(next(a.executions) == nil, "newly absorbed active reached post-use immediately")
+            if a.activeCohort then
+                check(a.postUseState.entityCounts.bombs == a.preUseState.entityCounts.bombs,
+                    "newly absorbed hidden active spawned bombs immediately")
+            end
             schedule("first_result")
         elseif a.phase == "first_result" then
             ownedNone()
+            if a.edge then
+                local after = state()
+                for _, pickup in ipairs(after.pickups) do
+                    for _, original in ipairs(a.fixture.pickups) do
+                        if pickup.seed == original.seed then
+                            local expected = a.case.unlinked and 0 or original.group
+                            check(pickup.item == original.item and pickup.group == expected,
+                                "surviving native choice was not restored")
+                        end
+                    end
+                end
+                if a.activeCohort then
+                    check(#after.pickups == 0, "native active/passive subjects survived absorption")
+                    a.edgeFirstStats = stats()
+                    useVoid(); schedule("edge_second_result")
+                    return
+                end
+                complete({fixture = a.fixture, beforeStats = a.beforeStats, afterStats = stats(),
+                    rngIntervention = "Void RNG seed 160477 shift 35 before one native use",
+                    scope = "first absorption of untouched native passive identities; no full route transition test"})
+                return
+            end
             if a.case.paid then
                 check(#pickups() == #a.fixtureIds, "unpaid pedestal was consumed")
                 complete(); return
@@ -356,6 +521,34 @@ local function tick()
                 complete({beforeStats = a.beforeStats, afterStats = a.afterStats}); return
             end
             useVoid(); schedule("second_result")
+        elseif a.phase == "edge_second_result" or a.phase == "edge_third_result" then
+            ownedNone()
+            local id = a.hiddenActiveId
+            local count = a.invocations[id] or 0
+            local executed = a.executions[id] or 0
+            check(count <= 1 and executed == count, "hidden active pre/post use count differs")
+            if a.case.enabled or a.case.unlinked then check(count == 1, "hidden active was not stored") end
+            for item in pairs(a.invocations) do check(item == id, "unexpected stored active") end
+            for item in pairs(a.executions) do check(item == id, "unexpected executed active") end
+            local observed = state()
+            check(observed.seed == a.fixture.seed and observed.roomIndex == a.fixture.roomIndex,
+                "room-local active changed the seed or room")
+            if a.phase == "edge_second_result" then
+                if count == 1 then
+                    local before, after = a.preUseState, a.postUseState
+                    local bombs = math.max(after.entityCounts.bombs, observed.entityCounts.bombs)
+                    check(bombs > before.entityCounts.bombs,
+                        "stored hidden active had no expected observable effect")
+                end
+                a.firstStoredCount = count
+            else check(count == a.firstStoredCount, "stored hidden active did not persist across uses") end
+            a.effects[#a.effects + 1] = {item = id, preCount = count, postCount = executed,
+                before = a.preUseState, immediate = a.postUseState, settled = observed}
+            emit("hidden_active_effect", a.effects[#a.effects])
+            if a.phase == "edge_second_result" then useVoid(); schedule("edge_third_result")
+            else complete({fixture = a.fixture, beforeStats = a.beforeStats, afterStats = a.edgeFirstStats,
+                effects = a.effects, rngIntervention = "Void RNG seed 160477 shift 35 before each native use",
+                scope = "untouched naturally hidden active: first-use delay, observable later use, repeated native execution"}) end
         elseif a.phase == "second_result" or a.phase == "third_result" then
             ownedNone()
             local expected = {}
@@ -404,6 +597,11 @@ mod:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, function(_, item, _, _, flags)
     end
 end)
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, tick)
+mod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, item, _, _, flags)
+    if active and active.activeCohort and item ~= C.COLLECTIBLE_VOID and flags & UseFlag.USE_VOID ~= 0 then
+        active.executions[item] = (active.executions[item] or 0) + 1
+    end
+end)
 mod:AddPriorityCallback(ModCallbacks.MC_PRE_GAME_EXIT, CallbackPriority.LATE, function()
     if not active then restoreSettings() end
 end)
@@ -453,6 +651,31 @@ function batch.Run(pilot, fromCase)
         scope = "remaining cases only; prior results stay in their original capture"}) end
     nextCase()
     print("OUP_VOID_BATCH_RUNNING", pilot and "pilot" or "matrix")
+end
+function batch.RunEdges(pilot, cohort)
+    check(not active and not continuation and openUnnerfPack and openUnnerfPack.Config, "idle production pack required")
+    check(Game():GetNumPlayers() == 1 and Game().Difficulty == 0, "single-player Normal required")
+    check(EID and type(EID.IsAltChoice) == "function", "installed EID vanilla blind-state observer required")
+    check(not REPENTOGON, "these edge observations target the vanilla executable")
+    check(cohort == nil or cohort == "active", "unknown edge cohort")
+    originalSettings, result = saved().settings or {}, nil
+    local cases = {}
+    local cohorts = cohort == "active" and {"active"} or pilot and {"photos"} or {"photos", "alt"}
+    local modes = pilot and (cohort == "active" and {"unlinked"} or {"off"}) or {"off", "unlinked", "on"}
+    for _, kind in ipairs(cohorts) do
+        for _, mode in ipairs(modes) do
+            cases[#cases + 1] = {name = kind .. "-" .. mode, edgeKind = kind,
+                enabled = mode == "on", unlinked = mode == "unlinked", boss = kind == "photos",
+                stage = kind == "photos" and "stage 6" or "stage 1c",
+                room = kind == "photos" and "goto s.boss" or "goto s.treasure",
+                roomType = kind == "photos" and RoomType.ROOM_BOSS or RoomType.ROOM_TREASURE}
+        end
+    end
+    active = {label = cohort == "active" and (pilot and "VOID17_ACTIVE_PILOT" or "VOID17_ACTIVE")
+            or pilot and "VOID17_PILOT" or "VOID17_EDGES", edge = true, activeCohort = cohort == "active",
+        pilot = pilot, index = 0, ticks = 0, results = {}, cases = cases, cohorts = cohorts}
+    nextCase()
+    print("OUP_VOID_BATCH_RUNNING", "native edge cases")
 end
 function batch.CheckContinue(expectedSeed)
     check(not active and not continuation and lastContinued == true, "Continue the anchor run after relaunch")
@@ -505,11 +728,13 @@ function batch.CheckContinue(expectedSeed)
     print("OUP_VOID_CONTINUE_RUNNING")
 end
 function batch.Status()
+    local detail = active and string.format("%s phase=%s seed=%s", active.case.name,
+        active.phase, tostring(Game():GetSeeds():GetStartSeed())) or result and result.error or ""
     print(continuation and "OUP_VOID_CONTINUE_RUNNING"
         or continueResult and (continueResult.pass and "OUP_VOID_CONTINUE_PASS" or "OUP_VOID_CONTINUE_FAIL")
         or active and "OUP_VOID_BATCH_RUNNING" or result and result.pass and "OUP_VOID_BATCH_PASS"
         or result and "OUP_VOID_BATCH_FAIL" or "OUP_VOID_BATCH_IDLE",
-        active and active.case.name or result and result.error or "")
+        detail)
 end
 function batch.Stop()
     if continuation then

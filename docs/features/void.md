@@ -25,6 +25,17 @@ their special transitions remain native. Ordinary manual pickup still uses
 the normal choose-one interaction. The change does not replay Void's complete
 use for each pedestal.
 
+Polaroid and Negative can already be consumed by vanilla Void. With this
+adjustment On, both contribute stats; neither becomes an owned route item.
+Voiding them still gives up their normal photo-gated access. No special
+photo-immunity rule is added.
+
+The alternate-path question-mark pedestal contains an already-selected item.
+Its hidden presentation does not prevent that item from contributing. An
+untouched native hidden-passive pair and Mom's original photo pair both pass
+Off/On comparisons against native unlinked controls in the
+[edge-case validation](../testing/void-choice-edge-cases-1.9.7.17.md).
+
 Native checks on the supported build pass for controlled active, passive and
 mixed groups, Boss Rush, both Options items, alternate-path Treasure choices,
 manual pickup and process-restart Continue. The [validation record](../testing/void-choice-1.9.7.17.md)
@@ -46,6 +57,11 @@ Multiplayer and other modes are untested. A native Angel Room pair was not
 tested directly; the owner selected Boss Rush as its substitute. Death
 Certificate and Genesis checks verify the exclusions after native entry;
 their full return sequences were not exercised.
+A naturally hidden active item (ID 65) in one untouched Treasure Room pair was
+tested on the supported build: Void did not trigger it immediately; the stored
+effect spawned bombs on each of two later Void uses. Off, On, and native-unlinked
+controls were compared. This selected-item result does not establish behavior
+for all hidden actives. Full photo-gated route transitions remain untested.
 
 ## Related features and technical reference
 
@@ -55,4 +71,4 @@ their full return sequences were not exercised.
   observations and untested limits.
 
 ---
-*Last updated: 2026-11-11*
+*Last updated: 2026-11-12*
