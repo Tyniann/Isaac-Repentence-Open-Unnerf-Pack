@@ -59,6 +59,37 @@ Continue protocol check. Lua syntax checks pass for the modified runner.
 
 ## Native observations
 
+### Initial stage
+
+Fresh archive:
+`D:\T3ValidationArchives\issue17-20261112T000516Z-3c3c31`.
+The game-closed precheck passed. Slot-1 files, existing slot-1 automatic backups
+and game mod data were copied before installation, with original existence
+recorded. The diagnostic is the new `mods\oup_void_edge_probe` folder; the old
+issue #16 probe is absent. All 501 protected files were unchanged during stage.
+
+Runner source commit: `ebda9d43710d4cd1af8e387dbd31477d49cef05d`.
+Installed `main.lua`: 34,866 bytes, SHA-256
+`d60850132496381938e5b0c41e3045e7bb6d6e1c3463c0b716fe3a04b9152832`.
+Diagnostic metadata SHA-256:
+`f308268976f085d86bcad5e84f82537e069d45cbceb4f8750b45f767e0ff4255`.
+
+Executable SHA-256 matches the target-build executable:
+`e5faf6f513c6de9cc9ff1c335ef9c541e2b33fc623aa3b8ffbd2e6a6c0027bb0`.
+The three production Lua hashes match issue #16's accepted source, including
+Void module `69a2562786f15642030df823016bf0d317eaa7e3adfe88aa895017300575a44e`.
+No production files were replaced.
+
+The installed EID source was preserved and inspected. Its `IsAltChoice` uses
+the vanilla question-mark texel comparison and rejects Curse of the Blind.
+EID `main.lua` SHA-256:
+`143af9c2f21757167650122965cddf07335e7fa988a526360558357422c47875`;
+`features/eid_api.lua` SHA-256:
+`91d794d427be6f6af9e0aee3f217d5da8d73a2e3141ec88127891c5c55af72a9`.
+Installed enabled folders are EID, MCM Pure, Open Unnerf Pack 2, Visible Tinted
+Rocks with yellow mark, and the new diagnostic. Runtime versions and observations
+still require the pilot log; file staging is not gameplay evidence.
+
 | Case | Status |
 | --- | --- |
 | Mom photo pair, feature Off pilot | Pending |
