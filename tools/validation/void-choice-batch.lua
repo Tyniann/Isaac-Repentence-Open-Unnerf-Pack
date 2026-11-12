@@ -182,7 +182,7 @@ local function finish(ok, message)
             for i, pickup in ipairs(control.observed.pickups) do
                 check(pickup.item == on.observed.pickups[i].item, "edge surviving identity differs")
             end
-            emit("edge_comparison", {cohort = cohort, pass = true,
+            emit("edge_comparison", {cohort = cohort, cohortSeed = off.fixture.seed, pass = true,
                 off = off.afterStats, unlinked = control.afterStats, on = on.afterStats})
         end
     elseif ok and not active.pilot then

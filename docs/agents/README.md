@@ -52,5 +52,8 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 - [Void choice edge cases](../research/void-choice-edge-cases.md): Polaroid/Negative
   source research and the distinction between alternate-path group coverage and
   an untouched mystery-pedestal test.
+- [Native Void edge-case results](../testing/void-choice-edge-cases-1.9.7.17.md):
+  Mom's original photo pair and untouched naturally hidden passive choices,
+  native Off/unlinked/On comparisons and verified session cleanup.
 - [Installed-game API and balance evidence](../research/repentance-plus-installed-evidence.md)
 - [Stomp-immunity diagnosis and validation](../research/issue-2-stomp-validation.txt)

@@ -132,6 +132,12 @@ assert(data.settings.voidChoiceAbsorption and not data.settings.mawOfTheVoid)
 OUPVoidBatch.RunEdges(false)
 local suite = drive()
 assert(suite.pass and #suite.results == 6 and uses == 7)
+for _, record in ipairs(records) do
+    if record.kind == "edge_comparison" then
+        assert(record.cohortSeed == (record.cohort == "photos" and 212727584 or 1344027539),
+            "comparison must identify its cohort seed separately from the final emission run")
+    end
+end
 for _, result in ipairs(suite.results) do
     if result.name:match("^alt") then
         assert(result.fixture.seed == 1344027539, "controls reuse the selected seed")

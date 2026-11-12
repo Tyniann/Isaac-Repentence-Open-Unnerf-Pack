@@ -1,15 +1,15 @@
 # Void native edge-case regressions
 
 Issue: [#17](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/17).
-Session started: 2026-11-12. Status: **local protocol verified; native pilot pending**.
+Session started: 2026-11-12. Status: **pilot and all six native comparisons captured; session cleanup verified; PR review pending**.
 
 ## Purpose and source
 
 This follows the [source research](../research/void-choice-edge-cases.md) and
 the [issue #16 validation](void-choice-1.9.7.17.md). The previous alternate-path
 check morphed generated subjects into known books; it did not establish the
-untouched mystery item's identity or presentation. No captured case measured
-the native Polaroid/Negative pair.
+untouched mystery item's identity or presentation. Before this follow-up, no
+captured case measured the native Polaroid/Negative pair.
 
 The starting release is v2.1.0, commit
 `e2b71f9fc81a6880694e565e29bcd192a1aa8102`. Production remains unchanged unless
@@ -57,6 +57,14 @@ native rewards, rendering, Mom reward generation or item eligibility.
 `lua tests/void_choice_batch_spec.lua` still passes, including the existing
 Continue protocol check. Lua syntax checks pass for the modified runner.
 
+After native capture, a logging-only correction adds `cohortSeed` to comparison
+records. Their ordinary `seed` field describes the final emission run, which
+is the alternate-path run even for the photo summary. A red/green protocol
+assertion verifies the explicit cohort field. This does not change fixture
+inputs, native uses, comparison thresholds or production behavior, so the
+captured engine comparisons remain applicable. The executed source hash below
+is retained rather than relabeled as the later logging revision.
+
 ## Native observations
 
 ### Initial stage
@@ -88,14 +96,98 @@ EID `main.lua` SHA-256:
 `91d794d427be6f6af9e0aee3f217d5da8d73a2e3141ec88127891c5c55af72a9`.
 Installed enabled folders are EID, MCM Pure, Open Unnerf Pack 2, Visible Tinted
 Rocks with yellow mark, and the new diagnostic. Runtime versions and observations
-still require the pilot log; file staging is not gameplay evidence.
+are corroborated below; file staging alone is not gameplay evidence.
+
+### Native Mom photo pilot
+
+The owner reports `OUP_VOID_BATCH_PASS`. The [12 captured
+records](evidence/void17-photo-pilot.jsonl) corroborate the pilot on vanilla
+Repentance+ v1.9.7.17.J460, local Normal Isaac, save slot 1. Both native
+game-start callbacks report fresh runs; the seeded case asserts `212727584`.
+EID reports 5.23 / commit `bc0551a`, MCM is present, and REPENTOGON is absent.
+
+Mom's generated reward is in Depths II (stage 6), boss grid 27 / variant 1063.
+The original free, untouched Polaroid (327) and Negative (328) both have native
+group 3 and the quest tag. With Void choice absorption Off, the first native
+use changes range 260 → 360 and luck 0 → 1. The immediate after-use snapshot
+still lists Negative; by the settled result both pedestals are gone and both
+owned counts remain zero. Thus this target-build pair is not immune to Void,
+and quest classification does not protect its route-item ownership. The
+later unlinked and On comparisons measure contribution count.
+Full photo-gated route transitions were not exercised.
+
+Stable two-read capture: 45,408 bytes, SHA-256
+`78a0817932379f64fb77ffe859030f6ebc3162d22fcf9110fff8511ca66d9327`.
+Archive:
+`D:\T3ValidationArchives\issue17-20261112T000516Z-3c3c31\capture-photo-pilot-20261112T001533Z-27e0e9`.
+All 12 payloads parse, with no malformed records or native warning/error matches.
+The installed runner and all three production hashes still match the stage.
+
+The first collector summary incorrectly said no pilot labels were present.
+Readback of the already archived JSONL shows the correct `VOID17_PILOT` records
+and passing terminal. An ancillary raw-log read then stopped on an incorrect
+filename; the original byte captures and metadata remain intact. Neither
+collection issue required a gameplay repeat.
+
+### Six native comparisons
+
+The owner reports `OUP_VOID_BATCH_PASS` for the full batch. The captured
+[comparison records and terminal](evidence/void17-edges.jsonl) contain six
+passing cases and both passing differential checks. Each cohort's three
+fixtures match in start seed, item IDs, entity seeds, original groups, natural
+blind state and starting stats. All original items remain unowned and no
+pedestals survive the settled native use.
+
+| Cohort | Original subjects | Native group | Seed / location |
+| --- | --- | --- | --- |
+| Mom photos | 327 and 328; both quest-tagged passive items | 3 | `212727584`; stage 6, boss grid 27 / variant 1063 |
+| Natural mystery pair | Hidden 222 and visible 62; both non-quest passive items | 1 | `1344027538`; stage 1 / StageType 4, Treasure grid 72 / variant 10 |
+
+The hidden item has real subtype 222 before any use or pickup, while EID's
+vanilla question-mark observer reports `blind:true`; visible item 62 reports
+`blind:false`. There are no subject Morph/spawn calls in this path. The first
+seed already meets the natural passive-pair contract; **no seed was rejected**
+in the engine batch. This directly verifies the earlier API inference for the
+captured mystery item: its identity is selected before pickup.
+
+Both cohorts start at range 260, luck 0 and speed 1. With the controlled Void
+RNG input, the measured settled values are:
+
+| Case mode | Range | Luck | Speed | Subject ownership |
+| --- | --- | --- | --- | --- |
+| Off, original native links | 360 | 1 | 1 | Neither owned |
+| Off, links cleared as native unlinked control | 360 | 2 | 1.2000000476837 | Neither owned |
+| On, original native links | 360 | 2 | 1.2000000476837 | Neither owned |
+
+Damage (3.5), tear delay (10) and shot speed (1) remain unchanged. On matches
+the native unlinked two-item outcome, including the final Void RNG state;
+the Off outcome differs. This establishes the intended extra passive
+contribution without a custom stat formula or acquiring the photos themselves.
+A new photo-immunity exception is not needed: vanilla already consumes the
+pair without granting route-item ownership. Full route entry is still untested,
+and no claim is made that Void preserves photo-gated access.
+
+Stable capture: 116,782 bytes, SHA-256
+`c6abc194074d568cea89091d2a8a8cb56d97bb8f8f120a930ac20b6094d14fd7`.
+Archive:
+`D:\T3ValidationArchives\issue17-20261112T000516Z-3c3c31\capture-six-cases-20261112T002324Z-941247`.
+Both reads match length, timestamp and hash. All 69 records parse; 57 belong
+to `VOID17_EDGES`, including six case results and two comparison records.
+No malformed records, rejected candidates or native warning/error matches occur.
+All installed Lua hashes match the initial stage, including runner
+`d60850132496381938e5b0c41e3045e7bb6d6e1c3463c0b716fe3a04b9152832`.
+
+In the frozen comparison records, top-level seed `1344027538` is the final
+emission context. Use each case's fixture seed for cohort provenance; the photo
+cohort is `212727584`. Original records are preserved without retrofitting the
+new `cohortSeed` field.
 
 | Case | Status |
 | --- | --- |
-| Mom photo pair, feature Off pilot | Pending |
-| Photo Off / native-unlinked / On comparison | Pending |
-| Untouched mystery identity and natural hidden presentation | Pending |
-| Mystery Off / native-unlinked / On comparison | Pending |
+| Mom photo pair, feature Off pilot | Pass; native group 3, stats gained, both gone and unowned |
+| Photo Off / native-unlinked / On comparison | Pass; On equals native unlinked rewards, neither photo owned |
+| Untouched mystery identity and natural hidden presentation | Pass; original hidden ID 222 recorded before use |
+| Mystery Off / native-unlinked / On comparison | Pass; On equals native unlinked rewards for the original passive pair |
 
 Neither full Chapter 6 route transitions nor a naturally hidden active-item
 timing case is claimed by these fixtures. Progression implications must be
@@ -113,7 +205,26 @@ record original absence where applicable, and protect the production and other
 mod sources. Record the actual stage/runner hashes, EID observer source/version,
 game executable/build and current mod inventory before accepting engine results.
 
-At completion, capture logs before restoring state. With the game closed,
-move the owned diagnostic folder into the archive, restore the scoped originals,
-verify protected files and other slots against the immediate pre-cleanup state,
-retain private backups/evidence, and return session ownership to the owner.
+### Verified cleanup
+
+The owner confirmed full game closure after capture. The
+[cleanup receipt](evidence/void17-cleanup.json) records a second closed-game
+capture: 130,072 bytes, SHA-256
+`9f073c3778efa2522358427d7a29ef4bd7f535a9c70c2120c3181decc2982d64`.
+Both final reads match, all 69 payloads parse, and the six-case PASS is present.
+Archive:
+`D:\T3ValidationArchives\issue17-20261112T000516Z-3c3c31\cleanup-20261112T003320Z-677d9e`.
+
+Cleanup restored this session's original slot-1 run/progress, options, command
+history and changed automatic backup, plus changed slot-1 EID/pack data.
+Unchanged originals, including MCM data, were verified. All 65 scoped original
+files match the fresh archive; no issue #16 restore point was reused. The
+displaced test versions remain archived privately.
+
+The two diagnostic files were moved into the archive and their hashes verified;
+`mods\oup_void_edge_probe` is absent. All 436 files outside the restore scope
+were unchanged during cleanup, including production, other mod sources/data,
+executables and other save slots. Production remains at the staged hashes.
+The different stage/cleanup counts reflect the separately restored scope, not
+missing protected files. The game is closed and session ownership is returned
+to the owner; no diagnostic callbacks survive process exit.

@@ -1,7 +1,8 @@
 # Void choice edge cases
 
 Research note for the native Repentance+ interaction behind the mod’s Void
-choice absorption behavior. This is source research, not runtime validation.
+choice absorption behavior. Initial source research is followed by the
+target-build native results captured for issue #17 below.
 
 ## Direct findings
 
@@ -81,7 +82,8 @@ evidence does not establish what happens to an untouched naturally blind item.
 | Option grouping is represented by `OptionsPickupIndex` | Public IsaacDocs and REPENTOGON API documentation | Strong for exposed API contract |
 | Naturally hidden alternate-path pedestal is blind independently of Curse of the Blind | REPENTOGON `IsBlind` docs explicitly mention alt-path extra item | Strong for API semantics |
 | Hidden pedestal has an identity before pickup | Entity subtype defines identity; `IsBlind` is a property of an existing collectible pedestal; rendering implementation itself is not public here | Strong inference, not a direct engine-code proof |
-| Exact native Void eligibility predicate and untouched hidden-pedestal consumption | No public first-party implementation/source found; community wiki fills some gameplay details | Unresolved / secondary |
+| Exact internal native Void eligibility predicate | No public first-party implementation/source found | Internal predicate unresolved; observable photo/passive outcomes now captured below |
+| Untouched hidden passive identity and contribution | Issue #17's native Off/unlinked/On records | Direct target-build observations for the captured natural pair |
 | Newly absorbed books wait until later uses | Our captured target-build pilot and Continue records | Direct runtime evidence for the controlled book fixtures; not a dedicated hidden-item case |
 
 No leaked or private game source was used. `IsBlind()` is preferable to inferring
@@ -93,7 +95,7 @@ blindness test would conflate these states.
 
 ### Released code and actual test coverage
 
-This audit concerns v2.1.0, source commit
+The initial source/coverage audit concerns v2.1.0, source commit
 `e2b71f9fc81a6880694e565e29bcd192a1aa8102`.
 
 - [Production Void handling](../../Mods/Void%20Choice%20Unnerf/main.lua)
@@ -106,12 +108,12 @@ This audit concerns v2.1.0, source commit
 - Consequently, any eligible-looking native linked Polaroid/Negative pair is
   included in grouping changes. We do not replace the engine's item-specific
   eligibility code. A native identity-based veto would still be native, but
-  its behavior on this pair has not been measured. If the pair is normally
+  its behavior on this pair had not yet been measured. If the pair is normally
   consumable, the intended prediction is two passive contributions instead
   of one; this does not mean owning both route items. A special progression
   protection would be an additional gameplay policy, not a conclusion from
   their quest classification alone.
-- The [alternate-path fixture](../../tools/validation/void-choice-batch.lua)
+- The legacy [alternate-path fixture](../../tools/validation/void-choice-batch.lua)
   uses stage `1c`, enters a Treasure Room, checks that native pedestals share
   real choice links, and then **morphs every collectible into known books**.
   It explicitly restores each pedestal's original option group and price.
@@ -123,25 +125,44 @@ This audit concerns v2.1.0, source commit
   72 / variant 10. It passes with no remaining pedestals and neither fixture
   book owned. This validates replacement-fixture group absorption in a native
   alternate-path room, **not a dedicated untouched mystery-pedestal test**.
-- Neither the Polaroid/Negative pair nor its native progression consequences
-  has a captured case in the shipped validation evidence.
+- At v2.1.0's release, neither the Polaroid/Negative pair nor its native
+  progression consequences had a captured case in the shipped evidence.
 
 The gameplay wiki specifically reports that voiding the photos trades their
 Chapter 6 access for stats. This is an existing-gameplay report, not a fresh
 1.9.7.17 baseline or a proof of the engine's predicate. It supports testing
 normal consumability rather than assuming immunity from the quest tag. The
-current code alone cannot certify this particular pair's native outcome.
+code alone could not certify this particular pair's native outcome.
 
-If uncertainty remains after the parent’s code and test audit, keep any native
-regression narrow: check the Polaroid/Negative identity edge and a naturally
-hidden alternate-path collectible edge separately. Record the pickup subtype,
-blind state, option index, whether Void actually consumes the pickup, and
-whether an active effect runs on that use or a later use. This note does not
-specify a fixture or claim runtime coverage. Both are appropriate focused
-regressions; no production exception is justified solely by the current source
-research. Future native work needs a new shared-session handoff and disposable
-backups, since the prior session has been cleaned up and released.
+The source research motivated two focused regressions, with a fresh session
+handoff and backups after the issue #16 cleanup. Their measured results follow.
+
+## Native follow-up: issue #17
+
+The [native edge-case ledger](../testing/void-choice-edge-cases-1.9.7.17.md) and
+[frozen records](../testing/evidence/void17-edges.jsonl) now establish:
+
+- Mom's real Polaroid/Negative pair is free, untouched, quest-tagged and linked
+  by native group 3. Feature Off consumes the pair and grants stats without
+  owning either photo. On matches the native unlinked two-item reward, still
+  without owning either photo. There is no new photo immunity rule to add for
+  these observed outcomes; usual route-item access is not granted by stat
+  conversion.
+- The untouched alternate-path pair already contains hidden item ID 222 and
+  visible item ID 62, with native group 1. The hidden state is observed through
+  the installed EID vanilla question-mark texel comparison. No Morph or
+  replacement spawn is used. On matches native unlinked rewards for both
+  original passive identities, while Off produces the one-choice outcome.
+- All six comparisons pass with identical per-cohort fixture identities,
+  entity seeds, initial groups, hidden presentation and starting stats. The
+  controlled Void RNG intervention is explicit. This is target-build evidence
+  for the selected passive pair, not a natural-rate or every-item survey.
+
+The production module needs no change for these cases. Full photo-gated route
+entry and a naturally hidden active item's later effects remain unexecuted;
+the earlier book timing tests remain separate evidence. The diagnostic was
+removed reversibly and this session's scoped state restored from fresh backups.
 
 ---
 
-*Research updated: 2026-11-11*
+*Sources researched: 2026-11-11. Native follow-up captured: 2026-11-12.*
