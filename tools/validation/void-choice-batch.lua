@@ -11,11 +11,9 @@ local C = CollectibleType
 local books = {58, 78, 34, 287} -- Repeatable effects without random pickup rewards.
 local originalSettings
 -- Fixed seed cohorts make original native identities comparable without Morph.
-local edgeSeeds = {photos = 212727584, alt = 1344027538, active = 1344027539}
+local activeFixture = {seed = 1344027651, hidden = 65, visible = 113}
+local edgeSeeds = {photos = 212727584, alt = 1344027538, active = activeFixture.seed}
 local edgeDiscovered = {}
--- Room-local effects with a direct observable. No random teleport/reroll/run reset.
-local hiddenActiveOracle = {[34] = "damage", [58] = "shield", [78] = "soulHearts",
-    [65] = "bombs", [83] = "tears", [107] = "familiars", [145] = "familiars", [288] = "familiars"}
 
 local function emit(kind, fields)
     fields = fields or {}
@@ -305,7 +303,7 @@ local function tick()
         local a = active
         if player():Exists() and not player():IsDead() then player():SetMinDamageCooldown(120) end
         a.ticks = a.ticks + 1
-        check(a.ticks < (a.activeSearch and 36000 or 3600), "batch exceeded its frame budget")
+        check(a.ticks < 3600, "batch exceeded its frame budget")
         if a.phase == "starting" then
             a.wait = a.wait - 1
             check(a.wait > 0, "restart callback not observed")
@@ -394,25 +392,28 @@ local function tick()
                         if pickup.blind then hiddenItem = pickup else visibleItem = pickup end
                     end
                     local acceptable = hidden == 1 and passive
-                    if a.activeSearch then
-                        acceptable = #found == 2 and hidden == 1 and hiddenItem
-                            and hiddenItem.itemType == ItemType.ITEM_ACTIVE and hiddenActiveOracle[hiddenItem.item]
-                            and visibleItem and visibleItem.itemType == ItemType.ITEM_PASSIVE
-                    end
-                    if not acceptable then
+                    if a.activeCohort then
+                        -- This untouched pair is recorded in the stopped native
+                        -- search. Select it directly; never search for a replacement.
+                        check(#found == 2 and hidden == 1 and hiddenItem and visibleItem
+                            and hiddenItem.itemType == ItemType.ITEM_ACTIVE
+                            and hiddenItem.item == activeFixture.hidden
+                            and visibleItem.itemType == ItemType.ITEM_FAMILIAR
+                            and visibleItem.item == activeFixture.visible,
+                            "recorded hidden-active fixture changed; no seed search will run")
+                    elseif not acceptable then
                         check(not edgeDiscovered[a.case.edgeKind], "previously selected natural mystery fixture changed")
                         a.candidates = (a.candidates or 0) + 1
                         emit("edge_seed_rejected", {fixture = fixture, attempt = a.candidates,
-                            reason = a.activeSearch and "need a naturally hidden observable room-local active and visible passive"
-                                or "need an untouched naturally blind passive pair for bounded stat comparison"})
-                        check(a.candidates < (a.activeSearch and 256 or 8), "no suitable natural pair within bounded seed search")
+                            reason = "need an untouched naturally blind passive pair for bounded stat comparison"})
+                        check(a.candidates < 8, "no suitable natural pair within bounded seed search")
                         edgeSeeds[a.case.edgeKind] = edgeSeeds[a.case.edgeKind] + 1
                         a.phase, a.wait = "starting", 180
                         Isaac.ExecuteCommand("seed " .. Seeds.Seed2String(edgeSeeds[a.case.edgeKind]))
                         return
                     end
                     edgeDiscovered[a.case.edgeKind] = true
-                    if a.activeSearch then a.hiddenActiveId = hiddenItem.item end
+                    if a.activeCohort then a.hiddenActiveId = hiddenItem.item end
                     check(found[1].OptionsPickupIndex ~= 0
                         and found[1].OptionsPickupIndex == found[2].OptionsPickupIndex,
                         "natural alternate-path pair has no native choice link")
@@ -458,6 +459,10 @@ local function tick()
             useVoid()
             check(next(a.invocations) == nil, "newly absorbed active executed immediately")
             check(next(a.executions) == nil, "newly absorbed active reached post-use immediately")
+            if a.activeCohort then
+                check(a.postUseState.entityCounts.bombs == a.preUseState.entityCounts.bombs,
+                    "newly absorbed hidden active spawned bombs immediately")
+            end
             schedule("first_result")
         elseif a.phase == "first_result" then
             ownedNone()
@@ -472,7 +477,7 @@ local function tick()
                         end
                     end
                 end
-                if a.activeSearch then
+                if a.activeCohort then
                     check(#after.pickups == 0, "native active/passive subjects survived absorption")
                     a.edgeFirstStats = stats()
                     useVoid(); schedule("edge_second_result")
@@ -519,16 +524,10 @@ local function tick()
                 "room-local active changed the seed or room")
             if a.phase == "edge_second_result" then
                 if count == 1 then
-                    local metric = hiddenActiveOracle[id]
                     local before, after = a.preUseState, a.postUseState
-                    local prior = metric == "damage" and before.stats.damage or before[metric]
-                    local now = metric == "damage" and after.stats.damage or after[metric]
-                    local settled = metric == "damage" and observed.stats.damage or observed[metric]
-                    if before.entityCounts[metric] then
-                        prior, now, settled = before.entityCounts[metric], after.entityCounts[metric], observed.entityCounts[metric]
-                    end
-                    now = math.max(now, settled) -- Cache updates may settle after the synchronous item call.
-                    check(now > prior, "stored hidden active had no expected observable effect")
+                    local bombs = math.max(after.entityCounts.bombs, observed.entityCounts.bombs)
+                    check(bombs > before.entityCounts.bombs,
+                        "stored hidden active had no expected observable effect")
                 end
                 a.firstStoredCount = count
             else check(count == a.firstStoredCount, "stored hidden active did not persist across uses") end
@@ -588,7 +587,7 @@ mod:AddCallback(ModCallbacks.MC_PRE_USE_ITEM, function(_, item, _, _, flags)
 end)
 mod:AddCallback(ModCallbacks.MC_POST_UPDATE, tick)
 mod:AddCallback(ModCallbacks.MC_USE_ITEM, function(_, item, _, _, flags)
-    if active and active.activeSearch and item ~= C.COLLECTIBLE_VOID and flags & UseFlag.USE_VOID ~= 0 then
+    if active and active.activeCohort and item ~= C.COLLECTIBLE_VOID and flags & UseFlag.USE_VOID ~= 0 then
         active.executions[item] = (active.executions[item] or 0) + 1
     end
 end)
@@ -662,7 +661,7 @@ function batch.RunEdges(pilot, cohort)
         end
     end
     active = {label = cohort == "active" and (pilot and "VOID17_ACTIVE_PILOT" or "VOID17_ACTIVE")
-            or pilot and "VOID17_PILOT" or "VOID17_EDGES", edge = true, activeSearch = cohort == "active",
+            or pilot and "VOID17_PILOT" or "VOID17_EDGES", edge = true, activeCohort = cohort == "active",
         pilot = pilot, index = 0, ticks = 0, results = {}, cases = cases, cohorts = cohorts}
     nextCase()
     print("OUP_VOID_BATCH_RUNNING", "native edge cases")
@@ -718,11 +717,13 @@ function batch.CheckContinue(expectedSeed)
     print("OUP_VOID_CONTINUE_RUNNING")
 end
 function batch.Status()
+    local detail = active and string.format("%s phase=%s seed=%s", active.case.name,
+        active.phase, tostring(Game():GetSeeds():GetStartSeed())) or result and result.error or ""
     print(continuation and "OUP_VOID_CONTINUE_RUNNING"
         or continueResult and (continueResult.pass and "OUP_VOID_CONTINUE_PASS" or "OUP_VOID_CONTINUE_FAIL")
         or active and "OUP_VOID_BATCH_RUNNING" or result and result.pass and "OUP_VOID_BATCH_PASS"
         or result and "OUP_VOID_BATCH_FAIL" or "OUP_VOID_BATCH_IDLE",
-        active and active.case.name or result and result.error or "")
+        detail)
 end
 function batch.Stop()
     if continuation then

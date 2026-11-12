@@ -263,7 +263,7 @@ evidence; record new staging and cleanup separately.
 
 ### Fresh active diagnostic stage
 
-Staging used the fresh archive
+The initial staging used the fresh archive
 `D:\T3ValidationArchives\issue17-active-20261112T010151Z-afad76`; the game was
 confirmed closed twice. Save slot 1, original save data and mod data, and EID
 were backed up with original presence recorded. All 502 protected files were
@@ -272,4 +272,39 @@ unchanged. The staged source is commit
 SHA-256 `c9de7c5202c5f396f360db195b5f042345dbd9f7e77e50a01ec86b1e2d1c99b2`.
 Diagnostic metadata remains SHA-256
 `f308268976f085d86bcad5e84f82537e069d45cbceb4f8750b45f767e0ff4255`. The
-native hidden-active pilot is pending; staging is not gameplay evidence.
+native hidden-active pilot did not reach a Void use; staging alone is not
+gameplay evidence.
+
+### Abandoned seed-search attempt and fixed-fixture replacement
+
+The initial runner (`4f074ba66a4fa258879c3074ebcc8eafdfbaa37f`, 40,723 bytes,
+SHA-256 `c9de7c5202c5f396f360db195b5f042345dbd9f7e77e50a01ec86b1e2d1c99b2`)
+searched 118 distinct rejected seeds and performed **zero Void uses** before
+the owner stopped it. It is not a passing timing test. Its status output showed
+only the case name, obscuring progress. The final closed stable log is 594,749
+bytes, SHA-256
+`a70e54c8d71e1e8898685dd3d1941cad394d251db9e32d44285d09bec4ec7966`, with 477
+records (476 `VOID17_ACTIVE_PILOT` labels), no malformed records or warning
+matches. Archive:
+`D:\T3ValidationArchives\issue17-active-20261112T010151Z-afad76\capture-active-progress-20261112T011719Z-76beb2`.
+
+Review of that progress log identified the usable untouched natural fixture at
+seed `1344027651`: stage 1, StageType 4, Treasure Room grid 111 / variant 11,
+native option group 1. Hidden item 65 is `TypeACTIVE`, entity seed 4235812924,
+with natural blind presentation; visible item 113 is `TypeFAMILIAR`, entity
+seed 2973825556. The earlier fixture rule incorrectly rejected the visible
+familiar companion as the wrong passive class. The replacement pins this
+recorded pair: it stops before any Void use if identity, entity seeds, room,
+group or natural presentation differs. It has no active seed retries; the
+existing eight-candidate search remains only for the unchanged passive path.
+
+The corrected pilot still runs one native-unlinked case, while the full mode
+runs Off, unlinked and On. After native absorption it checks no immediate bomb
+spawn, then makes two later native Void uses. The first later use must have one
+PRE_USE and POST_USE `USE_VOID` observation and a real increase in bomb count;
+the stored count must persist through the next use. The room and run seed must
+remain unchanged. Status now reports phase and seed, and the same 3,600-update
+bound used by the regular batch applies. The owner stopped and closed the game;
+the fresh original backups remain in the parent archive and have not been
+restored. The game is closed awaiting the runner replacement. **The fixed-fixture
+native pilot remains pending.**

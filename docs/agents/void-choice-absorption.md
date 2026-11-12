@@ -89,22 +89,26 @@ fixtures are logged. This passive cohort does not claim hidden-active timing.
 
 For hidden-active coverage, call `OUPBatch.RunEdges(pilot, 'active')`. The pilot
 uses one native-unlinked control; the full run compares Off, native-unlinked,
-and On. It searches at most 256 automatic candidate seeds starting at
-`1344027539`, with a hard bound of 36,000 update ticks. The fixture must be an
-untouched, naturally linked Treasure Room pair: one naturally hidden
-`TypeACTIVE` with a safe room-local observable and one visible passive. The
-diagnostic records the original identities and presentation; it does not Morph
-or spawn either subject. EID's vanilla `IsAltChoice` sprite observer remains a
-test-only dependency.
+and On. It uses one recorded natural fixture in the stage 1 Treasure Room
+(stage 1, StageType 4, room grid 111 / variant 11): hidden item 65 (`TypeACTIVE`,
+entity seed 4235812924) and visible item 113 (`TypeFAMILIAR`, entity seed
+2973825556), both originally linked in group 1. EID's vanilla `IsAltChoice`
+observer must report the hidden state as true for item 65 and false for item
+113. Exact fixture mismatch stops before any Void use; there is no active seed
+search or replacement fixture. The passive/photos path still has its separate
+eight-candidate bound. Neither subject is Morphed or spawned by the diagnostic.
+The active attempt uses the same 3,600-update tick bound as the normal batch.
 
-The active case records matching PRE_USE and POST_USE `USE_VOID` counts. Newly
-absorbed actives must not execute immediately. On and unlinked-native must store
-one copy. A later native use must produce that item's expected observable
-effect, and the stored count must persist through another use. Room and run seed
-must remain unchanged. Engine observations are **pending**; this path has no
-native result yet. Use a fresh closed-game archive and backup before any new
-Windows deployment. The earlier issue #17 cleanup receipt remains valid for
-its own session, but is not a restore point for this follow-up.
+The case makes one native absorption use followed by two native Void uses. The
+newly absorbed active must not execute or spawn bombs immediately. On and
+unlinked-native must each record one matching PRE_USE and POST_USE `USE_VOID`
+call on the first later use, with an actual bomb-count increase. The stored
+count must persist through the next use; room and run seed must remain
+unchanged. Status output includes the current phase and seed. The fixed-fixture
+pilot remains **pending** native validation. Use a fresh closed-game archive
+and backup before any new Windows deployment. The earlier issue #17 cleanup
+receipt remains valid for its own session, but is not a restore point for this
+follow-up.
 
 The diagnostic uses the installed EID `IsAltChoice` sprite observer, whose
 vanilla path compares question-mark graphics with `Sprite:GetTexel`. EID's
