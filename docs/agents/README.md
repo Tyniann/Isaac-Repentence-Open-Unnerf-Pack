@@ -48,6 +48,9 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 - [Configuration results](../testing/configuration-results-1.9.7.17.md)
 - [Magic Mushroom results](../testing/magic-mushroom-1.9.7.17.md)
 - [Void choice absorption validation](../testing/void-choice-1.9.7.17.md): API
-  feasibility probe, environment evidence and pending issue #16 acceptance cases.
+  feasibility probe, scoped native matrix, Continue, charge, cleanup and limits.
+- [Void choice edge cases](../research/void-choice-edge-cases.md): Polaroid/Negative
+  source research and the distinction between alternate-path group coverage and
+  an untouched mystery-pedestal test.
 - [Installed-game API and balance evidence](../research/repentance-plus-installed-evidence.md)
 - [Stomp-immunity diagnosis and validation](../research/issue-2-stomp-validation.txt)

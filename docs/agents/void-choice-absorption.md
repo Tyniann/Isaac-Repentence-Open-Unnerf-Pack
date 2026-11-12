@@ -73,6 +73,37 @@ Isaac's sandbox exposes `require` but not `package`. Special-room fixtures find
 the actual production callback through `Isaac.GetCallbacks`; they do not reload
 the module or expose a production-only testing interface.
 
+### Native photo and mystery-item regressions
+
+`RunEdges(true)` is a one-case Mom reward pilot; `RunEdges(false)` runs the
+photo and naturally blind alternate-path cohorts with feature Off, an Off
+unlinked control, and feature On. Each case starts Isaac afresh, then uses the
+native seed command to select the cohort before generating its target floor.
+The diagnostic never morphs or hand-spawns the subjects. The photo fixture
+records whatever native option indices Mom assigns, including zero; it does
+not assume that the pair uses ordinary choice links.
+
+The alternate-path cohort selects a natural two-passive pair with exactly one
+hidden presentation, checking at most eight seeds. Selection and rejected
+fixtures are logged. This keeps passive reward comparison bounded without
+executing an arbitrary unknown stored active that could restart or teleport
+the run. Generic stored-active timing remains covered separately; this cohort
+does not claim a hidden-active timing case.
+
+The diagnostic uses the installed EID `IsAltChoice` sprite observer, whose
+vanilla path compares question-mark graphics with `Sprite:GetTexel`. EID's
+version and source hashes must be captured; this is a test-only observer
+dependency, not a production dependency or a REPENTOGON requirement. Do not
+substitute Curse of the Blind for natural hidden presentation.
+
+The controls preserve the same seed, native identity, initial group, hidden
+state and starting stats. Only the unlinked control explicitly clears the
+subjects' links. Each native Void use receives the recorded controlled Void
+RNG seed. On must match unlinked-native rewards and consumption; surviving
+On choices must recover their original indices. The
+[edge-case ledger](../testing/void-choice-edge-cases-1.9.7.17.md) distinguishes
+protocol checks, pending engine observations and eventual acceptance.
+
 See the [Void ledger](../testing/void-choice-1.9.7.17.md) for exact deployed hashes,
 capture paths, passing comparisons and unexecuted limits. Follow the
 [shared game workflow](game-validation.md) for session ownership, log capture and
