@@ -260,3 +260,16 @@ game is closed and make a fresh complete backup/archive of the current state,
 record original file presence, and protect production and other mod data. Keep
 the earlier photo/passive records and cleanup receipt as valid historical
 evidence; record new staging and cleanup separately.
+
+### Fresh active diagnostic stage
+
+Staging used the fresh archive
+`D:\T3ValidationArchives\issue17-active-20261112T010151Z-afad76`; the game was
+confirmed closed twice. Save slot 1, original save data and mod data, and EID
+were backed up with original presence recorded. All 502 protected files were
+unchanged. The staged source is commit
+`4f074ba66a4fa258879c3074ebcc8eafdfbaa37f`; the runner is 40,723 bytes with
+SHA-256 `c9de7c5202c5f396f360db195b5f042345dbd9f7e77e50a01ec86b1e2d1c99b2`.
+Diagnostic metadata remains SHA-256
+`f308268976f085d86bcad5e84f82537e069d45cbceb4f8750b45f767e0ff4255`. The
+native hidden-active pilot is pending; staging is not gameplay evidence.
