@@ -1,7 +1,7 @@
 # Void native edge-case regressions
 
 Issue: [#17](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/17).
-Session started: 2026-11-12. Status: **photo/passive and selected naturally hidden-active native comparisons captured; first-session cleanup verified; final active-session cleanup and formal rereview pending**.
+Session started: 2026-11-12. Status: **photo/passive and selected naturally hidden-active native comparisons captured; both session cleanups verified; Standards and Spec reviews complete with zero findings; PR #18 remains unmerged**.
 
 ## Purpose and source
 
@@ -345,7 +345,34 @@ the stored count must persist through the next use. The room and run seed must
 remain unchanged. Status now reports phase and seed, and the same 3,600-update
 bound used by the regular batch applies. The owner stopped and closed the game
 after the failed search attempt, then reopened it for the fixed-fixture pilot
-and matrix. The fresh original backups remain in the parent archive and have
-not been restored. The shared game is currently open pending final review,
-closure and cleanup. No second cleanup is claimed; the fixed-fixture native
-pilot and matrix results are captured above.
+and matrix. The fresh original backups remained in the parent archive through
+validation and were restored only after the successful closed-game cleanup
+below.
+
+### Verified second-session cleanup
+
+The first cleanup attempt stopped at the process precheck and made no writes.
+The owner then confirmed the game was fully closed, and the cleanup retry
+succeeded. The [full cleanup receipt](evidence/void17-active-cleanup.json)
+records archive
+`D:\T3ValidationArchives\issue17-active-20261112T010151Z-afad76\cleanup-20261112T014142Z-c0c68f`.
+It includes a stable closed-game log of 128,350 bytes, SHA-256
+`915610227cc607c3bf8b16c3117e60544746d97e741e9bebeaabf78dae5edc1f`; 69
+records parse, and the one known malformed combined terminal is preserved.
+All three active cases and the comparison pass in the retained evidence.
+
+Cleanup restored the seven changed slot-1 files covering the native run and
+progress, options, command history, today's backup, EID data and pack data.
+All 65 original files were verified. The two diagnostic files are archived
+with their hashes recorded, and the probe folder is absent. All 436 protected
+files remained unchanged, including production and other save slots. No
+first-session restore point was reused. The game is closed and the session has
+been returned to the owner; this is the verified final cleanup for the active
+follow-up.
+
+### Review status
+
+Standards and Spec reviews at commit
+`86050fc316ce0ee2acf12893e750fde2fa14584f` each reported zero findings. The
+previously missing naturally hidden-active case is covered by the captured
+three-case evidence above. PR #18 is not claimed merged.
