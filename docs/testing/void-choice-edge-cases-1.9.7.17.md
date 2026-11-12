@@ -1,7 +1,7 @@
 # Void native edge-case regressions
 
 Issue: [#17](https://github.com/Tyniann/Isaac-Repentence-Open-Unnerf-Pack/issues/17).
-Session started: 2026-11-12. Status: **photo/passive and selected naturally hidden-active native comparisons captured; both session cleanups verified; Standards and Spec reviews complete with zero findings; PR #18 remains unmerged**.
+Session started: 2026-11-12. Status: **photo/passive and selected naturally hidden-active native comparisons captured; both session cleanups verified; Standards and Spec reviews complete with zero findings**.
 
 ## Purpose and source
 
@@ -375,4 +375,4 @@ follow-up.
 Standards and Spec reviews at commit
 `86050fc316ce0ee2acf12893e750fde2fa14584f` each reported zero findings. The
 previously missing naturally hidden-active case is covered by the captured
-three-case evidence above. PR #18 is not claimed merged.
+three-case evidence above.
