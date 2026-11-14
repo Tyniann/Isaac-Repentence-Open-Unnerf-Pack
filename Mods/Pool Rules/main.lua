@@ -1,7 +1,7 @@
 -- A helper ID is one native pool identity. Lua translates its output, while
 -- Isaac owns weighting, depletion and saved pool state.
--- Registration requires XML mirroring ALL pools of the original collectible:
--- removal is global. Keep this list in sync with the supported game's data.
+-- XML must declare each rule's complete intended placement: removal of the
+-- original is global. Mirror unchanged rows and omit intentionally removed rows.
 local rules = {}
 local byHelper, registeredKeys, targets = {}, {}, {}
 local mod = RegisterMod("Open Unnerf Pack pool rules", 1)
@@ -44,7 +44,7 @@ local function prepare(setting, phase)
     local pool = Game():GetItemPool()
     for _, rule in pairs(registeredKeys) do
         -- Never add/reset weights here: Continue restores native pool state.
-        -- One complete helper identity mirrors every pool of the original ID.
+        -- One helper identity supplies the complete intended pool placement.
         local enabled = setting(rule.key)
         local matches = metadataMatches(rule)
         local excluded = enabled and matches and rule.collectible or rule.helper

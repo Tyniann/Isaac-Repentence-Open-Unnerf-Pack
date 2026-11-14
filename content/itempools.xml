@@ -16,4 +16,9 @@
     <Pool Name="ultraSecret">
         <Item Name="OUP Magic Mushroom Pool Entry" Weight="1" DecreaseBy="0.4" RemoveOn="0.1" />
     </Pool>
+    <!-- Sack Head's complete Afterbirth/Afterbirth+ placement: normal Shop
+         only. The historical depletion values differ from the modern row. -->
+    <Pool Name="shop">
+        <Item Name="OUP Sack Head Pool Entry" Weight="1" DecreaseBy="0.5" RemoveOn="0.1" />
+    </Pool>
 </ItemPools>

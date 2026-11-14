@@ -11,6 +11,7 @@ local options = {
     {"blueFires", "Hard-mode blue fires"},
     {"magicMushroom", "Magic Mushroom pools"},
     {"voidChoiceAbsorption", "Void choice absorption"},
+    {"sackHead", "Sack Head"},
 }
 
 local runStartListeners = {}
