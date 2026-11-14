@@ -2,7 +2,7 @@
 
 [All features](README.md) · [Project configuration overview](../../README.md#configuration)
 
-The pack's nine gameplay adjustments default to **On** on Repentance+
+The pack's ten gameplay adjustments default to **On** on Repentance+
 **v1.9.7.17** (owner executable **1.9.7.17.J460**). Optional **Mod Config Menu
 Pure v113** lets you choose each independently. Installing MCM adds the menu;
 it does not supply the pack's persistence or add more gameplay features.
@@ -24,6 +24,7 @@ Each entry displays its name followed by `: On` or `: Off`.
 | Hard-mode blue fires | `blueFires` | [Blue and purple fires](blue-fires.md) |
 | Magic Mushroom pools | `magicMushroom` | [Boss availability and Treasure weight](magic-mushroom.md) |
 | Void choice absorption | `voidChoiceAbsorption` | [Linked choice absorption](void.md) |
+| Sack Head | `sackHead` | [Sack pool and reward chain](sack-head.md) |
 
 Nail and Satanic Bible have no menu controls. These keys are reference names for
 saved data, not console commands. There is no supported live per-feature switch.
@@ -54,7 +55,7 @@ MCM is optional: without it, the pack uses its saved choices, or all-On defaults
 when none are available. Removing MCM does not reset the choices. The pack stores
 them through its own Isaac `SaveData`, independently of MCM's settings files.
 
-Missing or malformed JSON, or an unknown schema version, falls back to all nine
+Missing or malformed JSON, or an unknown schema version, falls back to all ten
 On. In version 1 data, missing or non-boolean fields default individually to On;
 unknown keys are ignored. A matching run snapshot follows the same boolean
 normalization. A fallback is not a promise to reconstruct lost historical run
@@ -85,6 +86,12 @@ The ninth control is Void choice absorption. Its
 comparisons and a process-restart Continue with active On and next-run Off.
 The configuration harness covers MCM absent/present and migration of the new
 key; those harness checks are distinct from native game observations.
+
+The tenth control is Sack Head. Scoped Normal-On/Off gameplay checks and a
+Greed-mode pool-only check passed, and the original test profile was restored.
+No Greed reward-chain or Greedier check was run. See the
+[Sack Head technical reference](../agents/sack-head.md) and
+[issue #20 validation ledger](../testing/sack-head-issue20.md).
 
 Source: [configuration implementation](../../config.lua). For reproducible
 checks see [configuration validation](../configuration-validation.md); for the

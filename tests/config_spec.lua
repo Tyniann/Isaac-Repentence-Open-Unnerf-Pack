@@ -25,7 +25,7 @@ local function enum()
 end
 for _, name in ipairs({"ModCallbacks", "CacheFlag", "FamiliarVariant", "PlayerType",
     "CollectibleType", "EntityType", "PickupVariant", "HeartSubType", "CoinSubType",
-    "KeySubType", "BombSubType", "Difficulty", "DamageFlag"}) do _G[name] = enum() end
+    "KeySubType", "BombSubType", "BombVariant", "Difficulty", "DamageFlag"}) do _G[name] = enum() end
 local storage, mods, menu, seed, player, excluded
 local voidPickups = {}
 local game = {Difficulty = Difficulty.DIFFICULTY_HARD}
@@ -46,7 +46,9 @@ function game:GetSeeds() return {GetStartSeed = function() return seed end} end
 function game:GetNumPlayers() return 1 end
 function game:GetPlayer() return player end
 function Game() return game end
-Isaac = {GetPlayer = function() return player end, GetItemIdByName = function() return 1001 end,
+Isaac = {GetPlayer = function() return player end, GetItemIdByName = function(name)
+        return name:find("Sack Head", 1, true) and 1002 or 1001
+    end,
     FindByType = function() return voidPickups end,
     GetItemConfig = function() return {GetCollectible = function() return {Quality = 4, Tags = 7, Type = 1} end} end}
 GetPtrHash = function(value) return value end
@@ -88,7 +90,7 @@ local function boot(data, withMenu)
     end
     dofile("main.lua")
 end
-local keys = {"mawOfTheVoid", "orbitals", "stompImmunity", "humblingBundle", "darkBum", "relic", "blueFires", "magicMushroom", "voidChoiceAbsorption"}
+local keys = {"mawOfTheVoid", "orbitals", "stompImmunity", "humblingBundle", "darkBum", "relic", "blueFires", "magicMushroom", "voidChoiceAbsorption", "sackHead"}
 local function start(continued)
     if not continued then excluded = {} end -- Isaac creates fresh native pools.
     openUnnerfPack.callbacks[ModCallbacks.MC_POST_GAME_STARTED](openUnnerfPack, continued)
@@ -150,8 +152,8 @@ test("malformed, wrong schema and invalid fields fall back safely", function()
     start(false); assert(not openUnnerfPack.Config.IsEnabled("orbitals"))
     assert(openUnnerfPack.Config.IsEnabled("relic"))
 end)
-test("menu has exactly nine independent booleans; changes save immediately, defer to new run", function()
-    boot(nil, true); start(false); assert(#menu == 9)
+test("menu has exactly ten independent booleans; changes save immediately, defer to new run", function()
+    boot(nil, true); start(false); assert(#menu == 10)
     for i, key in ipairs(keys) do
         assert(menu[i].CurrentSetting() == true)
         menu[i].OnChange(false)
@@ -171,23 +173,42 @@ test("late MCM initialization registers once and reflects persisted choices", fu
     ModConfigMenu = {OptionType = {BOOLEAN = 1}, AddText = function() end,
         AddSetting = function(_, _, setting) menu[#menu + 1] = setting end}
     start(false); start(false)
-    assert(#menu == 9 and menu[6].CurrentSetting() == false)
+    assert(#menu == 10 and menu[6].CurrentSetting() == false)
 end)
 test("continue with no matching snapshot uses saved choices", function()
     boot('{"version":1,"settings":{"relic":false},"run":{"seed":999,"settings":{"relic":true}}}', false)
     start(true); assert(not openUnnerfPack.Config.IsEnabled("relic"))
 end)
-test("older version-1 saves migrate Void choice absorption to On", function()
+test("older version-1 saves migrate missing Sack Head choice to On", function()
     boot('{"version":1,"settings":{"mawOfTheVoid":false},' ..
         '"run":{"seed":12345,"settings":{"mawOfTheVoid":false}}}', true)
     start(true)
     assert(not openUnnerfPack.Config.IsEnabled("mawOfTheVoid"))
     assert(openUnnerfPack.Config.IsEnabled("voidChoiceAbsorption"))
-    assert(menu[9].CurrentSetting() == true)
+    assert(openUnnerfPack.Config.IsEnabled("sackHead"))
+    assert(menu[10].CurrentSetting() == true)
     local saved = dkjson.decode(storage)
     assert(saved.settings.mawOfTheVoid == false and saved.run.settings.mawOfTheVoid == false)
     assert(saved.settings.voidChoiceAbsorption == true)
     assert(saved.run.settings.voidChoiceAbsorption == true)
+    assert(saved.settings.sackHead == true)
+    assert(saved.run.settings.sackHead == true)
+end)
+
+test("Sack Head Off persists through Continue and applies to a new run", function()
+    boot(nil, true); start(false)
+    menu[10].OnChange(false)
+    assert(openUnnerfPack.Config.IsEnabled("sackHead"), "current run keeps its snapshot")
+    local saved = dkjson.decode(storage)
+    assert(saved.settings.sackHead == false and saved.run.settings.sackHead == true)
+    boot(storage, true); start(true)
+    assert(openUnnerfPack.Config.IsEnabled("sackHead"), "Continue keeps the saved run choice")
+    saved = dkjson.decode(storage)
+    assert(saved.settings.sackHead == false and saved.run.settings.sackHead == true)
+    start(false)
+    assert(not openUnnerfPack.Config.IsEnabled("sackHead"), "new run applies the saved Off choice")
+    saved = dkjson.decode(storage)
+    assert(saved.settings.sackHead == false and saved.run.settings.sackHead == false)
 end)
 
 test("save-slot switches reload choices and Continue snapshots without reloading Lua", function()
@@ -257,6 +278,8 @@ local function exercise(key)
         return mods["Humbleing Bundle Unnerf Unnerf"]:pickUpSelection({}, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY) ~= nil
     elseif key == "magicMushroom" then
         return not excluded[1001] and excluded[12] == true
+    elseif key == "sackHead" then
+        return not excluded[1002] and excluded[424] == true
     elseif key == "voidChoiceAbsorption" then
         local function pickup(seedValue)
             local value = {InitSeed = seedValue, SubType = 58 + seedValue,

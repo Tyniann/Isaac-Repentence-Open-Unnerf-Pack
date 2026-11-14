@@ -5,10 +5,14 @@ ModCallbacks = {MC_POST_GET_COLLECTIBLE = 63, MC_POST_PEFFECT_UPDATE = 31,
     MC_POST_PLAYER_INIT = 9, MC_PRE_GAME_EXIT = 17}
 PickupVariant = {PICKUP_COLLECTIBLE = 100}
 EntityType = {ENTITY_PICKUP = 5}
-local validMetadata = true
+local validMetadata, validSackMetadata, sackEnabled = true, true, false
 Isaac = {GetItemConfig = function() return {GetCollectible = function(_, id)
+    if id == 424 or id == 1002 then
+        return {Quality = 3, Tags = 9, Type = (id == 1002 and not validSackMetadata) and 2 or 1}
+    end
     return {Quality = (id == 1001 and not validMetadata) and 3 or 4, Tags = 7, Type = 1}
 end} end, GetItemIdByName = function(name)
+    if name == "OUP Sack Head Pool Entry" then return 1002 end
     assert(name == "OUP Magic Mushroom Pool Entry"); return 1001
 end}
 local pool = {RemoveCollectible = function(_, id) removed[#removed + 1] = id end}
@@ -32,8 +36,14 @@ RegisterMod = function()
     return {AddCallback = function(_, id, fn) callbacks[id] = fn end}
 end
 openUnnerfPack = {Config = {
-    IsEnabled = function(key) assert(key == "magicMushroom"); return enabled end,
-    IsEnabledForPoolGeneration = function(key) assert(key == "magicMushroom"); return enabled end,
+    IsEnabled = function(key)
+        if key == "sackHead" then return sackEnabled end
+        assert(key == "magicMushroom"); return enabled
+    end,
+    IsEnabledForPoolGeneration = function(key)
+        if key == "sackHead" then return sackEnabled end
+        assert(key == "magicMushroom"); return enabled
+    end,
     AddRunStartListener = function(fn) listeners[#listeners + 1] = fn end,
 }}
 local rules = require("Mods/Pool Rules/main")
@@ -82,4 +92,26 @@ owned, validMetadata = false, false
 listeners[1](true)
 assert(removed[#removed] == 1001, "mismatched helper excluded")
 assert(callbacks[63](nil, 1001, 1, true, 123) == 23, "mismatched selection retries native pool")
+-- A second independently configurable rule must not change Magic Mushroom's
+-- exclusions. The helper's native XML supplies Sack Head's entire target pool.
+validMetadata, enabled, sackEnabled = true, false, true
+rules.Register("sackHead", 424, "OUP Sack Head Pool Entry")
+local function exclusions()
+    removed = {}
+    listeners[1](false)
+    local result = {}
+    for _, id in ipairs(removed) do result[id] = true end
+    return result
+end
+local excluded = exclusions()
+assert(excluded[1001] and excluded[424] and not excluded[12] and not excluded[1002],
+    "Sack Head On replaces its original without enabling Magic Mushroom")
+assert(callbacks[63](nil, 1002, 1, true, 123) == 424, "native Sack Head helper roll grants real item")
+enabled, sackEnabled = true, false
+excluded = exclusions()
+assert(excluded[12] and excluded[1002] and not excluded[424], "Sack Head Off retains native original")
+sackEnabled, validSackMetadata = true, false
+excluded = exclusions()
+assert(excluded[1002] and not excluded[424], "Sack Head metadata mismatch leaves original available")
+assert(callbacks[63](nil, 1002, 1, true, 123) == 23, "invalid Sack Head helper cannot escape")
 print("pool rule contracts passed (Lua doubles; engine validation pending)")

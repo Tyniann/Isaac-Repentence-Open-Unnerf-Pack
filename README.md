@@ -14,7 +14,7 @@ unnerfs, and updated documentation.
 
 ## Features
 
-The pack currently includes nine independently configurable adjustments:
+The pack currently includes ten independently configurable adjustments:
 
 - [Maw of the Void](docs/features/maw-of-the-void.md): restore bonus damage and
   black-heart drops from qualifying dark rings.
@@ -34,6 +34,8 @@ The pack currently includes nine independently configurable adjustments:
   availability and full normal Treasure weight, keeping the item's effects.
 - [Void choice absorption](docs/features/void.md): absorb eligible items from
   ordinary linked choice groups while retaining Repentance+'s four-room charge.
+- [Sack Head](docs/features/sack-head.md): restore its historical Shop-pool
+  entry and give eligible sack rewards a chance to become another sack.
 
 The [feature reference](docs/features/README.md) explains each adjustment,
 its restrictions, and its tested behavior. The Nail and Satanic Bible helpers
@@ -46,7 +48,12 @@ and configuration have [recorded local Normal/Hard checks](docs/testing/issue-1-
 Magic Mushroom has its own [pool and Continue validation](docs/testing/magic-mushroom-1.9.7.17.md).
 Void choice absorption has separate [native matrix, Continue and charge checks](docs/testing/void-choice-1.9.7.17.md).
 Each feature page explains its tested conditions and limits; other game builds,
-Greed modes, and multiplayer have separate validation requirements.
+Greed modes, and multiplayer have separate validation requirements. Sack Head's
+Normal-On and Normal-Off checks, natural reward-chain checks, actual Greed-mode
+pool check, and original-profile restoration have passed. The
+Greed check covered isolated pools only; no Greed reward-chain or Greedier run
+was performed. See the [issue-specific ledger](docs/testing/sack-head-issue20.md)
+for evidence and limits.
 
 ## Installation
 
@@ -72,7 +79,7 @@ prepare a Workshop upload, follow the [release guide](docs/agents/releasing.md).
 
 ## Configuration
 
-All nine supported unnerfs default to **On**. To choose them individually,
+All ten adjustments default to **On**. To choose them individually,
 install the optional [Mod Config Menu
 Pure](https://steamcommunity.com/sharedfiles/filedetails/?id=2681875787). In game,
 press **F10**, then select **Open Unnerf Pack 2 → Unnerfs**. The integration has

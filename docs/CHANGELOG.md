@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Restore Sack Head's historical Shop-pool entry and let eligible sack rewards
+  become further sacks, with an independent toggle (#20).
+
 ## [2.1.0] - 2026-11-11
 
 ### Added

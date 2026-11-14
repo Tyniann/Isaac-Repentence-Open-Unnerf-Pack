@@ -31,6 +31,8 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
   checks, evidence collection, and session handoffs.
 - [Native pool rules](pool-rules.md): helper-backed pool adjustments, registration
   contracts, configuration and saved-state behavior.
+- [Sack Head](sack-head.md): issue #20's pool adjustment and reward-chain
+  implementation, disposable native probe, and bounded native evidence.
 - [Void choice absorption](void-choice-absorption.md): native pre-use unlinking,
   special-room exclusions, temporary state and disposable batch validation.
 - [Configuration validation](../configuration-validation.md): MCM integration
