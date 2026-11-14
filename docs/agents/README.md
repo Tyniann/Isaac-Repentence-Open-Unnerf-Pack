@@ -57,5 +57,7 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 - [Native Void edge-case results](../testing/void-choice-edge-cases-1.9.7.17.md):
   Mom's original photo pair and untouched naturally hidden passive choices,
   native Off/unlinked/On comparisons and verified session cleanup.
+- [Blank Card and Jera validation](../testing/blank-card-jera-issue19.md):
+  issue #19 feasibility status, read-only observer and disposable-session handoff.
 - [Installed-game API and balance evidence](../research/repentance-plus-installed-evidence.md)
 - [Stomp-immunity diagnosis and validation](../research/issue-2-stomp-validation.txt)
