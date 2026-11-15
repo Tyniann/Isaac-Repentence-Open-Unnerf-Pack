@@ -361,6 +361,46 @@ remaining issue matrix.
   malformed records and no collector errors. The earlier v2 matrix error at
   frame 324 remains preserved above as historical evidence, not as a v3 failure.
 
+### Candidate v2 Car Battery mode — native replay observed, case failed
+
+The next capture used source `0e1c6e4215d629675cd8f32be468eaf7f4cba640`
+(module SHA-256
+`81234e4d8e697b4fb6379369263c16676334b2a5f554e7f71a709c4152e8f3fa`) and
+matrix revision 3, SHA-256
+`21bce95185f01034b64c24c39935fabc12755d91f9bbbd3a87a3470dc31afc45`. It used
+the same seed `2855396759` and actor `483707137`. With Car Battery owned and
+The Battery absent, native Magician generated one primary use (slot 0, flags 4)
+and one Car Battery replay (slot -1, flags 1569) at frame 1231. The two card
+effects spent one four-charge bar, and a real battery pickup
+(`4228872983`) restored charge to two. After switching to Jera (33) at charge
+2, the primary use at frame 1297 (slot 0, flags 4) dispatched Jera once. The
+native Car Battery replay was also observed at frame 1297 (slot -1, flags 1569,
+`VarData=2`), but the installed module's negative-slot guard ignored it. The
+matrix ended with `Unexpected Jera activation count: car_battery_inherited_jera`
+at frame 1315 and `cases=[]`; this Car Battery case did not pass. The error
+snapshot still showed Car Battery owned before fixture cleanup detached the
+helper and removed its temporary passive. That cleanup explains later absence;
+it does not establish success.
+
+- Capture: `session/capture-v3-car-battery-20261115T182841Z`; stable 74,958-byte
+  log, both-read SHA-256
+  `f259ddf29c35a75d9959ddef99a59448c5c5ed807a0225664c4a8fd434397795`.
+- Parsed records: 131, SHA-256
+  `c549b0178ab561bff3126fcafdc2c17a3fe11908dacbc08c76f0c2bffa805dc6`, zero
+  malformed records and no collector errors. The main agent cross-checked the
+  raw capture.
+
+The current source change associates the primary Blank Card use with one
+Car Battery replay for the same player update. It accepts the no-slot callback
+only when `USE_CARBATTERY` is set and the player seed, recorded owning slot,
+Blank Card and held Jera still match; it then dispatches Jera once and consumes
+the association. Only the primary callback schedules the next-four cost.
+Unpaired no-slot calls and other mimics remain ignored. The association clears
+on player update, run start and exit, and the existing reserve-safe cost update
+is unchanged. Callback mocks cover charge 2/4, all four slots, one replay per
+primary use, mismatches and cleanup, but the production fix has not been run in
+the engine. Car Battery validation remains pending.
+
 ## Bounded lifecycle matrix
 
 - Matrix: [`blank-card-jera-matrix.lua`](../../tools/validation/blank-card-jera-matrix.lua),

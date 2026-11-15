@@ -5,7 +5,7 @@ package.preload.json=function() return {encode=json.encode,decode=json.decode} e
 ModCallbacks={MC_USE_ITEM=1,MC_USE_CARD=2,MC_INPUT_ACTION=3,MC_POST_UPDATE=4,MC_PRE_GAME_EXIT=5,MC_POST_GAME_STARTED=6,MC_POST_PLAYER_UPDATE=7}
 CollectibleType={COLLECTIBLE_BLANK_CARD=286,COLLECTIBLE_BATTERY=63,COLLECTIBLE_CAR_BATTERY=356,COLLECTIBLE_SCHOOLBAG=534}
 Card={RUNE_JERA=33,CARD_MAGICIAN=2,RUNE_DAGAZ=37}
-UseFlag={USE_MIMIC=128,USE_NOANNOUNCER=256}
+UseFlag={USE_MIMIC=128,USE_NOANNOUNCER=256,USE_CARBATTERY=32}
 PlayerType={PLAYER_ISAAC=0}
 EntityType={ENTITY_PICKUP=5}
 PickupVariant={PICKUP_LIL_BATTERY=90,PICKUP_COIN=20,PICKUP_KEY=30,PICKUP_BOMB=40,PICKUP_HEART=10}
@@ -116,7 +116,8 @@ local function check(mode,resetBlue,startEmpty)
                 local spent=maximum
                 for repetition=1,(p:HasCollectible(356) and 2 or 1) do
                     if p.card==2 then emit(2,2,p,384);maximum=2 end
-                    emit(1,p.item,{},p,repetition==1 and 4 or 36,0,0)
+                    emit(1,p.item,{},p,repetition==1 and 4 or 1569,
+                        repetition==1 and 0 or -1,repetition==1 and 0 or spent)
                 end
                 if resetBlue then charge=math.min(charge,maximum) end -- Inject the old reserve-loss fault.
                 charge=math.max(0,charge-spent)

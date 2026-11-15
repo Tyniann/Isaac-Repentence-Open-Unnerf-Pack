@@ -15,33 +15,43 @@
 
 ## How it works
 
-When enabled, the callback requires Jera in the primary card slot and verifies
-that Blank Card is the active item in the reported, nonnegative slot. It uses
-`UseCard(Card.RUNE_JERA, USE_MIMIC | USE_NOANNOUNCER)` so the engine performs
-Jera's effect without consuming the held rune or playing its announcement.
-Afterward, if Blank Card remains in that slot, `AddCollectible` updates the
-next-use cost to four while passing through the current charge and ownership.
-This update is queued by player pointer, run seed and slot, then applied from
-`MC_POST_PLAYER_UPDATE` only after native use has discharged and the blue
-battery reserve is zero. Reinserting the active inside `MC_USE_ITEM` cleared
-the reserve before native discharge in the failed engine capture. A later
-non-Jera use cancels the queued slot update; an active swap or actor seed change
-is skipped. New-run and game-exit callbacks clear pending state. The callback
-returns nil, leaving native discharge, animation and battery handling with the
-game. It does not write charge when the held card changes, change global Jera
-or Clear Rune behavior, or share state between players.
+For the primary `MC_USE_ITEM` callback, the module requires Jera in the primary
+card slot and Blank Card in the reported nonnegative active slot. It invokes
+`UseCard(Card.RUNE_JERA, USE_MIMIC | USE_NOANNOUNCER)`, so the engine performs
+Jera without consuming the held rune or announcing it. That primary use alone
+owns the next-cost update: when the bar is not already four, the module queues
+an update keyed by player pointer, run seed and slot. It applies from
+`MC_POST_PLAYER_UPDATE` only after native discharge and only when blue reserve is
+zero. This avoids the failed approach of reinserting Blank Card during
+`MC_USE_ITEM`, which erased stored reserve before discharge. A later non-Jera
+use cancels the queued slot update; an active swap or actor seed change is
+skipped.
 
-The active-slot check prevents an item mimic from replacing a different active
-item. Other cards and consumables, the feature-Off path and charge outside this
-matching use remain native.
+On J460, Car Battery's native repeated active-item callback has slot `-1` and
+`USE_CARBATTERY` in its flags. The module accepts one such replay only when that
+same player's primary Blank Card use was just recorded in the current update,
+the run seed still matches, Blank Card remains in the recorded slot and Jera is
+still held. It invokes Jera for that replay but does not schedule another cost
+update. Unpaired no-slot callbacks, ordinary mimics and slot swaps remain
+ignored. The association is consumed once and cleared on player update, run
+start or exit. New-run and exit callbacks also reset the pending cost update.
+The callbacks return nil; native charge, animation and Car Battery handling
+remain with the game. Global Jera/Clear Rune behavior is unchanged, and player
+state is not shared or saved.
+
+The active-slot checks prevent an item mimic from replacing a different active
+item. Other cards and consumables, the feature-Off path and charge outside the
+matching use remain native. The new Car Battery replay handling has not yet
+passed an engine check; see the issue ledger.
 
 ## Data and state
 
 The new setting is a normal Boolean in the existing config schema. Existing
 normalization makes it default On in older version-1 saves; no schema, mod
 identity or save-directory change is needed. MCM edits apply to a new run, and
-Continue retains the run snapshot. The callback uses no additional persistent
-or cross-player mutable state.
+Continue retains the run snapshot. The callback uses only short-lived per-player runtime state for queued cost
+updates and matching a Car Battery replay. It saves no additional state and
+shares no mutable state between players.
 
 ## Native feasibility and limits
 
@@ -61,11 +71,14 @@ evidence, not an alternative timing policy.
 
 A bounded production On smoke passed in a fresh one-player Normal run: native
 Jera used Blank Card, doubled a penny, battery and closed chest, and a real
-battery restored the four-charge bar. That smoke does not settle four ordinary
-room clears after Jera, battery-fed duplication chains, post-use transitions,
-Schoolbag/slot behavior, other players, Continue, feature Off or co-op. Those
-matrix cases remain pending; do not claim issue acceptance from one smoke or
-the callback contract.
+battery restored the four-charge bar. A later v3 battery-smoke also passed its
+Magician reserve control, Jera next-cost transition and stored-charge sequence;
+see the ledger. The native Car Battery capture recorded the flagged, no-slot
+replay, but the prior module ignored it and the matrix stopped before passing a
+case. The new replay handling is covered by callback mocks but still needs an
+engine rerun. Four ordinary room clears after Jera, Car Battery, battery-fed
+chains, Schoolbag/slot behavior, other players, Continue, feature Off and co-op
+remain pending; do not claim issue acceptance from the partial captures.
 
 ## Tools and tests
 
@@ -146,12 +159,13 @@ and Car Battery inventory counts. Its battery-smoke first establishes native
 Magician charge controls, then checks Jera's inherited two-charge use and next-
 four cost, and finally tests two Jera uses with The Battery. Status output
 identifies mode, completion state and any error. These changes improve fixture
-control and observability; they do not confirm the earlier repeated-use cause
-or establish native behavior. Revision 3 has only passed the local protocol
-spec; all v3 engine tests remain pending. For the current stopped diagnostic
-session, the owner will stage the revised matrix as `matrix-v3.lua` and load it
-once with `luarun mods/oup_blank_card_issue19_observer/matrix-v3.lua`; the next
-cold game start must load the updated helper before Continue testing.
+control and observability; they do not confirm the earlier repeated-use cause.
+The v3 protocol spec and the three-case native The Battery run passed. Car
+Battery's no-slot Jera replay was observed but failed in that capture; the
+current callback fix is covered by mocks and still needs an engine rerun. The
+owner staged the v3 matrix as `matrix-v3.lua` and loaded it with
+`luarun mods/oup_blank_card_issue19_observer/matrix-v3.lua` in the existing
+session. A cold game start must load the updated helper before Continue testing.
 
 The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
 four charge, and neither The Battery nor Car Battery already held. Invoke
