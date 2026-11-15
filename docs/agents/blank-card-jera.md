@@ -86,9 +86,11 @@ the callback contract.
   preserving the passive Continue observer; it is not game evidence.
 - `tools/validation/blank-card-jera-test-main.lua`: passive diagnostic-mod
   entry that includes the batch and matrix definitions without starting either
-  fixture. The next `battery-smoke` run checks Magician's two-charge bar plus
-  reserve, Jera's retained reserve, and four-charge capacity on subsequent
-  native battery refills. A real run must use the ledger's prepared conditions.
+  fixture. Matrix revision 3's `battery-smoke` accepts an empty or full bar,
+  establishes native Magician four- and two-charge controls, checks Jera's
+  inherited reserve and next-four cost, then tests two four-charge uses with
+  The Battery. It uses real battery pickups and does not set charges directly.
+  A native run must use the ledger's prepared conditions.
 - [`../testing/evidence/blank-card-jera-install.py`](../testing/evidence/blank-card-jera-install.py):
   frozen, session-pinned one-time swap recipe. It verifies the saved backup,
   source manifest, executable, protected mods and closed-game condition, then
@@ -136,10 +138,20 @@ continued flag. Co-op can report pending if no second actor appears. It never
 writes charge or room-clear flags; it uses native input, pickups, consumables,
 room changes and NPC deaths. Room/map changes cannot be undone inside that
 disposable run, and Schoolbag/D6 or a created second actor may remain for profile
-restoration. The matrix and its mock protocol have passed local checks. The
-first battery-smoke engine run found the reserve-loss defect described in the
-ledger; the corrected battery-smoke and remaining matrix engine cases are
-pending.
+restoration. The matrix protocol mock has passed local checks. Revision 3
+releases its synthetic action pulse on the first observed native item-use
+callback, so later same-frame input queries cannot trigger another use; native
+Car Battery repeat callbacks are still counted. Snapshots also log The Battery
+and Car Battery inventory counts. Its battery-smoke first establishes native
+Magician charge controls, then checks Jera's inherited two-charge use and next-
+four cost, and finally tests two Jera uses with The Battery. Status output
+identifies mode, completion state and any error. These changes improve fixture
+control and observability; they do not confirm the earlier repeated-use cause
+or establish native behavior. Revision 3 has only passed the local protocol
+spec; all v3 engine tests remain pending. For the current stopped diagnostic
+session, the owner will stage the revised matrix as `matrix-v3.lua` and load it
+once with `luarun mods/oup_blank_card_issue19_observer/matrix-v3.lua`; the next
+cold game start must load the updated helper before Continue testing.
 
 The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
 four charge, and neither The Battery nor Car Battery already held. Invoke

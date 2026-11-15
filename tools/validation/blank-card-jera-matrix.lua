@@ -21,7 +21,9 @@ local function snapshot(p)
             battery = p:GetBatteryCharge(slot)}
     end
     return {playerSeed = p.InitSeed, controller = p.ControllerIndex, type = p:GetPlayerType(),
-        card = p:GetCard(0), count = p:GetCollectibleNum(BC, true), slots = slots}
+        card = p:GetCard(0), count = p:GetCollectibleNum(BC, true), slots = slots,
+        theBattery = p:GetCollectibleNum(CollectibleType.COLLECTIBLE_BATTERY, true),
+        carBattery = p:GetCollectibleNum(CollectibleType.COLLECTIBLE_CAR_BATTERY, true)}
 end
 local function total(p, slot) return p:GetActiveCharge(slot or 0) + p:GetBatteryCharge(slot or 0) end
 local function pickups(variant)
@@ -145,30 +147,27 @@ end
 
 local function batterySmoke()
     assert(not actor:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY), "Use the prepared disposable run without The Battery")
+    if total(actor) == 0 then refill("recover_empty_bar") end
     assert(total(actor) == 4, "Expected a full four-charge bar")
-    actor:SetCard(0, Card.RUNE_JERA)
+    -- Establish ordinary native card behavior before testing the restored rune.
+    actor:SetCard(0, Card.CARD_MAGICIAN)
+    wait(3)
+    activate("native_magician_setup", BC, 0)
+    assert(total(actor) == 0)
+    refill("native_magician_setup")
+    assert(total(actor) == 2)
     actor:AddCollectible(CollectibleType.COLLECTIBLE_BATTERY, 0, false)
     batteryOwner = actor
-    refill("overcharge_setup")
-    assert(total(actor) == 8, "Native battery did not fill the second four-charge bar")
-    activate("first_overcharged_jera", BC, 1)
-    assert(total(actor) == 4, "Jera activation lost or granted stored battery charge")
-    activate("second_overcharged_jera", BC, 1)
-    assert(total(actor) == 0, "Second activation did not spend the remaining four charges")
-    passed("stored_battery_charge", snapshot(actor))
+    refill("native_magician_reserve")
+    assert(actor:GetActiveCharge(0) == 2 and actor:GetBatteryCharge(0) == 2)
+    activate("first_native_magician_reserve", BC, 0)
+    assert(total(actor) == 2, "Native Magician lost or granted stored battery charge")
+    activate("second_native_magician_reserve", BC, 0)
+    assert(total(actor) == 0)
+    passed("native_magician_stored_charge_control", snapshot(actor))
     -- Native Magician establishes a two-charge bar with a two-charge reserve.
     -- The first Jera use must retain those spare two charges while changing
     -- the next capacity to four; the following real battery proves that cost.
-    refill("magician_setup_first")
-    if total(actor) < 8 then refill("magician_setup_second") end
-    actor:SetCard(0, Card.CARD_MAGICIAN)
-    wait(3)
-    activate("overcharged_magician", BC, 0)
-    for index = 1, 3 do
-        if total(actor) == 0 then break end
-        activate("magician_drain_" .. index, BC, 0)
-    end
-    assert(total(actor) == 0, "Native Magician control did not discharge")
     refill("two_charge_reserve_setup")
     assert(actor:GetActiveCharge(0) == 2 and actor:GetBatteryCharge(0) == 2,
         "Native Magician did not establish the two-charge reserve control")
@@ -181,6 +180,7 @@ local function batterySmoke()
     if total(actor) < 8 then refill("finish_transition_overcharge") end
     assert(actor:GetActiveCharge(0) == 4 and actor:GetBatteryCharge(0) == 4,
         "Post-use Jera capacity did not become four with The Battery")
+    passed("stored_charge_across_cost_transition", snapshot(actor))
     activate("transitioned_first_jera", BC, 1)
     assert(total(actor) == 4)
     activate("transitioned_second_jera", BC, 1)
@@ -189,7 +189,7 @@ local function batterySmoke()
     batteryOwner = nil
     refill("after_overcharge")
     assert(total(actor) == 4 and actor:GetCollectibleNum(BC, true) == 1)
-    passed("stored_charge_across_cost_transition", snapshot(actor))
+    passed("stored_battery_charge", snapshot(actor))
 end
 
 local function chain()
@@ -434,12 +434,16 @@ function matrix.Run(mode)
     assert(enabled == (mode ~= "off"), "Active feature setting does not match requested matrix")
     if mode ~= "off" then
         assert(actor:GetActiveItem(0) == BC, "Use the prepared Blank Card")
-        if mode ~= "co-op" then assert(total(actor) == 4, "Use the prepared full Blank Card") end
+        if mode ~= "co-op" then
+            assert(total(actor) == 4 or (mode == "battery-smoke" and total(actor) == 0),
+                "Use the prepared full Blank Card")
+        end
     end
     assert(not first:HasCollectible(CollectibleType.COLLECTIBLE_CAR_BATTERY), "Car Battery requires a separate multiplier control")
     startRoom = Game():GetLevel():GetCurrentRoomIndex()
     state = {status = "running", mode = mode, cases = {}, uses = 0, cards = 0, jera = 0, startFrame = Game():GetFrameCount()}
-    emit("matrix_started", {players = Game():GetNumPlayers(), player = snapshot(first), startingPickups = #pickups(), enabled = enabled})
+    emit("matrix_started", {fixtureRevision = 3, players = Game():GetNumPlayers(), player = snapshot(first),
+        startingPickups = #pickups(), enabled = enabled})
     add(ModCallbacks.MC_INPUT_ACTION, function(_, entity, hook, action)
         if not entity or action ~= ButtonAction.ACTION_ITEM then return end
         local p = entity:ToPlayer()
@@ -450,6 +454,10 @@ function matrix.Run(mode)
     end)
     add(ModCallbacks.MC_USE_ITEM, function(_, item, _, p, flags, slot)
         if GetPtrHash(p) ~= GetPtrHash(actor) then return end
+        -- The engine can query ACTION_ITEM again in the same frame after a
+        -- stored bar becomes available. Release the synthetic button as soon
+        -- as its first native use starts; native Car Battery repeats continue.
+        pulse = nil
         state.uses, state.lastItem = state.uses + 1, item
         emit("native_item_use", {item = item, flags = flags, slot = slot, player = snapshot(p)})
     end)
@@ -471,7 +479,11 @@ function matrix.Run(mode)
     task, wake = coroutine.create(run), nil
     print("OUP Blank Card matrix started; close console")
 end
-function matrix.Status() print(json.encode(state)); return state end
+function matrix.Status()
+    print("OUP Blank Card matrix " .. (state.mode or "idle") .. ": " .. state.status
+        .. (state.message and (" - " .. state.message) or ""))
+    return state
+end
 function matrix.Stop() if state.status == "running" then finish("stopped", "Owner stopped matrix") end end
 mod:AddCallback(ModCallbacks.MC_POST_GAME_STARTED, function(_, continued)
     lastStart = {continued = continued, seed = Game():GetSeeds():GetStartSeed()}

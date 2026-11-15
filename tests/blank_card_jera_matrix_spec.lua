@@ -16,9 +16,10 @@ InputHook={IS_ACTION_PRESSED=0,IS_ACTION_TRIGGERED=1,GET_ACTION_VALUE=2}
 local vectorMeta={__add=function(a,b) return {x=(a.x or 0)+b.x,y=(a.y or 0)+b.y} end}
 Vector=setmetatable({Zero={}}, {__call=function(_,x,y) return setmetatable({x=x,y=y},vectorMeta) end})
 GetPtrHash=function(value) return value end
-local function check(mode,resetBlue)
+local function check(mode,resetBlue,startEmpty)
     local handlers,events,entities={}, {}, {}
     local frame,charge,maximum=0,4,4
+    if startEmpty then charge=0 end
     local inventory={[286]=1}
     local enabled=mode~='off'
     local function emit(id,...)
@@ -119,6 +120,8 @@ local function check(mode,resetBlue)
                 end
                 if resetBlue then charge=math.min(charge,maximum) end -- Inject the old reserve-loss fault.
                 charge=math.max(0,charge-spent)
+                assert(input.fn(input.mod,p,1,5)==false and input.fn(input.mod,p,0,5)==false
+                    and input.fn(input.mod,p,2,5)==0, 'release every input hook after the first native use in that frame')
             end
         end
         emit(7,p)
@@ -130,11 +133,11 @@ local function check(mode,resetBlue)
         if result.status~='running' then break end
     end
     if resetBlue then assert(result.status=='error' and result.message:find('stored battery charge'))
-    else assert(result.status=='complete' and #result.cases==(mode=='battery-smoke' and 2 or 3),result.message) end
+    else assert(result.status=='complete' and #result.cases==3,result.message) end
     assert(not p:HasCollectible(63) and not p:HasCollectible(356), 'test-owned passives must be removed on success/error')
     assert(#(handlers[3] or {})==0 and #(handlers[4] or {})==0)
     assert(#handlers[1]==1 and #handlers[5]==1 and #handlers[7]==1 and #handlers[6]==1,
         'production callbacks and passive start observation survive')
 end
-check('battery-smoke',false);check('battery-smoke',true);check('car-battery',false);check('off',false)
+check('battery-smoke',false);check('battery-smoke',false,true);check('battery-smoke',true);check('car-battery',false);check('off',false)
 print('Matrix protocol passed: input scoping, stored-charge fault detection, Car Battery control, disabled control and exact cleanup; native proof remains separate')
