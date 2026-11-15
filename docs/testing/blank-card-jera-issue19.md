@@ -14,8 +14,9 @@ to four. Do not set four on card selection or grant free charge. The original
 “four charges per activation” criterion is superseded. The first Jera use after
 Magician may consume the inherited two-charge cost; the subsequent Jera use
 should cost four. Four ordinary room clears after Jera, battery and other native
-consumable interactions, item swaps, Continue, disabled behavior, and co-op
-remain required checks.
+consumable interactions, item swaps, a cold Continue, disabled behavior and the charge display
+remain required checks. The two-player isolation and current-On/next-run-Off
+checks have since passed in the capture below.
 
 ### Reserve-loss defect and pending correction
 
@@ -433,14 +434,16 @@ Battery mode recorded below; other acceptance cases remain pending.
   `car-battery` passed their recorded cases. The native On matrix passed five
   cases before the room-clear exact-charge assertion stopped it. Native v4
   subsequently passed the four-room recharge case; its following automatic
-  co-op command crashed the game. Co-op, next-run Off and remaining acceptance
-  checks stay pending. The earlier v2 repeated-use error
+  co-op command crashed the game. The separate safe v5 co-op and current-On/
+  next-run-Off checks have now passed with owner-joined players. A cold Continue,
+  disabled behavior, charge display and remaining acceptance checks stay pending.
+  The earlier v2 repeated-use error
   is historical, not a v3 failure. These fixtures use
   native input, repeated use and real pickups; they do not write charge or
   room-clear flags. Room changes and NPC kills cannot be undone inside the
   disposable run. Schoolbag, D6 or a second actor may remain for profile
-  restoration; if `addplayer 0 1` creates no second Isaac, co-op is pending. The
-  battery-smoke and full matrix require their documented prepared, empty-room
+  restoration; co-op now requires owner-joined actors and never creates a
+  player automatically. The battery-smoke and full matrix require their documented prepared, empty-room
   conditions.
 
 ## Candidate v2 staging record
@@ -694,6 +697,35 @@ mod files against the before-run manifest SHA-256
 manifest recorded 2, 3 and 36 expected directories respectively, but directory
 equality was not checked. The original 21-file pack archive exists. No crash
 reproduction was performed.
+
+
+### Safe v5 co-op and next-run Off — native pass
+
+After the guarded revision-5 helper installation, the owner started a fresh
+Normal Isaac run on slot 1 with keyboard player 1, completed the On smoke, then
+joined player 2 with one controller from the first room's native character
+selection. The owner verified player 1's Blank Card had four charge bars before
+running `co-op`; this uses one keyboard and one controller, not two controllers.
+The capture starts with `continued=false`, difficulty 0, seed `2633492662`, and
+revision-5 fixture. The On smoke completed first at frame 72. At co-op start
+(frame 631), the room was shape 1 on stage 1 and two Isaac actors were present:
+player 1 seed `413018421` (keyboard) and player 2 seed `2465916929` (controller).
+
+The native co-op isolation case passed at frame 824. Player 2's Magician and
+Jera use, charge refill and effect handling did not consume player 1's Jera or
+Blank Card charge; both actors ended with one Blank Card (286), Jera (33), base
+charge 4, blue charge 0, and neither Battery passive. The `next_run_off_keeps_current_on`
+case also passed: current-run setting remained enabled and next-run setting was
+disabled, without granting charge. The matrix completed with two cases passed.
+The owner also observed player 1's four charge bars before the run. This is
+native evidence for two-player isolation and the current-On/next-run-Off MCM
+path; it does not validate a cold Continue or a fresh disabled run.
+
+- Capture: `session/capture-bb2d-coop-20261115T215017Z`; stable log 43,116 bytes,
+  SHA-256 `989530809954c15c618e9aca818d87aa7442760f5c4c84d722019012246f0ff7`.
+- Parsed records: 58, SHA-256
+  `6e8856562b3cf90c384fd705be220fd406fbacacf2f732a0752e9dc8d85c2e8f`, zero
+  malformed records and no collector errors.
 
 ### Independent review checkpoint
 
