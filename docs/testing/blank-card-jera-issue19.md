@@ -474,6 +474,25 @@ The On-smoke fixture is installed as
 Isaac process was absent. Installation and byte audit do not establish gameplay
 behavior; corrected-module smoke and all other v2 engine cases remain pending.
 
+### Candidate v3 cold-update artifacts — staging verified, deployment pending
+
+- Runtime manifest: [`blank-card-jera-runtime-v3.json`](evidence/blank-card-jera-runtime-v3.json),
+  pinned to source `bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f`, 22 runtime files,
+  SHA-256 `4e4e49ed5bf0bef57c5dee9e8393d0b7b95d432bd62e182a306876f4d51a6c4d`.
+  The only runtime difference from v2 is `Mods/Blank Card Jera Unnerf/main.lua`
+  (3,421 bytes; SHA-256
+  `6beb2862bad6a5feb083b7d9b4fbabc017ee936bf054c53b9a9ab166229b2025`). The
+  maintained stager verified all 22 files against pinned Git-object bytes.
+- Cold-update recipe: [`blank-card-jera-update-v3.py`](evidence/blank-card-jera-update-v3.py),
+  SHA-256 `b30bd2a370e9172295428d4e66b22ed408803f444860c9a312872bf2222682ba`.
+  It reuses the frozen installer inventory and swap, archives the v2 candidate
+  as `candidate-used-0e1c6e4215d6` and the full current helper generation as
+  `diagnostic-generation-v2`, then updates only the autoloaded helper's
+  `matrix.lua` to the validated revision-3 bytes. Synthetic success and injected
+  helper-write-failure rollback both passed while preserving failed generations,
+  the original pack and protected mods. The recipe does not change profile or
+  game data. Deployment and native Car Battery retest remain pending.
+
 ## Session and setup
 
 The owner explicitly handed this issue session to the validation thread for

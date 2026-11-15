@@ -1,0 +1,93 @@
+{
+  "source_commit": "bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f",
+  "files": {
+    "LICENSE": {
+      "size": 1068,
+      "sha256": "23ca1dc3ddbbd7ce6357da69d1577ec583cfb1db69d0206c5595ebe121b3ec4c"
+    },
+    "Mods/Blank Card Jera Unnerf/main.lua": {
+      "size": 3421,
+      "sha256": "6beb2862bad6a5feb083b7d9b4fbabc017ee936bf054c53b9a9ab166229b2025"
+    },
+    "Mods/Humbling Bundle Unnerf/main.lua": {
+      "size": 1633,
+      "sha256": "c88658cda4b1adcc53a9c88d7a109fc93cea0114fb9519d7b32e7dbd9b2ffb95"
+    },
+    "Mods/Magic Mushroom Unnerf/main.lua": {
+      "size": 95,
+      "sha256": "d3707e6c8e59053b72d992431ac7ad4364a3d140c6ddea4f0e38128d09fa24f0"
+    },
+    "Mods/MawOfVoidUnnerf/main.lua": {
+      "size": 1364,
+      "sha256": "a46494eb912bb79a3f6fb38c0f0ff85c99740e50b7db3d0bf67fd7bdea5cc018"
+    },
+    "Mods/Orbital Unnerf/main.lua": {
+      "size": 912,
+      "sha256": "479d2408734dbbbe73902fa7057883d0220f3db217d5214d1a949a4e736de14c"
+    },
+    "Mods/Pool Rules/main.lua": {
+      "size": 5308,
+      "sha256": "f04d9d591398825a41aa5273ce5fafb3b9b77b7feede35eb593d2845d76581c1"
+    },
+    "Mods/Sack Head Unnerf/main.lua": {
+      "size": 1994,
+      "sha256": "3b01027dd90f219014dcf414a647b6a18002087f0b172dfe3499a1a3b2870fe5"
+    },
+    "Mods/Soul Heart Generator Unnerf/bluefireunnerf.lua": {
+      "size": 776,
+      "sha256": "18e17598e9ae3653ba3c21bb7358cb000d6d9840907ef3938827021d2eb97330"
+    },
+    "Mods/Soul Heart Generator Unnerf/darkbumunnerf.lua": {
+      "size": 1253,
+      "sha256": "447e7aacf3eb5bbbede2be534197d6bc69ab40fea3da97474af60c34a9c44700"
+    },
+    "Mods/Soul Heart Generator Unnerf/main.lua": {
+      "size": 2322,
+      "sha256": "58b16e66535385bcabd6672984b1ddc6da1d213f8f0ff477318f6f5f7fd8f3e2"
+    },
+    "Mods/Soul Heart Generator Unnerf/nailunnerf.lua": {
+      "size": 315,
+      "sha256": "c420d13a1b7cefb56e5529d5e818dae3a00ab5a7eb270bb67a4ad656f3c4c6e0"
+    },
+    "Mods/Soul Heart Generator Unnerf/relicunnerf.lua": {
+      "size": 766,
+      "sha256": "e952b692e93dad9d11ca5f98fd9cc5de8cb05458a0d2b79b8abd20087471e73b"
+    },
+    "Mods/Soul Heart Generator Unnerf/satanicbibleunnerf.lua": {
+      "size": 530,
+      "sha256": "69cfdede4e27c3242ba2b43c2c2c20024954b24fce8b3eedadbeaa3f59f56068"
+    },
+    "Mods/Stomp Immunity Unnerf/main.lua": {
+      "size": 1388,
+      "sha256": "4193578c378c3eb5bdbc2006f6371577d3c1c61b68cab2d37fca01668aaac2e3"
+    },
+    "Mods/Void Choice Unnerf/main.lua": {
+      "size": 3197,
+      "sha256": "69a2562786f15642030df823016bf0d317eaa7e3adfe88aa895017300575a44e"
+    },
+    "config.lua": {
+      "size": 4319,
+      "sha256": "93e8d19bdea8d14e35723f0709bab08ac943055d4a29b480c22c7ae6b1943e5a"
+    },
+    "content/itempools.xml": {
+      "size": 1157,
+      "sha256": "6bf1dccf8e4f4f066465d50fe9e5af905a73ba7e62c7fa2588e23d595f6f9a02"
+    },
+    "content/items.xml": {
+      "size": 514,
+      "sha256": "36163d0f433a4643829ed46aacd23a9805ab7984368572f763f3ed6d8061e433"
+    },
+    "docs/CHANGELOG.md": {
+      "size": 4400,
+      "sha256": "90e2de3f7854edd435ded4b766ab2bd16915296da1d76673dbceb57c9e4d3bf9"
+    },
+    "main.lua": {
+      "size": 481,
+      "sha256": "d1e81e2cdfd1e67320c966f3e86b4d10d93282ce4670b952f2bcbfedce813404"
+    },
+    "metadata.xml": {
+      "size": 984,
+      "sha256": "5cad345127868dff6d084639dc7c747c552804ca02e0d91f8670924c71bacee2"
+    }
+  }
+}
