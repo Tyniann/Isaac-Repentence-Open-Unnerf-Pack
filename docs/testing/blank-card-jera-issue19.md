@@ -17,6 +17,41 @@ should cost four. Four ordinary room clears after Jera, battery and other native
 consumable interactions, item swaps, Continue, disabled behavior, and co-op
 remain required checks.
 
+### Reserve-loss defect and pending correction
+
+The first native `battery-smoke` exposed a defect in the candidate implementation:
+with Blank Card at 4 and blue reserve at 4, the Jera use callback reinserted
+Blank Card before native discharge. The native `card_use` still showed 4+4,
+but the subsequent item-use state was 4+0 and the sequence ended at 0+0. The
+matrix captured its failed reserve assertion as JSON; an empty collector
+`errors[]` is not a pass.
+
+- Failed-candidate source: `4563fd522e3086817c21fc89f1677f63262fc53c`;
+  module SHA-256 `c138df684c4ad5e6102522bcb089472bd2b1f10ff82722861bff99174057beff`.
+- Capture: `capture-battery-smoke-20261115T161856Z`; seed `2358805276`, actor
+  `2488244009`, fixture frames 352–416. Initial real battery
+  `2352474404` established 4+4 before the use at frame 398.
+- Stable log: 30,200 bytes, SHA-256
+  `ba27264c39847bc86e237b885ab961c72502cbfa137c76a73041179900b96e71`;
+  32 records, SHA-256
+  `6e8b49201f97ae75ccb25f9c95df2f9480f76ca81f046e3117cb3740e678d4d6`, zero
+  malformed records. Starting pickup count was zero, confirming prior deferred
+  pickup cleanup had completed.
+
+The current source queues the cost-four metadata update by player pointer,
+run seed and slot, then applies it on `MC_POST_PLAYER_UPDATE` only when blue
+reserve is zero. Later non-Jera use cancels the pending slot; changed active
+items or actor seed are skipped; run start and exit reset pending state. It
+does not reinsert a charged bar before native discharge. Callback and matrix
+protocol specs pass locally, but this correction has not been tested in the
+game. The next engine entry is the passive
+[`blank-card-jera-test-main.lua`](../../tools/validation/blank-card-jera-test-main.lua),
+which loads the batch and matrix definitions without starting a fixture. Its
+`battery-smoke` mode must establish Magician's native two-charge bar plus
+reserve, retain that reserve through Jera, and demonstrate four-charge capacity
+through real battery refills and two following Jera uses. No engine pass is
+claimed for the correction.
+
 ## Observer and contract check
 
 - Observer: [`blank-card-jera-probe.lua`](../../tools/validation/blank-card-jera-probe.lua),
@@ -220,7 +255,7 @@ preserves the staging record. Cleanup and profile restoration remain pending.
   current run stays On. `off` is the native control; `co-op` retries that bounded
   co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
   the passive observer to confirm a real continued run.
-- Matrix engine runs have not started. It uses native input and pickups and does
+- Remaining matrix engine runs are pending. It uses native input and pickups and does
   not write charge or room-clear flags. Room changes/NPC kills cannot be undone
   inside the disposable run. Schoolbag, D6, or a second actor may remain for
   profile restoration; if the bounded `addplayer 0 1` experiment creates no

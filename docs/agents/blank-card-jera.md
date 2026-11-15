@@ -21,9 +21,15 @@ that Blank Card is the active item in the reported, nonnegative slot. It uses
 Jera's effect without consuming the held rune or playing its announcement.
 Afterward, if Blank Card remains in that slot, `AddCollectible` updates the
 next-use cost to four while passing through the current charge and ownership.
-The callback returns nil, leaving native discharge, animation and battery
-handling with the game. It does not write charge when the held card changes,
-change global Jera or Clear Rune behavior, or share state between players.
+This update is queued by player pointer, run seed and slot, then applied from
+`MC_POST_PLAYER_UPDATE` only after native use has discharged and the blue
+battery reserve is zero. Reinserting the active inside `MC_USE_ITEM` cleared
+the reserve before native discharge in the failed engine capture. A later
+non-Jera use cancels the queued slot update; an active swap or actor seed change
+is skipped. New-run and game-exit callbacks clear pending state. The callback
+returns nil, leaving native discharge, animation and battery handling with the
+game. It does not write charge when the held card changes, change global Jera
+or Clear Rune behavior, or share state between players.
 
 The active-slot check prevents an item mimic from replacing a different active
 item. Other cards and consumables, the feature-Off path and charge outside this
@@ -78,6 +84,11 @@ the callback contract.
   controller and its mock protocol check. The test covers input scoping,
   stored-battery-charge fault detection, the disabled control, cleanup and
   preserving the passive Continue observer; it is not game evidence.
+- `tools/validation/blank-card-jera-test-main.lua`: passive diagnostic-mod
+  entry that includes the batch and matrix definitions without starting either
+  fixture. The next `battery-smoke` run checks Magician's two-charge bar plus
+  reserve, Jera's retained reserve, and four-charge capacity on subsequent
+  native battery refills. A real run must use the ledger's prepared conditions.
 - [`../testing/evidence/blank-card-jera-install.py`](../testing/evidence/blank-card-jera-install.py):
   frozen, session-pinned one-time swap recipe. It verifies the saved backup,
   source manifest, executable, protected mods and closed-game condition, then
@@ -125,8 +136,10 @@ continued flag. Co-op can report pending if no second actor appears. It never
 writes charge or room-clear flags; it uses native input, pickups, consumables,
 room changes and NPC deaths. Room/map changes cannot be undone inside that
 disposable run, and Schoolbag/D6 or a created second actor may remain for profile
-restoration. The matrix and its mock protocol have passed local checks, but none
-of these matrix engine cases have run yet.
+restoration. The matrix and its mock protocol have passed local checks. The
+first battery-smoke engine run found the reserve-loss defect described in the
+ledger; the corrected battery-smoke and remaining matrix engine cases are
+pending.
 
 See the [issue-specific ledger](../testing/blank-card-jera-issue19.md) for
 session provenance, hashes, evidence and remaining acceptance work.

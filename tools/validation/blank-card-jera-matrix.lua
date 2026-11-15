@@ -106,11 +106,41 @@ local function batterySmoke()
     assert(total(actor) == 4, "Jera activation lost or granted stored battery charge")
     activate("second_overcharged_jera", BC, 1)
     assert(total(actor) == 0, "Second activation did not spend the remaining four charges")
+    passed("stored_battery_charge", snapshot(actor))
+    -- Native Magician establishes a two-charge bar with a two-charge reserve.
+    -- The first Jera use must retain those spare two charges while changing
+    -- the next capacity to four; the following real battery proves that cost.
+    refill("magician_setup_first")
+    if total(actor) < 8 then refill("magician_setup_second") end
+    actor:SetCard(0, Card.CARD_MAGICIAN)
+    wait(3)
+    activate("overcharged_magician", BC, 0)
+    for index = 1, 3 do
+        if total(actor) == 0 then break end
+        activate("magician_drain_" .. index, BC, 0)
+    end
+    assert(total(actor) == 0, "Native Magician control did not discharge")
+    refill("two_charge_reserve_setup")
+    assert(actor:GetActiveCharge(0) == 2 and actor:GetBatteryCharge(0) == 2,
+        "Native Magician did not establish the two-charge reserve control")
+    actor:SetCard(0, Card.RUNE_JERA)
+    wait(3)
+    activate("jera_with_two_charge_reserve", BC, 1)
+    assert(total(actor) == 2, "Cost transition lost or granted the two-charge reserve")
+    refill("after_two_charge_jera")
+    assert(actor:GetActiveCharge(0) == 4, "Post-use Jera capacity did not become four")
+    if total(actor) < 8 then refill("finish_transition_overcharge") end
+    assert(actor:GetActiveCharge(0) == 4 and actor:GetBatteryCharge(0) == 4,
+        "Post-use Jera capacity did not become four with The Battery")
+    activate("transitioned_first_jera", BC, 1)
+    assert(total(actor) == 4)
+    activate("transitioned_second_jera", BC, 1)
+    assert(total(actor) == 0)
     actor:RemoveCollectible(CollectibleType.COLLECTIBLE_BATTERY)
     batteryOwner = nil
     refill("after_overcharge")
     assert(total(actor) == 4 and actor:GetCollectibleNum(BC, true) == 1)
-    passed("stored_battery_charge", snapshot(actor))
+    passed("stored_charge_across_cost_transition", snapshot(actor))
 end
 
 local function chain()

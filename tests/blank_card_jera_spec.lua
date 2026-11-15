@@ -1,55 +1,84 @@
--- Callback/configuration contract only; native charge/duplication use the ledger.
-ModCallbacks = {MC_USE_ITEM=1}
+-- Callback/state contract only; native charge and duplication use the ledger.
+ModCallbacks = {MC_USE_ITEM=1,MC_POST_PLAYER_UPDATE=2,MC_PRE_GAME_EXIT=3}
 CollectibleType = {COLLECTIBLE_BLANK_CARD=286}
 Card = {RUNE_JERA=33}
-UseFlag = {USE_MIMIC=128, USE_NOANNOUNCER=256}
-local enabled, handler, registrations = true, nil, 0
-openUnnerfPack = {Config={IsEnabled=function(key) assert(key=='blankCardJera'); return enabled end}}
+UseFlag = {USE_MIMIC=128,USE_NOANNOUNCER=256}
+GetPtrHash = function(value) return value end
+local enabled, runStart = true, nil
+local handlers = {}
+openUnnerfPack = {Config={
+    IsEnabled=function(key) assert(key=='blankCardJera');return enabled end,
+    AddRunStartListener=function(fn) runStart=fn end}}
 function RegisterMod()
     return {AddCallback=function(_,id,fn,filter)
-        assert(id==1 and filter==286)
-        registrations=registrations+1; handler=fn
+        assert((id==1 and filter==286) or (id~=1 and filter==nil))
+        assert(not handlers[id]);handlers[id]=fn
     end}
 end
 dofile('Mods/Blank Card Jera Unnerf/main.lua')
-assert(registrations==1)
-local function player(card,slot,charge)
-    local p={card=card,slot=slot,item=286,charge=charge,calls={}}
-    function p:GetCard(index) assert(index==0); return self.card end
-    function p:GetActiveItem(index) assert(index==self.slot); return self.item end
-    function p:GetActiveCharge(index) assert(index==self.slot); return self.charge end
+assert(handlers[1] and handlers[2] and handlers[3] and runStart)
+local serial=0
+local function player(card,slot,charge,battery)
+    serial=serial+1
+    local p={InitSeed=serial,card=card,slot=slot,item=286,charge=charge,battery=battery or 0,calls={}}
+    function p:GetCard(index) assert(index==0);return self.card end
+    function p:GetActiveItem(index) assert(index==self.slot);return self.item end
+    function p:GetActiveCharge(index) assert(index==self.slot);return self.charge end
+    function p:GetBatteryCharge(index) assert(index==self.slot);return self.battery end
     function p:UseCard(value,flags)
         assert(value==33 and flags==384)
         self.calls[#self.calls+1]='jera'
         if self.swapDuringEffect then self.item=105 end
     end
     function p:AddCollectible(id,value,first,index,varData)
-        assert(self.calls[#self.calls]=='jera', 'cost changes only after native Jera dispatch')
+        assert(self.calls[1]=='jera' and self.battery==0)
         assert(id==286 and value==self.charge and first==false and index==self.slot and varData==4)
         self.calls[#self.calls+1]='next-cost-4'
     end
     return p
 end
+local function use(p) return handlers[1](nil,286,{},p,4,p.slot,0) end
+local function update(p) return handlers[2](nil,p) end
 for slot=0,3 do
-    for _,charge in ipairs({0,2,4}) do
+    for _,charge in ipairs({0,2,4,6}) do
         local p=player(33,slot,charge)
-        assert(handler(nil,286,{},p,4,slot,0)==nil)
-        assert(p.calls[1]=='jera' and p.calls[2]=='next-cost-4' and #p.calls==2)
+        assert(use(p)==nil and #p.calls==1)
         assert(p.charge==charge and p.card==33)
+        p.charge=0 -- Native discharge, outside the product callback.
+        update(p)
+        assert(#p.calls==(charge==4 and 1 or 2))
+        assert(p.charge==0)
+        update(p)
+        assert(#p.calls==(charge==4 and 1 or 2), 'apply at most once')
     end
 end
+local p=player(33,0,4,4)
+use(p);update(p)
+assert(p.charge==4 and p.battery==4 and #p.calls==1)
+p.battery=0 -- Engine spends one bar, leaving the other four charges.
+update(p)
+assert(p.charge==4 and #p.calls==1)
+p=player(33,0,2,2)
+use(p);update(p)
+assert(#p.calls==1 and p.battery==2)
+p.battery=0 -- Engine spends two and retains two in the normal bar.
+update(p)
+assert(#p.calls==2 and p.charge==2)
 enabled=false
-assert(handler(nil,286,{},nil,4,0,0)==nil, 'disabled callback must not inspect or mutate player')
+assert(handlers[1](nil,286,{},nil,4,0,0)==nil)
 enabled=true
-local other=player(2,0,2)
-assert(handler(nil,286,{},other,4,0,0)==nil and #other.calls==0)
-other=player(33,0,4); other.item=477
-assert(handler(nil,286,{},other,64,0,0)==nil and #other.calls==0, 'Void/mimics must retain their active item')
-other=player(33,0,4)
-assert(handler(nil,286,{},other,0,-1,0)==nil and #other.calls==0)
-other=player(33,0,4); other.swapDuringEffect=true
-assert(handler(nil,286,{},other,4,0,0)==nil and #other.calls==1 and other.item==105)
-local first,second=player(33,0,2),player(2,0,2)
-handler(nil,286,{},first,4,0,0)
-assert(#second.calls==0 and second.charge==2 and second.item==286)
-print('Blank Card/Jera callback contracts passed; native gameplay validation remains separate')
+p=player(2,0,2);use(p);update(p);assert(#p.calls==0)
+p=player(33,0,4);p.item=477;use(p);update(p);assert(#p.calls==0)
+p=player(33,0,4)
+assert(handlers[1](nil,286,{},p,0,-1,0)==nil and #p.calls==0)
+p=player(33,0,2);p.swapDuringEffect=true;use(p);update(p)
+assert(#p.calls==1 and p.item==105)
+p=player(33,0,2);use(p);p.item=105;update(p);assert(#p.calls==1)
+p=player(33,0,2);use(p);p.card=2;use(p);update(p);assert(#p.calls==1,'later card use cancels pending cost')
+p=player(33,0,2);use(p);p.InitSeed=p.InitSeed+100;update(p);assert(#p.calls==1)
+p=player(33,0,2);use(p);runStart();update(p);assert(#p.calls==1)
+p=player(33,0,2);use(p);handlers[3]();update(p);assert(#p.calls==1)
+local first,second=player(33,0,2),player(33,0,2)
+use(first);update(second);assert(#second.calls==0)
+update(first);assert(#first.calls==2)
+print('Blank Card/Jera contracts passed: native timing, reserve protection, slot/player isolation and pending-state cleanup')

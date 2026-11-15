@@ -2,7 +2,7 @@
 -- to lose overcharge, proving that the fixture rejects that fault.
 local json = require('dkjson')
 package.preload.json=function() return {encode=json.encode,decode=json.decode} end
-ModCallbacks={MC_USE_ITEM=1,MC_USE_CARD=2,MC_INPUT_ACTION=3,MC_POST_UPDATE=4,MC_PRE_GAME_EXIT=5,MC_POST_GAME_STARTED=6}
+ModCallbacks={MC_USE_ITEM=1,MC_USE_CARD=2,MC_INPUT_ACTION=3,MC_POST_UPDATE=4,MC_PRE_GAME_EXIT=5,MC_POST_GAME_STARTED=6,MC_POST_PLAYER_UPDATE=7}
 CollectibleType={COLLECTIBLE_BLANK_CARD=286,COLLECTIBLE_BATTERY=63,COLLECTIBLE_CAR_BATTERY=356,COLLECTIBLE_SCHOOLBAG=534}
 Card={RUNE_JERA=33,CARD_MAGICIAN=2,RUNE_DAGAZ=37}
 UseFlag={USE_MIMIC=128,USE_NOANNOUNCER=256}
@@ -57,7 +57,6 @@ local function check(mode,resetBlue)
         if id==286 then
             if inventory[id] then
                 assert(slot==0 and varData==4)
-                if resetBlue then charge=value end
             else inventory[id]=1;self.item=id;charge=value end
             maximum=4
         else assert(id==63);inventory[id]=1 end
@@ -88,7 +87,8 @@ local function check(mode,resetBlue)
             function e:Remove() self.alive=false end
             entities[#entities+1]=e;return e
         end}
-    openUnnerfPack={Config={IsEnabled=function(key) assert(key=='blankCardJera');return enabled end}}
+    openUnnerfPack={Config={IsEnabled=function(key) assert(key=='blankCardJera');return enabled end,
+        AddRunStartListener=function() end}}
     dofile('Mods/Blank Card Jera Unnerf/main.lua')
     local matrix=dofile('tools/validation/blank-card-jera-matrix.lua')
     assert(not handlers[3] and not handlers[4], 'load must be passive')
@@ -106,9 +106,11 @@ local function check(mode,resetBlue)
                 local spent=maximum
                 if p.card==2 then emit(2,2,p,384);maximum=2 end
                 emit(1,p.item,{},p,4,0,0)
+                if resetBlue then charge=math.min(charge,maximum) end -- Inject the old reserve-loss fault.
                 charge=math.max(0,charge-spent)
             end
         end
+        emit(7,p)
         for _,e in ipairs(entities) do
             local capacity=maximum*(p:HasCollectible(63) and 2 or 1)
             if e.alive and e.Position==p.Position and charge<capacity then e.alive=false;charge=math.min(capacity,charge+6) end
@@ -117,10 +119,11 @@ local function check(mode,resetBlue)
         if result.status~='running' then break end
     end
     if resetBlue then assert(result.status=='error' and result.message:find('stored battery charge'))
-    else assert(result.status=='complete' and #result.cases==(enabled and 1 or 3)) end
+    else assert(result.status=='complete' and #result.cases==(enabled and 2 or 3)) end
     assert(not p:HasCollectible(63), 'test-owned passive must be removed on success/error')
-    assert(#(handlers[3] or {})==0 and #(handlers[4] or {})==0 and #(handlers[5] or {})==0)
-    assert(#handlers[1]==1 and #handlers[6]==1, 'production and passive start observation survive')
+    assert(#(handlers[3] or {})==0 and #(handlers[4] or {})==0)
+    assert(#handlers[1]==1 and #handlers[5]==1 and #handlers[7]==1 and #handlers[6]==1,
+        'production callbacks and passive start observation survive')
 end
 check('battery-smoke',false);check('battery-smoke',true);check('off',false)
 print('Matrix protocol passed: input scoping, stored-charge fault detection, disabled control and exact cleanup; native proof remains separate')
