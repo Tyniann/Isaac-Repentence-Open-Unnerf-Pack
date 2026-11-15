@@ -12,6 +12,7 @@ local options = {
     {"magicMushroom", "Magic Mushroom pools"},
     {"voidChoiceAbsorption", "Void choice absorption"},
     {"sackHead", "Sack Head"},
+    {"blankCardJera", "Blank Card + Jera"},
 }
 
 local runStartListeners = {}

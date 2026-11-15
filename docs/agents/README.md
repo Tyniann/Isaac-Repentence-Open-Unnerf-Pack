@@ -33,6 +33,8 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
   contracts, configuration and saved-state behavior.
 - [Sack Head](sack-head.md): issue #20's pool adjustment and reward-chain
   implementation, disposable native probe, and bounded native evidence.
+- [Blank Card + Jera](blank-card-jera.md): native post-use callback, next-cost
+  update and pending production validation for issue #19.
 - [Void choice absorption](void-choice-absorption.md): native pre-use unlinking,
   special-room exclusions, temporary state and disposable batch validation.
 - [Configuration validation](../configuration-validation.md): MCM integration
@@ -57,5 +59,8 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 - [Native Void edge-case results](../testing/void-choice-edge-cases-1.9.7.17.md):
   Mom's original photo pair and untouched naturally hidden passive choices,
   native Off/unlinked/On comparisons and verified session cleanup.
+- [Blank Card and Jera validation](../testing/blank-card-jera-issue19.md):
+  issue #19 native feasibility observations, production-validation limits and
+  disposable-session handoff.
 - [Installed-game API and balance evidence](../research/repentance-plus-installed-evidence.md)
 - [Stomp-immunity diagnosis and validation](../research/issue-2-stomp-validation.txt)

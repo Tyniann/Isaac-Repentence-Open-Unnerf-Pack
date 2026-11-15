@@ -7,7 +7,7 @@ version. [Return to the project README](../../README.md).
 
 ## Supported adjustments
 
-All ten gameplay adjustments default to **On**. Each has its own saved toggle
+All eleven gameplay adjustments default to **On**. Each has its own saved toggle
 under **Open Unnerf Pack 2 → Unnerfs** in optional Mod Config Menu Pure. Turn any
 off for native behavior in a new run; **Continue retains the run's choices**.
 See [configuration](configuration.md) for menu names, persistence and fallback.
@@ -24,6 +24,7 @@ See [configuration](configuration.md) for menu names, persistence and fallback.
 | [Magic Mushroom pools](magic-mushroom.md) | Restore normal Boss availability and full normal Treasure weight | On | `magicMushroom` |
 | [Void choice absorption](void.md) | Absorb eligible items from ordinary linked choice groups while retaining the four-room charge | On | `voidChoiceAbsorption` |
 | [Sack Head](sack-head.md) | Restore its historical Shop-pool entry and add a chance for eligible rewards to become another sack | On | `sackHead` |
+| [Blank Card + Jera](blank-card-jera.md) | Let Jera set Blank Card's next activation cost to four while retaining native post-use timing | On | `blankCardJera` |
 
 Dark Bum, The Relic and blue fires share a source folder, but are independent
 features with separate toggles and pages. Magic Mushroom's independent pool
@@ -52,7 +53,7 @@ supported working features. Wishlist requests are not included in this inventory
 This inventory was checked against [registered settings](../../config.lua), the
 [root loader](../../main.lua), and all modules it loads, including the
 [soul-heart feature loader](../../Mods/Soul%20Heart%20Generator%20Unnerf/main.lua).
-The ten keys above each map to one feature page; neither disabled
+The eleven keys above each map to one feature page; neither disabled
 helper has a registered setting.
 
 Compatibility (#1) and optional configuration (#3) are resolved for their bounded
@@ -81,6 +82,12 @@ isolated pools only; no Greed reward-chain or Greedier run was performed. See
 the [feature page](sack-head.md) and [technical validation
 reference](../agents/sack-head.md) for evidence, limits and the linked issue
 ledger.
+
+Blank Card + Jera's capacity mechanism was checked in a separate native
+feasibility probe, but the production callback and four-room recharge,
+consumable, item-slot, Continue, disabled and co-op cases remain pending. See the
+[feature page](blank-card-jera.md), [technical reference](../agents/blank-card-jera.md)
+and [issue #19 validation ledger](../testing/blank-card-jera-issue19.md).
 
 The pages distinguish source behavior from observed results. They do not claim
 exact total drop probabilities, every character or reward source, all orbital

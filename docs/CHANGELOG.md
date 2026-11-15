@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Add Blank Card + Jera, setting the next Blank Card activation cost to four
+  after Jera while retaining native post-use charge timing (#19).
 - Restore Sack Head's historical Shop-pool entry and let eligible sack rewards
   become further sacks, with an independent toggle (#20).
 

@@ -14,9 +14,12 @@ local function enums(names)
     for i, name in ipairs(names) do result[name] = i end
     return result
 end
-EntityType = {ENTITY_PLAYER=1, ENTITY_FAMILIAR=3, ENTITY_PICKUP=5, ENTITY_FIREPLACE=33}
-CollectibleType = enums({'COLLECTIBLE_MAW_OF_THE_VOID','COLLECTIBLE_HUMBLEING_BUNDLE', 'COLLECTIBLE_PYROMANIAC','COLLECTIBLE_HOST_HAT'})
-PickupVariant = enums({'PICKUP_HEART','PICKUP_COIN','PICKUP_KEY','PICKUP_BOMB'})
+EntityType = {ENTITY_PLAYER=1, ENTITY_BOMB=4, ENTITY_FAMILIAR=3, ENTITY_PICKUP=5, ENTITY_FIREPLACE=33}
+CollectibleType = enums({'COLLECTIBLE_MAW_OF_THE_VOID','COLLECTIBLE_HUMBLEING_BUNDLE', 'COLLECTIBLE_PYROMANIAC','COLLECTIBLE_HOST_HAT','COLLECTIBLE_BLANK_CARD'})
+CollectibleType.COLLECTIBLE_BLANK_CARD = 286
+PickupVariant = enums({'PICKUP_HEART','PICKUP_COIN','PICKUP_KEY','PICKUP_BOMB',
+    'PICKUP_TAROTCARD','PICKUP_LIL_BATTERY','PICKUP_GRAB_BAG'})
+BombVariant = enums({'BOMB_TROLL','BOMB_SUPERTROLL','BOMB_GOLDENTROLL'})
 HeartSubType = enums({'HEART_FULL','HEART_DOUBLEPACK','HEART_SOUL'})
 CoinSubType = enums({'COIN_PENNY','COIN_DOUBLEPACK'})
 KeySubType = enums({'KEY_NORMAL','KEY_DOUBLEPACK'})
@@ -26,14 +29,18 @@ PlayerType = enums({'PLAYER_THELOST','PLAYER_KEEPER','PLAYER_THELOST_B','PLAYER_
 CacheFlag = {CACHE_DAMAGE=1}
 DamageFlag = {DAMAGE_EXPLOSION=4, DAMAGE_CRUSH=8}
 Difficulty = {DIFFICULTY_HARD=1, DIFFICULTY_NORMAL=0}
+Card = {RUNE_JERA=33}
+UseFlag = {USE_MIMIC=128, USE_NOANNOUNCER=256}
 local players, spawned = {}, 0
 local game = {Difficulty=1, GetNumPlayers=function() return #players end,
     GetFrameCount=function() return 0 end,
     GetItemPool=function() return {RemoveCollectible=function() end} end,
     GetSeeds=function() return {GetStartSeed=function() return 12345 end} end}
 function Game() return game end
+local helpers = {['OUP Magic Mushroom Pool Entry']=1001,
+    ['OUP Sack Head Pool Entry']=1002}
 Isaac = {GetPlayer=function(i) assert(i >= 0 and i < #players); return players[i+1] end,
-    GetItemIdByName=function() return 1001 end,
+    GetItemIdByName=function(name) return assert(helpers[name], 'unexpected pool helper: ' .. name) end,
     GetItemConfig=function() return {GetCollectible=function() return {Quality=4,Tags=7,Type=1} end} end,
     Spawn=function() spawned = spawned + 1 end}
 function Vector(x,y) return {X=x,Y=y} end
