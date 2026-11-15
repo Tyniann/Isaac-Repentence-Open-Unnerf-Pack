@@ -81,8 +81,10 @@ game raised a native exception and wrote a minidump. No co-op, next-run Off or
 display result followed. Do not repeat the v3/v4 co-op command. Revision 5
 removes automatic player creation; a co-op run without two actors reports
 pending and requires the owner to join through native UI or a controller.
-The replacement helper is not installed yet, and no further native action is
-authorized until the owner chooses the hardware join path.
+The revision-5 helper is now installed through a guarded helper-only update;
+production, profile and game data were preserved. The native crash dump was
+preserved privately in the session. No further native action is authorized
+until the owner chooses the hardware join path.
 
 ## Tools and tests
 
@@ -186,9 +188,10 @@ co-op probe immediately afterward crashed the game. Revision 5 forbids
 `ExecuteCommand` except for the documented stage fallback; with one player it
 reports a pending native join and does not use an item or alter charge. Its
 local spec also checks the full-charge and empty-bar paths and next-run Off
-protocol. A frozen helper-only updater archives the unsafe diagnostic
-generation and installs revision 5 while preserving the production mod and
-profile/data files. That guarded update is still pending.
+protocol. A frozen helper-only updater archives the unsafe diagnostic generation and
+installs revision 5 while preserving the production mod and profile/data files.
+The guarded update is complete; do not run archived v3/v4 helper paths. Any
+future native co-op join must use owner-selected UI or controller input.
 
 The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
 four charge, and neither The Battery nor Car Battery already held. Invoke

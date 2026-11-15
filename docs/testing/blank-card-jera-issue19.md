@@ -424,8 +424,8 @@ Battery mode recorded below; other acceptance cases remain pending.
   bounded co-op command experiment, and changing MCM to next-run Off while the
   current run stays On. `finish-on` resumes only room clears, co-op and next-run
   Off after the five previously passed On cases. `off` is the native control;
-  `co-op` retries that bounded
-  co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
+  `co-op` reports pending until a second actor joins through owner-selected
+  native UI/controller input; `prepare-continue` saves next-run Off; `continue` requires
   the passive observer to confirm a real continued run.
 - The v5 matrix protocol spec passes locally, including 2×2-room exclusion,
   four ordinary 1×1 clears, short-map stage fallback, and a pending single-player
@@ -671,9 +671,29 @@ helper-only updater
 [`blank-card-jera-safe-coop-helper.py`](evidence/blank-card-jera-safe-coop-helper.py)
 validates the old helper generation, archives it outside the game mod path,
 and installs revision 5 while keeping production/profile/data untouched. Its
-synthetic success and unknown-extra-file rejection passed locally; actual
-installation is pending. Further native checks wait for the owner's choice of
-hardware join path.
+synthetic success and unknown-extra-file rejection passed locally. The guarded
+update has now completed and passed a read-only audit: the active helper has
+exactly four files (`main.lua`, `batch.lua`, `metadata.xml`, and revision-5
+`matrix.lua`); the old six-file helper, including v3/v4 matrices, is archived
+outside the game mod path at `session/diagnostic-unsafe-coop`. The archive is
+preserved; do not run Lua files from it. Journal: `session/diagnostic-coop-guard.json`.
+Production remains pinned to source `bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f`
+and module SHA-256 `6beb2862bad6a5feb083b7d9b4fbabc017ee936bf054c53b9a9ab166229b2025`;
+profile and game data were untouched by this helper update, and the game is
+closed. Further native checks wait for the owner's choice of hardware join
+path.
+
+The native exception dump was copied to the session for preservation:
+`session/capture-bb2d-crash-20261115T202537Z/minidumps/1-isaac-ng.exe.27744.dmp`,
+6,013,282 bytes, SHA-256
+`476dc9c8dfe5d36ae61fd28b6c428b66da53af40aa532aa5a32039cdfc609834`. It is a
+private validation artifact and is not included in the repository. A backup
+integrity check matched all 189 user-profile files, 8 game-data files and 287
+mod files against the before-run manifest SHA-256
+`4af7acc70e3c153672d44c74f4ed1b58190b74fd3129483207d8f91c722b14a7`; the
+manifest recorded 2, 3 and 36 expected directories respectively, but directory
+equality was not checked. The original 21-file pack archive exists. No crash
+reproduction was performed.
 
 ### Independent review checkpoint
 
