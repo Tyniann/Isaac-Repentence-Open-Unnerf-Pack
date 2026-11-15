@@ -4,7 +4,8 @@ local json = require('dkjson')
 package.preload.json=function() return {encode=json.encode,decode=json.decode} end
 ModCallbacks={MC_USE_ITEM=1,MC_USE_CARD=2,MC_INPUT_ACTION=3,MC_POST_UPDATE=4,MC_PRE_GAME_EXIT=5,MC_POST_GAME_STARTED=6,MC_POST_PLAYER_UPDATE=7}
 CollectibleType={COLLECTIBLE_BLANK_CARD=286,COLLECTIBLE_BATTERY=63,COLLECTIBLE_CAR_BATTERY=356,COLLECTIBLE_SCHOOLBAG=534}
-Card={RUNE_JERA=33,CARD_MAGICIAN=2,RUNE_DAGAZ=37}
+Card={RUNE_JERA=33,CARD_MAGICIAN=2,RUNE_DAGAZ=35}
+RoomShape={ROOMSHAPE_1x1=1,ROOMSHAPE_2x2=8}
 UseFlag={USE_MIMIC=128,USE_NOANNOUNCER=256,USE_CARBATTERY=32}
 PlayerType={PLAYER_ISAAC=0}
 EntityType={ENTITY_PICKUP=5}
@@ -16,12 +17,22 @@ InputHook={IS_ACTION_PRESSED=0,IS_ACTION_TRIGGERED=1,GET_ACTION_VALUE=2}
 local vectorMeta={__add=function(a,b) return {x=(a.x or 0)+b.x,y=(a.y or 0)+b.y} end}
 Vector=setmetatable({Zero={}}, {__call=function(_,x,y) return setmetatable({x=x,y=y},vectorMeta) end})
 GetPtrHash=function(value) return value end
-local function check(mode,resetBlue,startEmpty)
+local function check(mode,resetBlue,startEmpty,shortMap)
     local handlers,events,entities={}, {}, {}
     local frame,charge,maximum=0,4,4
     if startEmpty then charge=0 end
     local inventory={[286]=1}
     local enabled=mode~='off'
+    local currentRoom,stage,stageCommands=84,1,0
+    local rooms,byIndex
+    local function map(smallCount)
+        rooms={{SafeGridIndex=84,VisitedCount=1,Data={Type=1,Shape=1},alive=false},
+            {SafeGridIndex=101,VisitedCount=0,Data={Type=1,Shape=8},alive=true}}
+        for index=1,smallCount do rooms[#rooms+1]={SafeGridIndex=101+index,VisitedCount=0,Data={Type=1,Shape=1},alive=true} end
+        byIndex={}
+        for _,desc in ipairs(rooms) do byIndex[desc.SafeGridIndex]=desc end
+    end
+    map(shortMap and 3 or 4)
     local function emit(id,...)
         local copy={}
         for _,entry in ipairs(handlers[id] or {}) do copy[#copy+1]=entry end
@@ -77,12 +88,32 @@ local function check(mode,resetBlue,startEmpty)
             if e.alive and e.Variant==20 then Isaac.Spawn(5,20,1,e.Position) end
         end
     end
+    local room={IsClear=function() return not byIndex[currentRoom].alive end,
+        GetAliveEnemiesCount=function() return byIndex[currentRoom].alive and 1 or 0 end,
+        GetRoomShape=function() return byIndex[currentRoom].Data.Shape end,
+        GetCenterPos=function() return Vector(0,0) end,GetTopLeftPos=function() return Vector(0,0) end,
+        FindFreePickupSpawnPosition=function(_,pos) return pos end}
+    local level={GetCurrentRoomIndex=function() return currentRoom end,GetStartingRoomIndex=function() return 84 end,
+        GetStage=function() return stage end,GetRooms=function() return {Size=#rooms,Get=function(_,i) return rooms[i+1] end} end}
     local game={GetFrameCount=function() return frame end,GetNumPlayers=function() return 1 end,
         GetSeeds=function() return {GetStartSeed=function() return 93 end} end,
-        GetLevel=function() return {GetCurrentRoomIndex=function() return 84 end} end,
-        GetRoom=function() return {IsClear=function() return true end,GetCenterPos=function() return Vector(0,0) end} end}
+        GetLevel=function() return level end,GetRoom=function() return room end,
+        ChangeRoom=function(_,index) currentRoom=index;byIndex[index].VisitedCount=byIndex[index].VisitedCount+1 end}
     function Game() return game end
     Isaac={GetPlayer=function() return p end,
+        ExecuteCommand=function(command)
+            local nextStage=command:match('^stage ([23])$')
+            if nextStage then stage=tonumber(nextStage);stageCommands=stageCommands+1;map(4);currentRoom=84
+            else assert(command=='addplayer 0 1') end
+        end,
+        GetRoomEntities=function()
+            local desc=byIndex[currentRoom]
+            if not desc.alive then return {} end
+            local npc={Type=10,IsDead=function() return not desc.alive end}
+            function npc:ToNPC() return self end
+            function npc:Kill() desc.alive=false;charge=math.min(maximum,charge+(desc.Data.Shape==1 and 1 or 2)) end
+            return {npc}
+        end,
         DebugString=function(line) events[#events+1]=assert(json.decode(line:match('^OUP_BLANK_CARD (.+)$'))) end,
         FindByType=function(kind,variant)
             assert(kind==5);local result={}
@@ -97,7 +128,12 @@ local function check(mode,resetBlue,startEmpty)
             function e:Remove() self.alive=false end
             entities[#entities+1]=e;return e
         end}
-    openUnnerfPack={Config={IsEnabled=function(key) assert(key=='blankCardJera');return enabled end,
+    local nextSetting=true
+    ModConfigMenu={GetCategoryIDByName=function(name) assert(name=='Open Unnerf Pack 2');return 1 end,
+        MenuData={{{Display=function() return 'Blank Card + Jera: On' end,
+            OnChange=function(value) nextSetting=value end,CurrentSetting=function() return nextSetting end}}}}
+    openUnnerfPack={LoadData=function() return json.encode({settings={blankCardJera=nextSetting},run={settings={blankCardJera=true}}}) end,
+        Config={IsEnabled=function(key) assert(key=='blankCardJera');return enabled end,
         AddRunStartListener=function() end}}
     dofile('Mods/Blank Card Jera Unnerf/main.lua')
     local matrix=dofile('tools/validation/blank-card-jera-matrix.lua')
@@ -134,6 +170,13 @@ local function check(mode,resetBlue,startEmpty)
         if result.status~='running' then break end
     end
     if resetBlue then assert(result.status=='error' and result.message:find('stored battery charge'))
+    elseif mode=='finish-on' then
+        assert(result.status=='pending' and #result.cases==2,result.message)
+        local clears=0
+        for _,event in ipairs(events) do if event.event=='ordinary_room_clear' then
+            clears=clears+1;assert(event.details.shape==1 and event.details.before==clears-1 and event.details.after==clears)
+        end end
+        assert(clears==4 and stageCommands==(shortMap and 1 or 0))
     else assert(result.status=='complete' and #result.cases==3,result.message) end
     assert(not p:HasCollectible(63) and not p:HasCollectible(356), 'test-owned passives must be removed on success/error')
     assert(#(handlers[3] or {})==0 and #(handlers[4] or {})==0)
@@ -141,4 +184,6 @@ local function check(mode,resetBlue,startEmpty)
         'production callbacks and passive start observation survive')
 end
 check('battery-smoke',false);check('battery-smoke',false,true);check('battery-smoke',true);check('car-battery',false);check('off',false)
+check('finish-on',false)
+check('finish-on',false,false,true)
 print('Matrix protocol passed: input scoping, stored-charge fault detection, Car Battery control, disabled control and exact cleanup; native proof remains separate')

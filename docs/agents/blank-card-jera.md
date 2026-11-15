@@ -71,14 +71,14 @@ evidence, not an alternative timing policy.
 
 A bounded production On smoke passed in a fresh one-player Normal run: native
 Jera used Blank Card, doubled a penny, battery and closed chest, and a real
-battery restored the four-charge bar. A later v3 battery-smoke also passed its
+battery restored the four-charge bar. A later native battery-smoke passed the
 Magician reserve control, Jera next-cost transition and stored-charge sequence;
-see the ledger. The native Car Battery capture recorded the flagged, no-slot
-replay, but the prior module ignored it and the matrix stopped before passing a
-case. The new replay handling is covered by callback mocks but still needs an
-engine rerun. Four ordinary room clears after Jera, Car Battery, battery-fed
-chains, Schoolbag/slot behavior, other players, Continue, feature Off and co-op
-remain pending; do not claim issue acceptance from the partial captures.
+the Car Battery mode also passed its repeat-count and stored-charge cases. The
+broader On matrix passed five cases, then stopped at the room-clear charge
+assertion. The v4 tail fixture is intended to retest four ordinary room clears
+and finish co-op and next-run Off without replaying those five accepted cases;
+its native run remains pending. Other rooms, settings, Continue, display and
+co-op acceptance must not be inferred from these partial captures.
 
 ## Tools and tests
 
@@ -140,8 +140,8 @@ passed the behavior checks. Same-frame pickup cleanup was inconclusive because
 native removal is deferred; this is one engine smoke, not full feature acceptance.
 
 The matrix fixture is also disposable-run tooling. Its `Run(mode)`, `Status()`
-and `Stop()` interface supports `battery-smoke`, `car-battery`, `on`, `off`, `co-op`,
-`prepare-continue` and `continue`. The full On matrix covers native ordinary
+and `Stop()` interface supports `battery-smoke`, `car-battery`, `on`, `finish-on`,
+`off`, `co-op`, `prepare-continue` and `continue`. The full On matrix covers native ordinary
 pickup doubling, three battery-fed cycles from one initial battery, Jera/Magician
 and other-rune transitions, Schoolbag swaps, four mapped hostile-room clears,
 a bounded second-player command experiment, and saving next-run Off while the
@@ -151,21 +151,38 @@ continued flag. Co-op can report pending if no second actor appears. It never
 writes charge or room-clear flags; it uses native input, pickups, consumables,
 room changes and NPC deaths. Room/map changes cannot be undone inside that
 disposable run, and Schoolbag/D6 or a created second actor may remain for profile
-restoration. The matrix protocol mock has passed local checks. Revision 3
-releases its synthetic action pulse on the first observed native item-use
-callback, so later same-frame input queries cannot trigger another use; native
-Car Battery repeat callbacks are still counted. Snapshots also log The Battery
-and Car Battery inventory counts. Its battery-smoke first establishes native
-Magician charge controls, then checks Jera's inherited two-charge use and next-
-four cost, and finally tests two Jera uses with The Battery. Status output
-identifies mode, completion state and any error. These changes improve fixture
-control and observability; they do not confirm the earlier repeated-use cause.
-The v3 protocol spec and the three-case native The Battery run passed. Car
-Battery's no-slot Jera replay was observed but failed in that capture; the
-current callback fix is covered by mocks and still needs an engine rerun. The
-owner staged the v3 matrix as `matrix-v3.lua` and loaded it with
-`luarun mods/oup_blank_card_issue19_observer/matrix-v3.lua` in the existing
-session. A cold game start must load the updated helper before Continue testing.
+restoration. The matrix protocol mock has passed local checks. Revision 3 releases its
+synthetic action pulse on the first observed native item-use callback, and
+snapshots record battery-passive counts. Its `battery-smoke` validates native
+Magician controls, Jera's inherited charge and next-four cost, and two Jera uses
+with The Battery. The native battery-smoke and Car Battery modes passed as
+recorded in the ledger. Revision 4 adds `finish-on` for the unrun tail so the
+five accepted On cases do not need replaying. It returns to the floor's starting
+room, then runs only room clears, co-op and next-run Off. The ordinary-room
+selector filters for unvisited ordinary combat rooms with
+`Data.Shape == RoomShape.ROOMSHAPE_1x1`; it checks `GetRoomShape()` at runtime
+and logs the stage, shape and charge transition. Four candidate rooms do not
+guarantee four hostile rooms because populations are seed-dependent; the fixture
+stops if it cannot clear four within its bounds. The mode records the initially
+current room's shape and stage before parking in the floor's starting room, to
+investigate the prior charge-jump assertion without asserting a cause.
+
+`finish-on` does not repeat or remove drops in the previously failed room. It
+requires the starting room to be empty. If the current map has fewer than four
+unvisited 1×1 combat rooms, the fixture may advance to stage 2, then stage 3,
+before it discharges Blank Card. Those floor changes are native and affect the
+disposable run; the fixture does not set charges or room-clear flags. Mock
+protocol checks pass for a map with a 2×2 room ahead of four 1×1 rooms, and for
+the documented stage fallback when only three small rooms are available. In
+the mock, the 2×2 room is skipped, four 1×1 rooms clear, the single-player
+co-op result stays pending, and next-run Off is recorded. Native room selection,
+room-clear behavior and the hypothesis that the previous room was large remain
+unverified. Stage the v4 helper as
+`mods/oup_blank_card_issue19_observer/matrix-v4.lua` and load it once with
+`luarun mods/oup_blank_card_issue19_observer/matrix-v4.lua`; this does not require
+a restart or production reload. The existing autoloaded v3 matrix's Continue
+and Off behavior remains unchanged, so no helper upgrade is needed solely to
+run this tail after a later cold Continue.
 
 The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
 four charge, and neither The Battery nor Car Battery already held. Invoke
@@ -174,9 +191,9 @@ follow the batch's console-close prompts. It first uses native Magician to
 measure Car Battery's repeat count, then checks Jera at the inherited two-cost
 bar and the next four-cost bar. It compares a single Jera bar's penny doubling
 to the native repeat count, then checks both passives with charge moving 8→4→0
-and the corresponding native penny counts. This isolates Car Battery's repeat
-behavior from stored-charge behavior; the corrected module and this engine mode
-have not yet been validated in-game.
+and the corresponding native penny counts. This mode passed its native
+compatibility checks; the ledger records its evidence. Other matrix criteria
+remain pending.
 
 The pinned v2 candidate manifest is
 [`blank-card-jera-runtime-v2.json`](../testing/evidence/blank-card-jera-runtime-v2.json),

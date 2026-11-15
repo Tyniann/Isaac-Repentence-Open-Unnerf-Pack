@@ -404,8 +404,8 @@ Battery mode recorded below; other acceptance cases remain pending.
 ## Bounded lifecycle matrix
 
 - Matrix: [`blank-card-jera-matrix.lua`](../../tools/validation/blank-card-jera-matrix.lua),
-  SHA-256 `21bce95185f01034b64c24c39935fabc12755d91f9bbbd3a87a3470dc31afc45`
-  (25,146 bytes; fixture revision 3).
+  SHA-256 `26215f61f2dc50957414384b010a491924c12600ddb2d3245214341e868fa8fa`
+  (27,167 bytes; fixture revision 4).
 - Protocol spec: [`blank_card_jera_matrix_spec.lua`](../../tests/blank_card_jera_matrix_spec.lua).
   Local checks cover scoped input, stored-battery-charge success and deliberate
   fault detection, disabled native control, exact callback removal and survival
@@ -422,14 +422,19 @@ Battery mode recorded below; other acceptance cases remain pending.
   pickups, three battery-fed cycles from one initial battery, card transitions,
   other-rune passthrough, Schoolbag swaps, four mapped hostile-room clears, a
   bounded co-op command experiment, and changing MCM to next-run Off while the
-  current run stays On. `off` is the native control; `co-op` retries that bounded
+  current run stays On. `finish-on` resumes only room clears, co-op and next-run
+  Off after the five previously passed On cases. `off` is the native control;
+  `co-op` retries that bounded
   co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
   the passive observer to confirm a real continued run.
-- The v3 matrix protocol spec passed locally. Native v3 `battery-smoke` and
-  `car-battery` passed their recorded cases. The On matrix then passed five
-  cases before the room-clear exact-charge assertion stopped it; that criterion,
-  the remaining On cases and other acceptance checks remain pending. The earlier
-  v2 repeated-use error is historical, not a v3 failure. These fixtures use
+- The v4 matrix protocol spec passes locally, including 2×2-room exclusion,
+  four ordinary 1×1 clears, the short-map stage fallback, a pending single-player
+  co-op result and the next-run Off path. Native v3 `battery-smoke` and
+  `car-battery` passed their recorded cases. The native On matrix passed five
+  cases before the room-clear exact-charge assertion stopped it. The v4 tail
+  filter and fallback have not been run in-game; the room-clear criterion and
+  remaining acceptance checks stay pending. The earlier v2 repeated-use error
+  is historical, not a v3 failure. These fixtures use
   native input, repeated use and real pickups; they do not write charge or
   room-clear flags. Room changes and NPC kills cannot be undone inside the
   disposable run. Schoolbag, D6 or a second actor may remain for profile
@@ -597,11 +602,12 @@ raw output. Five cases passed before a room-clear assertion stopped the matrix:
 The room-clear sequence was not accepted. Room 110 at frame 3293 moved charge
 0→1; room 109 at 3333 moved 1→2; room 108 at 3373 moved 2→4, then the matrix
 reported `Room clear did not add exactly one charge` and stopped with five
-passed cases. The room shape was not included in the capture. The owner's
-large-room explanation is plausible but unconfirmed; the fixture needs a
-standard 1×1-room filter with shape evidence before testing the remaining
-clears. Do not report the four-room criterion, co-op, MCM settings, charge
-display, or a normal matrix finish as passed. The terminal disposable-run state
+passed cases. Room shape was not logged, so the owner's large-room explanation
+remains plausible but unconfirmed. Revision 4 adds shape evidence and filters
+for ordinary 1×1 rooms before the remaining clears. Candidate availability is not proof of hostile contents; actual
+room populations depend on the map seed and the fixture may still find fewer
+than four clearable rooms. Do not report the four-room criterion, co-op, MCM
+settings, charge display, or a normal matrix finish as passed. The terminal disposable-run state
 had one full-charge Blank Card (286), Jera (33), Schoolbag, D6 in slot 1 at
 charge 4, and no The Battery (63) or Car Battery. Native room clears also
 recharged the other active item.
@@ -616,9 +622,39 @@ recharged the other active item.
 
 An earlier collection attempt stopped at a hash guard after the captured SHA
 was transcribed incorrectly (`4b46cbe`/`4b46bce`); no native fixture action
-occurred in that attempt. The capture above is the corrected run. The next
-owner run is limited to the remaining room-clear tail, co-op and MCM checks;
-the five passed cases are to be reused, not replayed.
+occurred in that attempt. The capture above is the corrected run. Revision 4's
+`finish-on` mode is for the remaining room-clear tail, co-op and next-run Off
+checks; the five passed cases are to be reused, not replayed.
+
+### Matrix fixture revision 4 — local protocol pass, native tail pending
+
+Revision 4 adds `finish-on`, which returns to the floor's starting room and runs
+only the room-clear, co-op and next-run Off tail. It does not rerun the five On
+cases accepted above. The starting room must be empty; pickups left in the
+failed room are not removed. Room candidates must be unvisited ordinary combat
+rooms (`Type=1`) with `Shape=ROOMSHAPE_1x1`, and the fixture checks the room's
+runtime shape before use. It logs shape/stage with each clear and includes the
+initial current room shape/stage in `matrix_started` so the earlier room-shape
+hypothesis can be checked. That hypothesis remains unconfirmed.
+
+If fewer than four 1×1 candidates exist on the current floor, the fixture uses
+native stage changes to stage 2 and then stage 3 before discharging Blank Card,
+reselecting candidates after each move. Four mapped candidates do not guarantee
+four hostile rooms; population depends on the run seed and the bounded clear
+assertion may still stop. These floor changes mutate the disposable run; the
+fixture does not write charge or clear flags. Local protocol
+checks skip a 2×2 room placed before four 1×1 rooms, verify four mock clears,
+exercise the fallback when only three small rooms are initially available, and
+verify that single-player co-op stays pending while the next-run Off path runs.
+These are mocked checks, not game evidence.
+
+The owner plans to stage the revised source as
+`mods/oup_blank_card_issue19_observer/matrix-v4.lua` and load it with
+`luarun mods/oup_blank_card_issue19_observer/matrix-v4.lua` in the existing
+diagnostic session. This tail helper needs no production reload or restart. The
+autoloaded v3 helper still covers Continue and Off; no autoloaded helper update
+is needed solely to run the v4 tail after a later cold Continue. Native room
+selection, the four-clear recharge result, co-op and MCM results remain pending.
 
 ### Independent review checkpoint
 

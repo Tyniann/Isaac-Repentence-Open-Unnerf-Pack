@@ -283,21 +283,47 @@ local function slots()
     passed("schoolbag_swaps", {before = before, after = snapshot(actor)})
 end
 
-local function roomClears()
-    activate("before_room_clears", BC, 1)
-    assert(total(actor) == 0)
+local function ordinaryCandidates()
     local rooms, candidates = Game():GetLevel():GetRooms(), {}
     for index = 0, rooms.Size - 1 do
         local desc = rooms:Get(index)
         if #candidates < 12 and desc.Data and desc.Data.Type == 1 and desc.VisitedCount == 0
+            and desc.Data.Shape == RoomShape.ROOMSHAPE_1x1
             and desc.SafeGridIndex ~= startRoom then candidates[#candidates + 1] = desc.SafeGridIndex end
     end
+    return candidates
+end
+
+local function roomClears()
+    local candidates = ordinaryCandidates()
+    -- Earlier diagnostics may have visited the remaining small rooms. Prepare
+    -- a mapped floor before discharging, without setting charge or clear flags.
+    for _, stage in ipairs({2, 3}) do
+        if #candidates >= 4 then break end
+        if Game():GetLevel():GetStage() ~= stage then
+            emit("room_floor_setup", {fromStage = Game():GetLevel():GetStage(), toStage = stage,
+                availableSmallRooms = #candidates, player = snapshot(actor)})
+            Isaac.ExecuteCommand("stage " .. stage)
+            wait(30)
+            assert(Game():GetLevel():GetStage() == stage, "Native floor preparation did not reach requested stage")
+            first, actor = Isaac.GetPlayer(0), Isaac.GetPlayer(0)
+            startRoom = Game():GetLevel():GetStartingRoomIndex()
+            candidates = ordinaryCandidates()
+        end
+    end
+    assert(#candidates >= 4, "Four unvisited ordinary 1x1 rooms unavailable on bounded floors")
+    emit("ordinary_room_plan", {stage = Game():GetLevel():GetStage(), rooms = candidates})
+    actor:SetCard(0, Card.RUNE_JERA)
+    assert(total(actor) == 4 and actor:GetActiveItem(0) == BC, "Floor preparation changed the full Blank Card")
+    activate("before_room_clears", BC, 1)
+    assert(total(actor) == 0)
     local cleared = 0
     for _, index in ipairs(candidates) do
         if cleared == 4 then break end
         Game():ChangeRoom(index)
         wait(10)
         local room = Game():GetRoom()
+        assert(room:GetRoomShape() == RoomShape.ROOMSHAPE_1x1, "Selected room was not ordinary 1x1")
         actor.Position = room:FindFreePickupSpawnPosition(room:GetTopLeftPos() + Vector(80, 80), 0, true)
         if not room:IsClear() and room:GetAliveEnemiesCount() > 0 then
             local before = total(actor)
@@ -312,7 +338,8 @@ local function roomClears()
             assert(room:IsClear(), "Mapped hostile room did not clear within bounded retries")
             wait(15)
             cleared = cleared + 1
-            emit("ordinary_room_clear", {ordinal = cleared, room = index, before = before, after = total(actor)})
+            emit("ordinary_room_clear", {ordinal = cleared, room = index, shape = room:GetRoomShape(),
+                stage = Game():GetLevel():GetStage(), before = before, after = total(actor)})
             assert(before == cleared - 1 and total(actor) == cleared, "Room clear did not add exactly one charge")
         end
     end
@@ -398,6 +425,11 @@ local function run()
     elseif state.mode == "car-battery" then carBattery()
     elseif state.mode == "on" then
         ordinaryPickups(); chain(); transitions(true); slots(); roomClears(); coOp(); nextOff()
+    elseif state.mode == "finish-on" then
+        Game():ChangeRoom(startRoom)
+        wait(10)
+        assert(#pickups() == 0, "Starting room is not empty for remaining checks")
+        roomClears(); coOp(); nextOff()
     elseif state.mode == "co-op" then coOp(); nextOff()
     elseif state.mode == "prepare-continue" then nextOff()
     elseif state.mode == "continue" then
@@ -425,11 +457,11 @@ end
 function matrix.Run(mode)
     assert(state.status ~= "running", "Matrix already running")
     local modes = {["battery-smoke"] = true, ["car-battery"] = true, on = true, ["continue"] = true,
-        off = true, ["co-op"] = true, ["prepare-continue"] = true}
+        off = true, ["co-op"] = true, ["prepare-continue"] = true, ["finish-on"] = true}
     assert(modes[mode], "Unknown matrix mode")
     first, actor = Isaac.GetPlayer(0), Isaac.GetPlayer(0)
     assert(first:GetPlayerType() == PlayerType.PLAYER_ISAAC and Game():GetRoom():IsClear(), "Use a cleared disposable Isaac room")
-    assert(#pickups() == 0, "Starting room still contains pickups")
+    assert(mode == "finish-on" or #pickups() == 0, "Starting room still contains pickups")
     local enabled = openUnnerfPack.Config.IsEnabled("blankCardJera")
     assert(enabled == (mode ~= "off"), "Active feature setting does not match requested matrix")
     if mode ~= "off" then
@@ -440,10 +472,12 @@ function matrix.Run(mode)
         end
     end
     assert(not first:HasCollectible(CollectibleType.COLLECTIBLE_CAR_BATTERY), "Car Battery requires a separate multiplier control")
-    startRoom = Game():GetLevel():GetCurrentRoomIndex()
+    startRoom = mode == "finish-on" and Game():GetLevel():GetStartingRoomIndex()
+        or Game():GetLevel():GetCurrentRoomIndex()
     state = {status = "running", mode = mode, cases = {}, uses = 0, cards = 0, jera = 0, startFrame = Game():GetFrameCount()}
-    emit("matrix_started", {fixtureRevision = 3, players = Game():GetNumPlayers(), player = snapshot(first),
-        startingPickups = #pickups(), enabled = enabled})
+    emit("matrix_started", {fixtureRevision = 4, players = Game():GetNumPlayers(), player = snapshot(first),
+        startingPickups = #pickups(), enabled = enabled, room = Game():GetLevel():GetCurrentRoomIndex(),
+        roomShape = Game():GetRoom():GetRoomShape(), stage = Game():GetLevel():GetStage()})
     add(ModCallbacks.MC_INPUT_ACTION, function(_, entity, hook, action)
         if not entity or action ~= ButtonAction.ACTION_ITEM then return end
         local p = entity:ToPlayer()
