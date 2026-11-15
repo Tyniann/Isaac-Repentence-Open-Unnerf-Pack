@@ -135,6 +135,7 @@ unvalidated in the game.
 
 - Pending native fixture:
   [`blank-card-jera-on-smoke.lua`](../../tools/validation/blank-card-jera-on-smoke.lua).
+  Source SHA-256 `8e6fb7c87996b5cdf009e46aff5c732fb8f24a54b585a48317cb0941a807a130`.
   Its protocol harness is
   [`blank_card_jera_on_smoke_spec.lua`](../../tests/blank_card_jera_on_smoke_spec.lua);
   local controller stubs cover setup, witness handling, failure cleanup and
@@ -148,18 +149,24 @@ unvalidated in the game.
   ownership and a four-charge refill; cleanup removes pickups only after the
   empty-room precondition. The fixture has not run in Isaac; it establishes no
   production On behavior.
-- [`stage-source-pack.py`](../../tools/validation/stage-source-pack.py) and
-  [`stage_source_pack_spec.py`](../../tests/stage_source_pack_spec.py) stage a
-  manifest-pinned runtime tree from raw GitHub files into a new directory
-  outside the game. The helper verifies its source commit, path allowlist, file
+- Source stager: [`stage-source-pack.py`](../../tools/validation/stage-source-pack.py),
+  SHA-256 `3e90769bf976e4d873f1e588a87a58e8a9d0cc84684c58d6a49d51717af0ea2a`;
+  protocol harness:
+  [`stage_source_pack_spec.py`](../../tests/stage_source_pack_spec.py). The
+  helper stages a manifest-pinned runtime tree from raw GitHub files into a new
+  directory outside the game. It verifies its source commit, path allowlist, file
   sizes and hashes, metadata identity and XML. It does not install or launch
   Isaac. Its local smallest-case smoke passed exact-byte, safe-path,
-  overwrite-refusal and hash-rejection checks. The pinned manifest and staged
-  candidate for the current checkpoint are still pending; do not install from
-  an unverified tree. The existing `deploy-test-build.ps1` has an older test
-  folder and observer/MCM contract and is not a direct installer for this
-  candidate. Any later deployment needs a separate guarded install with a fresh
-  backup, closed game and installed-byte verification.
+  overwrite-refusal and hash-rejection checks. The 22-file runtime manifest
+  [`blank-card-jera-runtime.json`](evidence/blank-card-jera-runtime.json) pins
+  source commit `4563fd522e3086817c21fc89f1677f63262fc53c`, SHA-256
+  `b7026ac330ca2ebc11c5b741d6b9ebb9ed7e27c33aca3d3a36c5708502afd481`. Local
+  staging was verified against exact Git-object bytes. This is candidate staging
+  only, not game installation, launch, or an engine implementation pass. The
+  existing `deploy-test-build.ps1` has an older test folder and observer/MCM
+  contract and is not a direct installer for this candidate. Any later
+  deployment needs a separate guarded install with a fresh backup, closed game
+  and installed-byte verification.
 
 ## Session and setup
 
