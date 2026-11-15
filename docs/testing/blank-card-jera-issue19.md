@@ -508,9 +508,49 @@ scratch audit exited 0 and verified the exact 22-file runtime set and bytes,
 the module hash above, both matrix copies, helper files, original pack and
 previous candidate. The owner cross-checked the audit output; Isaac process
 count was zero. This was an audit-input typo, not a product or installation
-failure. No v3 Car Battery gameplay retest has run yet. The next owner run is
-slot-1 Continue, followed by `battery-smoke` (which recovers a zero-charge bar
-with a real battery pickup) and then the Car Battery retest.
+failure. At the time of that audit, no v3 gameplay retest had run. The later
+slot-1 Continue and battery-smoke are recorded below; the Car Battery retest
+remains pending.
+
+### Candidate bb2d after Continue — native battery-smoke pass
+
+After slot-1 Continue, the owner ran `battery-smoke` with production source
+`bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f`, module SHA-256
+`6beb2862bad6a5feb083b7d9b4fbabc017ee936bf054c53b9a9ab166229b2025`. The
+engine reported `continued=true`; seed `2855396759`, actor `483707137`. The
+main agent cross-checked the raw capture and confirmed terminal frame 1982 with
+all three cases passed: `native_magician_stored_charge_control`,
+`stored_charge_across_cost_transition`, and `stored_battery_charge`.
+
+At the transition checkpoint (frame 1899), the actor had Blank Card (collectible
+286, count 1), Jera (card 33), The Battery (collectible 63, count 1), Car Battery
+count 0, and charge 4+4. The captured sequence passed both native Jera uses,
+then removed The Battery and used a real battery to restore the base bar to
+four. At terminal frame 1982 the actor still had one Blank Card and Jera; charge
+was base 4/blue 0, with The Battery and Car Battery both absent. This confirms
+the The Battery reserve and post-use cost transition against source `bb2d` after
+Continue. It does not cover Car Battery.
+
+- Capture: `session/capture-bb2d-battery-20261115T185640Z`; stable 49,536-byte
+  log, log/second-read SHA-256
+  `ef496d86e3b4f2fa0c47509e13494d29b6cbb29a60d0f4a7dfbe13fe29e7faf9`.
+- Parsed records: 72, SHA-256
+  `e73d064d508b38f9f309ee7832ff2142438abfe5679f20976b5de2b4d3ae149d`, zero
+  malformed records and no collector errors.
+
+The earlier v2 Car Battery failure remains the last native observation of that
+interaction. A retest with the current `USE_CARBATTERY` replay association is
+still pending, as are the other matrix acceptance cases.
+
+### Independent review checkpoint
+
+Two independent read-only reviews covered base `ce1a9b6a38e274de1f8fbd9bbf69069ddbf0a067`
+through head `07c68c1ec93ba8b51516c4f318bd096c8cfe7967`. Standards review found
+zero actionable violations or smells. Spec review listed two known validation
+risks: the remaining native acceptance criteria and the Car Battery retest; it
+found no confirmed implementation bug or scope creep. The bb2d source fix
+postdates that reviewed head and was not covered by those reviews. Merge remains
+pending until the required acceptance evidence is complete.
 
 ## Session and setup
 
