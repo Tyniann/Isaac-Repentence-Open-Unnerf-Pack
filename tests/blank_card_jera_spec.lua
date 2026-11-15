@@ -64,6 +64,15 @@ assert(#p.calls==1 and p.battery==2)
 p.battery=0 -- Engine spends two and retains two in the normal bar.
 update(p)
 assert(#p.calls==2 and p.charge==2)
+p=player(33,0,2)
+use(p)
+handlers[1](nil,286,{},p,36,0,0) -- Native Car Battery repetition, before one discharge.
+assert(#p.calls==2 and p.charge==2)
+p.charge=0
+update(p)
+assert(#p.calls==3 and p.calls[3]=='next-cost-4', 'two effects queue only one cost update')
+update(p)
+assert(#p.calls==3)
 enabled=false
 assert(handlers[1](nil,286,{},nil,4,0,0)==nil)
 enabled=true
