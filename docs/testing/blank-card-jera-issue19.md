@@ -5,10 +5,10 @@
 
 ## Status
 
-**Native feasibility is partially observed; implementation and acceptance are
-pending.** The production callback is present in source but has not been
-deployed or engine-validated; no feature acceptance pass is claimed. The owner
-clarified the intended timing: preserve Blank Card's
+**Production implementation is present; native validation is partial and
+acceptance is pending.** A bounded production On smoke has passed in a
+disposable run, but no feature acceptance pass is claimed. The owner clarified
+the intended timing: preserve Blank Card's
 native post-use charge behavior; using Jera sets the cost of its next activation
 to four. Do not set four on card selection or grant free charge. The original
 “four charges per activation” criterion is superseded. The first Jera use after
@@ -131,9 +131,9 @@ unvalidated in the game.
   zero malformed records or matching errors. The latest collector verified the
   session download hash; the installed-file hash was not independently checked.
 
-## Production On smoke fixture and source staging
+## Production On smoke and candidate staging
 
-- Pending native fixture:
+- On-smoke fixture:
   [`blank-card-jera-on-smoke.lua`](../../tools/validation/blank-card-jera-on-smoke.lua).
   Source SHA-256 `8e6fb7c87996b5cdf009e46aff5c732fb8f24a54b585a48317cb0941a807a130`.
   Its protocol harness is
@@ -147,8 +147,7 @@ unvalidated in the game.
   from Isaac, then delegates the native use and battery refill to the batch.
   It checks the native Jera use, each pickup doubling, unchanged Jera/Blank Card
   ownership and a four-charge refill; cleanup removes pickups only after the
-  empty-room precondition. The fixture has not run in Isaac; it establishes no
-  production On behavior.
+  empty-room precondition.
 - Source stager: [`stage-source-pack.py`](../../tools/validation/stage-source-pack.py),
   SHA-256 `3e90769bf976e4d873f1e588a87a58e8a9d0cc84684c58d6a49d51717af0ea2a`;
   protocol harness:
@@ -161,8 +160,10 @@ unvalidated in the game.
   [`blank-card-jera-runtime.json`](evidence/blank-card-jera-runtime.json) pins
   source commit `4563fd522e3086817c21fc89f1677f63262fc53c`, SHA-256
   `b7026ac330ca2ebc11c5b741d6b9ebb9ed7e27c33aca3d3a36c5708502afd481`. Local
-  staging was verified against exact Git-object bytes. This is candidate staging
-  only, not game installation, launch, or an engine implementation pass. The
+  staging was verified against exact Git-object bytes. The pinned 22-file
+  candidate was later installed by the guarded recipe below; all 22 installed
+  file hashes matched before launch. No post-launch installed-file hash check
+  was performed. The
   existing `deploy-test-build.ps1` has an older test folder and observer/MCM
   contract and is not a direct installer for this candidate. Any later
   deployment needs a separate guarded install with a fresh backup, closed game
@@ -173,9 +174,58 @@ unvalidated in the game.
   It pins the session backup and runtime manifest hashes, verifies the executable
   and protected mod files, checks that Isaac is closed, then moves the original
   pack aside and swaps in the candidate with hash checks and rollback handling.
-  Its synthetic local smoke passed; it does not edit profile or game data or
-  launch Isaac. The actual installation remains pending and is not an engine
-  implementation pass.
+  Its synthetic local smoke passed; the recipe does not edit profile or game
+  data or launch Isaac. The actual guarded installation passed its prelaunch
+  checks. The original pack remains archived at `session/original-pack`; the
+  profile, game data and unrelated mods were unchanged by installation.
+
+The production On smoke passed in a fresh Normal Isaac run on source runtime
+`4563fd522e3086817c21fc89f1677f63262fc53c`: seed `2358805276`, player seed
+`2488244009`, Normal difficulty `0`, `continued=false`, J460, REPENTOGON absent,
+MCM v113, frames 85–153. At frame 91, the production use dispatched Jera once
+with flags 384. Penny (variant 20), battery (90) and closed chest (50) each
+increased from one to two; Jera (33) and one Blank Card remained. Charge moved
+4→0 and a real battery (`2692350394`) restored it to 4. The run completed at
+frame 153 with no matching errors.
+
+- Capture: `capture-20261115T-test` (session-relative); log 24,659 bytes, SHA-256
+  `acc87b3aec710ebdbcdddef735185c1cedf3f8f70e0893273a6b6cbdd57f2576`.
+- Parsed records: 20, SHA-256
+  `33f71e81cc48c845414b1483bc02bf0d15b1a22e14f18b165ed4124da05b2d8c`; stable,
+  zero malformed records or matching errors.
+
+The fixture removed its pickups and logged the remaining count in the same
+frame: six pickups were still visible. Isaac defers native entity removal, so
+this is inconclusive cleanup evidence, not a confirmed failure or a zero count.
+The matrix preflight must verify that the room is empty before reusing it; do
+not replay the smoke. The installed-file hash check after launch was not done.
+The separate passive batch mod is at
+`mods/oup_blank_card_issue19_batch/main.lua`, unchanged from the verified batch
+SHA above; the passive observer main is unchanged. `acceptance-staging.json`
+preserves the staging record. Cleanup and profile restoration remain pending.
+
+## Bounded lifecycle matrix
+
+- Matrix: [`blank-card-jera-matrix.lua`](../../tools/validation/blank-card-jera-matrix.lua),
+  SHA-256 `1df01a33e93e59ab7e47cd98b050ee3bfa42be9805b66aefd76c175e9ea8968e`.
+- Protocol spec: [`blank_card_jera_matrix_spec.lua`](../../tests/blank_card_jera_matrix_spec.lua).
+  Local checks cover scoped input, stored-battery-charge success and deliberate
+  fault detection, disabled native control, exact callback removal and survival
+  of the passive Continue observer. They are mock protocol checks, not engine
+  proof.
+- Modes: `battery-smoke` checks a stored battery bar; `on` covers ordinary
+  pickups, three battery-fed cycles from one initial battery, card transitions,
+  other-rune passthrough, Schoolbag swaps, four mapped hostile-room clears, a
+  bounded co-op command experiment, and changing MCM to next-run Off while the
+  current run stays On. `off` is the native control; `co-op` retries that bounded
+  co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
+  the passive observer to confirm a real continued run.
+- Matrix engine runs have not started. It uses native input and pickups and does
+  not write charge or room-clear flags. Room changes/NPC kills cannot be undone
+  inside the disposable run. Schoolbag, D6, or a second actor may remain for
+  profile restoration; if the bounded `addplayer 0 1` experiment creates no
+  second Isaac, co-op is recorded pending. The battery-smoke and full matrix
+  require their documented prepared, empty-room conditions.
 
 ## Session and setup
 
@@ -192,7 +242,8 @@ backed-up disposable runs, restarts and co-op. Session:
   `e5faf6f513c6de9cc9ff1c335ef9c541e2b33fc623aa3b8ffbd2e6a6c0027bb0`.
   The fresh observer session log identifies Repentance+ `1.9.7.17.J460`.
 - Observer staging path: `mods\oup_blank_card_issue19_observer\main.lua`,
-  with separate metadata. Production mod files are unchanged.
+  with separate metadata. Production files were unchanged at preflight; the
+  guarded candidate installation is recorded above.
 - The only existing configuration mutation is `DebugConsoleEnabled=1` in
   `options.ini`, recorded in the snapshot. Before SHA-256
   `a86c6288bf3175b26142836b8a0560dde5c4db8cee40bf65bf39108d43945e05`;

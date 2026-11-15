@@ -53,11 +53,13 @@ owner clarified that Jera sets the *next* cost to four, while preserving the
 native post-use timing. The capacity probe is exploratory implementation
 evidence, not an alternative timing policy.
 
-The production callback has not yet been deployed or tested in Isaac. Four
-ordinary room clears after Jera, the callback's actual native timing, full
-battery and other consumable combinations, Schoolbag/slot behavior, other
-players, Continue, feature Off, and multiplayer remain to be checked. Do not
-claim issue acceptance from the callback contract or capacity probe alone.
+A bounded production On smoke passed in a fresh one-player Normal run: native
+Jera used Blank Card, doubled a penny, battery and closed chest, and a real
+battery restored the four-charge bar. That smoke does not settle four ordinary
+room clears after Jera, battery-fed duplication chains, post-use transitions,
+Schoolbag/slot behavior, other players, Continue, feature Off or co-op. Those
+matrix cases remain pending; do not claim issue acceptance from one smoke or
+the callback contract.
 
 ## Tools and tests
 
@@ -69,8 +71,19 @@ claim issue acceptance from the callback contract or capacity probe alone.
   feasibility sequence for a disposable one-player Isaac run.
 - `tools/validation/blank-card-jera-capacity.lua`: isolated capacity mechanism
   trial; use only after its recorded preconditions and verified batch.
-- `tools/validation/blank-card-jera-on-smoke.lua`: pending production-feature
-  smoke using a separate empty-room fixture.
+- `tools/validation/blank-card-jera-on-smoke.lua`: bounded production On smoke
+  using a separate empty-room fixture; evidence is in the ledger.
+- `tools/validation/blank-card-jera-matrix.lua` and
+  `tests/blank_card_jera_matrix_spec.lua`: bounded lifecycle/recharge matrix
+  controller and its mock protocol check. The test covers input scoping,
+  stored-battery-charge fault detection, the disabled control, cleanup and
+  preserving the passive Continue observer; it is not game evidence.
+- [`../testing/evidence/blank-card-jera-install.py`](../testing/evidence/blank-card-jera-install.py):
+  frozen, session-pinned one-time swap recipe. It verifies the saved backup,
+  source manifest, executable, protected mods and closed-game condition, then
+  moves the original pack aside and rolls back on failure. It does not launch
+  the game. The real guarded installation and prelaunch hashes are recorded in
+  the issue ledger; the post-launch installed-file hash check was not done.
 - `tools/validation/stage-source-pack.py` and
   `tests/stage_source_pack_spec.py`: stage a hash-pinned runtime tree from raw
   GitHub files into a new directory outside the game. Supply a pinned manifest,
@@ -96,11 +109,27 @@ Blank Card and Jera in the disposable run, places a penny, battery and closed
 chest away from the actor, and delegates the single use and battery refill to
 the native batch. It checks that each pickup is doubled, Jera is dispatched once,
 the rune and single Blank Card remain, and charge returns to four. It removes
-pickups only under the empty-room precondition. This production On smoke has not
-yet run in Isaac; no engine pass is claimed.
+pickups only under the empty-room precondition. The one-player Normal On smoke
+passed the behavior checks. Same-frame pickup cleanup was inconclusive because
+native removal is deferred; this is one engine smoke, not full feature acceptance.
+
+The matrix fixture is also disposable-run tooling. Its `Run(mode)`, `Status()`
+and `Stop()` interface supports `battery-smoke`, `on`, `off`, `co-op`,
+`prepare-continue` and `continue`. The full On matrix covers native ordinary
+pickup doubling, three battery-fed cycles from one initial battery, Jera/Magician
+and other-rune transitions, Schoolbag swaps, four mapped hostile-room clears,
+a bounded second-player command experiment, and saving next-run Off while the
+current run stays On. The Off mode checks native Jera behavior; Continue must
+follow a real relaunch so the passive game-start observer can record the
+continued flag. Co-op can report pending if no second actor appears. It never
+writes charge or room-clear flags; it uses native input, pickups, consumables,
+room changes and NPC deaths. Room/map changes cannot be undone inside that
+disposable run, and Schoolbag/D6 or a created second actor may remain for profile
+restoration. The matrix and its mock protocol have passed local checks, but none
+of these matrix engine cases have run yet.
 
 See the [issue-specific ledger](../testing/blank-card-jera-issue19.md) for
 session provenance, hashes, evidence and remaining acceptance work.
 
 ---
-*Last updated: 2026-11-14*
+*Last updated: 2026-11-15*
