@@ -104,7 +104,7 @@ local function check(mode,resetBlue,startEmpty,shortMap)
         ExecuteCommand=function(command)
             local nextStage=command:match('^stage ([23])$')
             if nextStage then stage=tonumber(nextStage);stageCommands=stageCommands+1;map(4);currentRoom=84
-            else assert(command=='addplayer 0 1') end
+            else error('Automatic co-op creation is forbidden after the native crash') end
         end,
         GetRoomEntities=function()
             local desc=byIndex[currentRoom]
@@ -177,6 +177,14 @@ local function check(mode,resetBlue,startEmpty,shortMap)
             clears=clears+1;assert(event.details.shape==1 and event.details.before==clears-1 and event.details.after==clears)
         end end
         assert(clears==4 and stageCommands==(shortMap and 1 or 0))
+    elseif mode=='co-op' then
+        assert(result.status=='pending' and #result.cases==1 and result.uses==0 and result.jera==0)
+        assert(charge==(startEmpty and 0 or 4),'pending manual join must not change charge')
+        local manualJoin=false
+        for _,event in ipairs(events) do if event.event=='co_op_pending' then
+            manualJoin=event.details.requiresNativeJoin==true
+        end end
+        assert(manualJoin and stageCommands==0)
     else assert(result.status=='complete' and #result.cases==3,result.message) end
     assert(not p:HasCollectible(63) and not p:HasCollectible(356), 'test-owned passives must be removed on success/error')
     assert(#(handlers[3] or {})==0 and #(handlers[4] or {})==0)
@@ -186,4 +194,5 @@ end
 check('battery-smoke',false);check('battery-smoke',false,true);check('battery-smoke',true);check('car-battery',false);check('off',false)
 check('finish-on',false)
 check('finish-on',false,false,true)
+check('co-op',false);check('co-op',false,true)
 print('Matrix protocol passed: input scoping, stored-charge fault detection, Car Battery control, disabled control and exact cleanup; native proof remains separate')

@@ -75,10 +75,14 @@ battery restored the four-charge bar. A later native battery-smoke passed the
 Magician reserve control, Jera next-cost transition and stored-charge sequence;
 the Car Battery mode also passed its repeat-count and stored-charge cases. The
 broader On matrix passed five cases, then stopped at the room-clear charge
-assertion. The v4 tail fixture is intended to retest four ordinary room clears
-and finish co-op and next-run Off without replaying those five accepted cases;
-its native run remains pending. Other rooms, settings, Continue, display and
-co-op acceptance must not be inferred from these partial captures.
+assertion. The v4 tail later passed four ordinary-room clears after advancing
+to stage 2. It then attempted an automatic `addplayer 0 1` co-op probe and the
+game raised a native exception and wrote a minidump. No co-op, next-run Off or
+display result followed. Do not repeat the v3/v4 co-op command. Revision 5
+removes automatic player creation; a co-op run without two actors reports
+pending and requires the owner to join through native UI or a controller.
+The replacement helper is not installed yet, and no further native action is
+authorized until the owner chooses the hardware join path.
 
 ## Tools and tests
 
@@ -144,7 +148,7 @@ and `Stop()` interface supports `battery-smoke`, `car-battery`, `on`, `finish-on
 `off`, `co-op`, `prepare-continue` and `continue`. The full On matrix covers native ordinary
 pickup doubling, three battery-fed cycles from one initial battery, Jera/Magician
 and other-rune transitions, Schoolbag swaps, four mapped hostile-room clears,
-a bounded second-player command experiment, and saving next-run Off while the
+a bounded co-op check, and saving next-run Off while the
 current run stays On. The Off mode checks native Jera behavior; Continue must
 follow a real relaunch so the passive game-start observer can record the
 continued flag. Co-op can report pending if no second actor appears. It never
@@ -175,14 +179,16 @@ disposable run; the fixture does not set charges or room-clear flags. Mock
 protocol checks pass for a map with a 2×2 room ahead of four 1×1 rooms, and for
 the documented stage fallback when only three small rooms are available. In
 the mock, the 2×2 room is skipped, four 1×1 rooms clear, the single-player
-co-op result stays pending, and next-run Off is recorded. Native room selection,
-room-clear behavior and the hypothesis that the previous room was large remain
-unverified. Stage the v4 helper as
-`mods/oup_blank_card_issue19_observer/matrix-v4.lua` and load it once with
-`luarun mods/oup_blank_card_issue19_observer/matrix-v4.lua`; this does not require
-a restart or production reload. The existing autoloaded v3 matrix's Continue
-and Off behavior remains unchanged, so no helper upgrade is needed solely to
-run this tail after a later cold Continue.
+co-op result stays pending, and next-run Off is recorded. The v4 native run
+confirmed the initial room was shape 9 and stage 1, then cleared four ordinary
+shape-1 rooms on stage 2, recharging Blank Card from zero to four. The automatic
+co-op probe immediately afterward crashed the game. Revision 5 forbids
+`ExecuteCommand` except for the documented stage fallback; with one player it
+reports a pending native join and does not use an item or alter charge. Its
+local spec also checks the full-charge and empty-bar paths and next-run Off
+protocol. A frozen helper-only updater archives the unsafe diagnostic
+generation and installs revision 5 while preserving the production mod and
+profile/data files. That guarded update is still pending.
 
 The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
 four charge, and neither The Battery nor Car Battery already held. Invoke

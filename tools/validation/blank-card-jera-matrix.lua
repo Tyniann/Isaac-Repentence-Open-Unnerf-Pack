@@ -350,16 +350,11 @@ local function roomClears()
 end
 
 local function coOp()
-    if Game():GetNumPlayers() == 1 then
-        -- A bounded native command feasibility probe, not an assumption that
-        -- the undocumented command works. Missing second actor stays pending.
-        emit("co_op_command_probe", {command = "addplayer 0 1"})
-        Isaac.ExecuteCommand("addplayer 0 1")
-        wait(30)
-    end
     if Game():GetNumPlayers() ~= 2 then
         state.coOpPending = true
-        emit("co_op_pending", {players = Game():GetNumPlayers()})
+        -- Joining is an owner action through the native co-op UI. Calling
+        -- addplayer from this update coroutine crashed J460 in validation.
+        emit("co_op_pending", {players = Game():GetNumPlayers(), requiresNativeJoin = true})
         return
     end
     local second = Isaac.GetPlayer(1)
@@ -475,7 +470,7 @@ function matrix.Run(mode)
     startRoom = mode == "finish-on" and Game():GetLevel():GetStartingRoomIndex()
         or Game():GetLevel():GetCurrentRoomIndex()
     state = {status = "running", mode = mode, cases = {}, uses = 0, cards = 0, jera = 0, startFrame = Game():GetFrameCount()}
-    emit("matrix_started", {fixtureRevision = 4, players = Game():GetNumPlayers(), player = snapshot(first),
+    emit("matrix_started", {fixtureRevision = 5, players = Game():GetNumPlayers(), player = snapshot(first),
         startingPickups = #pickups(), enabled = enabled, room = Game():GetLevel():GetCurrentRoomIndex(),
         roomShape = Game():GetRoom():GetRoomShape(), stage = Game():GetLevel():GetStage()})
     add(ModCallbacks.MC_INPUT_ACTION, function(_, entity, hook, action)

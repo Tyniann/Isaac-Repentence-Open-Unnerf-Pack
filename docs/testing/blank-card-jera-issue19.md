@@ -404,8 +404,8 @@ Battery mode recorded below; other acceptance cases remain pending.
 ## Bounded lifecycle matrix
 
 - Matrix: [`blank-card-jera-matrix.lua`](../../tools/validation/blank-card-jera-matrix.lua),
-  SHA-256 `26215f61f2dc50957414384b010a491924c12600ddb2d3245214341e868fa8fa`
-  (27,167 bytes; fixture revision 4).
+  SHA-256 `4c0e8cab8f3e426f1509df378107e203de4624c4d7a2c4080d38c8ad4e833db4`
+  (27,012 bytes; fixture revision 5).
 - Protocol spec: [`blank_card_jera_matrix_spec.lua`](../../tests/blank_card_jera_matrix_spec.lua).
   Local checks cover scoped input, stored-battery-charge success and deliberate
   fault detection, disabled native control, exact callback removal and survival
@@ -427,13 +427,14 @@ Battery mode recorded below; other acceptance cases remain pending.
   `co-op` retries that bounded
   co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
   the passive observer to confirm a real continued run.
-- The v4 matrix protocol spec passes locally, including 2×2-room exclusion,
-  four ordinary 1×1 clears, the short-map stage fallback, a pending single-player
-  co-op result and the next-run Off path. Native v3 `battery-smoke` and
+- The v5 matrix protocol spec passes locally, including 2×2-room exclusion,
+  four ordinary 1×1 clears, short-map stage fallback, and a pending single-player
+  co-op result with no automatic player command. Native v3 `battery-smoke` and
   `car-battery` passed their recorded cases. The native On matrix passed five
-  cases before the room-clear exact-charge assertion stopped it. The v4 tail
-  filter and fallback have not been run in-game; the room-clear criterion and
-  remaining acceptance checks stay pending. The earlier v2 repeated-use error
+  cases before the room-clear exact-charge assertion stopped it. Native v4
+  subsequently passed the four-room recharge case; its following automatic
+  co-op command crashed the game. Co-op, next-run Off and remaining acceptance
+  checks stay pending. The earlier v2 repeated-use error
   is historical, not a v3 failure. These fixtures use
   native input, repeated use and real pickups; they do not write charge or
   room-clear flags. Room changes and NPC kills cannot be undone inside the
@@ -648,13 +649,31 @@ exercise the fallback when only three small rooms are initially available, and
 verify that single-player co-op stays pending while the next-run Off path runs.
 These are mocked checks, not game evidence.
 
-The owner plans to stage the revised source as
-`mods/oup_blank_card_issue19_observer/matrix-v4.lua` and load it with
-`luarun mods/oup_blank_card_issue19_observer/matrix-v4.lua` in the existing
-diagnostic session. This tail helper needs no production reload or restart. The
-autoloaded v3 helper still covers Continue and Off; no autoloaded helper update
-is needed solely to run the v4 tail after a later cold Continue. Native room
-selection, the four-clear recharge result, co-op and MCM results remain pending.
+The owner loaded revision 4 as `matrix-v4.lua` in the existing diagnostic
+session. The raw capture showed the starting room was room 108, shape 9, stage
+1; after native stage 2 fallback, four ordinary shape-1 rooms cleared with
+charges 0→1→2→3→4. The `four_ordinary_room_clears` case passed at frame 3937.
+At that same frame the fixture attempted `addplayer 0 1`; the game logged a
+native exception and wrote a minidump. No co-op, next-run Off, or display result
+was collected. The collector reported 283 records, zero malformed records and
+no collector errors, but this does not override the exception in the raw log.
+Capture `session/capture-bb2d-crash-20261115T202537Z`; stable log size 146,896
+bytes, SHA-256 `b5ed3e546a413216cbbd2deb51f00b3608ebcc4394824252205c85c9558ecbc6`;
+records SHA-256
+`be460978ecdc11dd90fc3c8c0a1a00439b6e47dd785cd30986727a032b72c17b`.
+
+Revision 5 removes automatic player creation. If the co-op fixture sees fewer
+than two actors, it reports `requiresNativeJoin=true` and remains pending; it
+never issues an engine `addplayer` command. The local protocol spec makes any
+non-stage `ExecuteCommand` fail, checks full and empty charge stay unchanged,
+and exercises the next-run Off path. Do not rerun revision 3 or 4. The frozen
+helper-only updater
+[`blank-card-jera-safe-coop-helper.py`](evidence/blank-card-jera-safe-coop-helper.py)
+validates the old helper generation, archives it outside the game mod path,
+and installs revision 5 while keeping production/profile/data untouched. Its
+synthetic success and unknown-extra-file rejection passed locally; actual
+installation is pending. Further native checks wait for the owner's choice of
+hardware join path.
 
 ### Independent review checkpoint
 
