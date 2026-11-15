@@ -278,8 +278,34 @@ preserves the staging record. Cleanup and profile restoration remain pending.
   [`blank-card-jera-update-v2.py`](evidence/blank-card-jera-update-v2.py).
   Its synthetic swap smoke passed, including injected helper-write rollback.
   It archives the previous candidate and helper while preserving the original
-  pre-test pack; the local check left profile and game data unchanged. This is
-  staging evidence only, not an installation or gameplay result.
+  pre-test pack. The recipe's SHA-256 is
+  `47ec2a86c1234f2412eaeebbc87069e2db95baaa07dc8b3f11fde7a9ff0cc354`.
+
+### Candidate v2 installation and audit
+
+Candidate v2 is installed in the game mods folder; no v2 gameplay tests have
+run. Isaac was confirmed fully closed before the frozen updater ran. The update
+journal is `session/candidate-update-v2.json`: it records source `0e1c6e4`, 22
+runtime files, no game launch and no profile or game-data writes. The archived
+candidate from source `4563fd5` is at
+`session/candidate-used-4563fd522e30`; diagnostic helper generation 1 is
+preserved at `session/diagnostic-generation-v1`. The original pre-test pack
+remains unchanged and was verified against `before.json`.
+
+A first post-install audit attempt used an incorrect verifier schema and
+invented helper paths; this was an audit-tool error, not a product failure. A
+corrected read-only audit then matched the exact 22-file runtime set, sizes and
+hashes against source `0e1c6e4`, and verified the original archive, previous
+candidate and helper files. Key installed hashes: production module
+`81234e4d8e697b4fb6379369263c16676334b2a5f554e7f71a709c4152e8f3fa`, passive
+loader `bfec07380b1d3f98e942b17207e78661e1b82c63dfa1a4dc9f4b15ab2fe5dca0`,
+batch `febcb67b030d00bc8556c423b01509c7a8e36f766104371a30a9c95c5c30f794`,
+matrix `1d5b33b01aba1fcd7d0484665e16b798696184a21e7f92c5071510dec106cd2f`,
+and passive observer `618b4dc011c56befffcf5329dd1b8d776785f78463598b3773f86d7a945c1c1a`.
+The On-smoke fixture is installed as
+`blank-card-jera-on-smoke.lua` (SHA-256 begins `8e6`). The audit confirmed the
+Isaac process was absent. Installation and byte audit do not establish gameplay
+behavior; corrected-module smoke and all other v2 engine cases remain pending.
 
 ## Session and setup
 
