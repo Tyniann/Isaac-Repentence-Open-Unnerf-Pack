@@ -390,16 +390,16 @@ it does not establish success.
   malformed records and no collector errors. The main agent cross-checked the
   raw capture.
 
-The current source change associates the primary Blank Card use with one
-Car Battery replay for the same player update. It accepts the no-slot callback
-only when `USE_CARBATTERY` is set and the player seed, recorded owning slot,
-Blank Card and held Jera still match; it then dispatches Jera once and consumes
-the association. Only the primary callback schedules the next-four cost.
-Unpaired no-slot calls and other mimics remain ignored. The association clears
-on player update, run start and exit, and the existing reserve-safe cost update
-is unchanged. Callback mocks cover charge 2/4, all four slots, one replay per
-primary use, mismatches and cleanup, but the production fix has not been run in
-the engine. Car Battery validation remains pending.
+The bb2d source associates the primary Blank Card use with one Car Battery
+replay for the same player update. It accepts the no-slot callback only when
+`USE_CARBATTERY` is set and the player seed, recorded owning slot, Blank Card
+and held Jera still match; it then dispatches Jera once and consumes the
+association. Only the primary callback schedules the next-four cost. Unpaired
+no-slot calls and other mimics remain ignored. The association clears on player
+update, run start and exit, and the reserve-safe cost update is unchanged.
+Callback mocks cover charge 2/4, all four slots, one replay per primary use,
+mismatches and cleanup. The native validation for this fix passed in the Car
+Battery mode recorded below; other acceptance cases remain pending.
 
 ## Bounded lifecycle matrix
 
@@ -474,7 +474,7 @@ The On-smoke fixture is installed as
 Isaac process was absent. Installation and byte audit do not establish gameplay
 behavior; corrected-module smoke and all other v2 engine cases remain pending.
 
-### Candidate v3 cold update — installed and audited; Car Battery retest pending
+### Candidate v3 cold update — installed and audited
 
 - Runtime manifest: [`blank-card-jera-runtime-v3.json`](evidence/blank-card-jera-runtime-v3.json),
   pinned to source `bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f`, 22 runtime files,
@@ -509,8 +509,7 @@ the module hash above, both matrix copies, helper files, original pack and
 previous candidate. The owner cross-checked the audit output; Isaac process
 count was zero. This was an audit-input typo, not a product or installation
 failure. At the time of that audit, no v3 gameplay retest had run. The later
-slot-1 Continue and battery-smoke are recorded below; the Car Battery retest
-remains pending.
+slot-1 Continue, battery-smoke and Car Battery mode are recorded below.
 
 ### Candidate bb2d after Continue — native battery-smoke pass
 
@@ -538,19 +537,56 @@ Continue. It does not cover Car Battery.
   `e73d064d508b38f9f309ee7832ff2142438abfe5679f20976b5de2b4d3ae149d`, zero
   malformed records and no collector errors.
 
-The earlier v2 Car Battery failure remains the last native observation of that
-interaction. A retest with the current `USE_CARBATTERY` replay association is
-still pending, as are the other matrix acceptance cases.
+### Candidate bb2d Car Battery mode — native compatibility pass
+
+The owner then ran the Car Battery mode with source `bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f`
+(module SHA-256
+`6beb2862bad6a5feb083b7d9b4fbabc017ee936bf054c53b9a9ab166229b2025`). The
+main agent cross-checked the raw trace through terminal frame 2532. It used
+seed `2855396759` and actor `483707137`, with native use sequence spanning
+frames 2206–2532.
+
+The native Magician control at frame 2230 recorded two card effects while one
+four-charge bar spent 4→0. After a real battery refill, Jera at inherited charge
+2 repeated twice and spent that single two-charge bar. Another real refill set
+the next cost to four; the `car_battery_cost_transition` case passed at frame
+2339. At frame 2359, a single four-charge bar also produced the native Car
+Battery repeat count of two Jera effects while spending one bar. The fixture
+asserted four penny drops from that one activation, and
+`car_battery_single_charge_expenditure` passed.
+
+With both passives owned, Blank Card/Jera use at frame 2449 left base charge 4
+and blue charge 0 by frame 2467; the second use at 2469 left 0+0 by frame 2487.
+The fixture's native penny-count assertion for 16 passed before cleanup at 2489
+(the count is assertion evidence, not a separately emitted inventory field).
+It removed both passives and refilled the base bar with a real battery. The
+terminal frame 2532 showed one Blank Card (collectible 286), Jera (card 33),
+base charge 4/blue charge 0, The Battery (63) count 0, and Car Battery (356)
+count 0. `car_battery_with_stored_charge` passed. This validates the Car
+Battery compatibility regression in this mode; the other On matrix, ordinary
+four-room recharge, Schoolbag, battery-loop, settings/Continue/Off, co-op and
+display acceptance cases remain pending.
+
+- Capture: `session/capture-bb2d-car-20261115T190017Z`; stable 85,980-byte log,
+  log/second-read SHA-256
+  `79388903b16679c9f2014ab772b5d70ea013c0310e20264d12d5512c11076ced`.
+- Parsed records: 152, SHA-256
+  `b5997fbcef440a50e8182befb92c9bd84a7139097652364f255ff36446982d52`, zero
+  malformed records and no collector errors. The main agent cross-checked the
+  compact trace and final raw records.
 
 ### Independent review checkpoint
 
 Two independent read-only reviews covered base `ce1a9b6a38e274de1f8fbd9bbf69069ddbf0a067`
-through head `07c68c1ec93ba8b51516c4f318bd096c8cfe7967`. Standards review found
-zero actionable violations or smells. Spec review listed two known validation
-risks: the remaining native acceptance criteria and the Car Battery retest; it
-found no confirmed implementation bug or scope creep. The bb2d source fix
-postdates that reviewed head and was not covered by those reviews. Merge remains
-pending until the required acceptance evidence is complete.
+through head `07c68c1ec93ba8b51516c4f318bd096c8cfe7967`. Verified ancestry
+(`git merge-base --is-ancestor bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f
+07c68c1ec93ba8b51516c4f318bd096c8cfe7967`, exit 0) confirms the bb2d fix was
+included in that review range. Standards review found zero actionable
+violations or smells. Spec review listed remaining native acceptance criteria
+and the Car Battery retest as risks at that checkpoint; it found no confirmed
+implementation bug or scope creep. The Car Battery retest has since passed as
+recorded below. Merge remains pending until the other acceptance evidence is
+complete.
 
 ## Session and setup
 
