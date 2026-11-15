@@ -5,12 +5,17 @@
 
 ## Status
 
-**Feasibility and native validation are pending.** No production implementation
-has been made and no gameplay pass is claimed. The current work prepares a
-separate, read-only observer for a backed-up disposable run. Acceptance remains
-the complete issue #19 checklist, including the charge display and recharge,
-battery interactions, other consumables, item swaps, Continue, disabled
-behavior, and co-op.
+**Native feasibility is partially observed; implementation and acceptance are
+pending.** The production callback is present in source but has not been
+deployed or engine-validated; no feature acceptance pass is claimed. The owner
+clarified the intended timing: preserve Blank Card's
+native post-use charge behavior; using Jera sets the cost of its next activation
+to four. Do not set four on card selection or grant free charge. The original
+“four charges per activation” criterion is superseded. The first Jera use after
+Magician may consume the inherited two-charge cost; the subsequent Jera use
+should cost four. Four ordinary room clears after Jera, battery and other native
+consumable interactions, item swaps, Continue, disabled behavior, and co-op
+remain required checks.
 
 ## Observer and contract check
 
@@ -84,8 +89,9 @@ Magician (2) used at frame 756 and reduced charge 4→0; a real battery pickup
 (`909118380`) restored 2. After switching back to Jera, its use at frame 822
 also reduced charge 2→0; battery `1642800875` restored charge to 2. The batch
 completed with three observed uses total, one Blank Card, and no Lua errors.
-This shows native use retained the prior two-charge cost after the card switch;
-it does not implement or validate a fix.
+This records that the first Jera use after Magician retained the prior
+two-charge cost. It does not establish a cost on card selection or implement or
+validate the owner's clarified next-use timing.
 
 - Capture: `capture-20261114T135331Z`; log 33,681 bytes, SHA-256
   `b8a6f1eda55b31560ccdbe9b005d550913b0dee5d3adfa388814b40a4e13e56e`.
@@ -100,9 +106,60 @@ current-maximum-charge getter. A separate capacity probe,
 [`blank-card-jera-capacity.lua`](../../tools/validation/blank-card-jera-capacity.lua),
 and its protocol harness
 [`blank_card_jera_capacity_spec.lua`](../../tests/blank_card_jera_capacity_spec.lua)
-are available for further investigation. Its mocked accessor/grant and
-invariant checks pass locally, but it has not been staged or run in Isaac; no
-native capacity result or production-ready implementation is established.
+are available as an API mechanism trial, not a final cost-timing proposal. It is
+staged at `mods\oup_blank_card_issue19_observer\blank-card-jera-capacity.lua`
+(5,818 bytes), SHA-256
+`4bf95fe188043b1243027fa45a02e6b9e0caa819df548ca1c1d3dd545e575f68`; the
+session's `capacity-staging.json` records the staging. Mocked accessor/grant
+and invariant checks pass locally.
+
+The J460 mechanism trial started with Blank Card/Jera and charge 2. The
+`AddCollectible` path with next cost 4 left ownership count 1, total collectibles
+1, Jera, zero collectible pedestals and all active-slot item/charge/battery
+values unchanged. API inspection found no `SetActiveVarData`,
+`GetActiveItemDesc`, `GetActiveMaxCharge` or `SecondaryActiveItem`; `NeedsCharge`
+was present. A real battery (`4226919018`) filled the item to four, the native
+smoke used it once and drained it to zero, and a second battery (`1066954075`)
+filled it to four again. This tests the capacity mechanism in that disposable
+setup; the production callback and the owner's intended next-use timing remain
+unvalidated in the game.
+
+- Capture: `capture-20261114T150500Z`; log 39,352 bytes, SHA-256
+  `3946db88a56575778839e6690ff72cce4231c7a6c7d7c7345af516de324aa134`.
+- Parsed records: 62, SHA-256
+  `d2fbd2cda707d700b33979ea36a9995df331ac72616a7270650f48aedd49efe3`; stable,
+  zero malformed records or matching errors. The latest collector verified the
+  session download hash; the installed-file hash was not independently checked.
+
+## Production On smoke fixture and source staging
+
+- Pending native fixture:
+  [`blank-card-jera-on-smoke.lua`](../../tools/validation/blank-card-jera-on-smoke.lua).
+  Its protocol harness is
+  [`blank_card_jera_on_smoke_spec.lua`](../../tests/blank_card_jera_on_smoke_spec.lua);
+  local controller stubs cover setup, witness handling, failure cleanup and
+  foreign-pickup refusal, not Isaac gameplay.
+- The fixture requires a fresh Normal Isaac run, one player, the feature On, a
+  cleared starting room with no pickups, and D6 or an empty active slot. The
+  separate `OUPBlankCardBatch` diagnostic must already be loaded. It grants
+  disposable Blank Card/Jera, positions a penny, battery and closed chest away
+  from Isaac, then delegates the native use and battery refill to the batch.
+  It checks the native Jera use, each pickup doubling, unchanged Jera/Blank Card
+  ownership and a four-charge refill; cleanup removes pickups only after the
+  empty-room precondition. The fixture has not run in Isaac; it establishes no
+  production On behavior.
+- [`stage-source-pack.py`](../../tools/validation/stage-source-pack.py) and
+  [`stage_source_pack_spec.py`](../../tests/stage_source_pack_spec.py) stage a
+  manifest-pinned runtime tree from raw GitHub files into a new directory
+  outside the game. The helper verifies its source commit, path allowlist, file
+  sizes and hashes, metadata identity and XML. It does not install or launch
+  Isaac. Its local smallest-case smoke passed exact-byte, safe-path,
+  overwrite-refusal and hash-rejection checks. The pinned manifest and staged
+  candidate for the current checkpoint are still pending; do not install from
+  an unverified tree. The existing `deploy-test-build.ps1` has an older test
+  folder and observer/MCM contract and is not a direct installer for this
+  candidate. Any later deployment needs a separate guarded install with a fresh
+  backup, closed game and installed-byte verification.
 
 ## Session and setup
 
@@ -126,12 +183,12 @@ backed-up disposable runs, restarts and co-op. Session:
   after SHA-256
   `35e408664993b2ae21a52efd4e4372f5ac7f9c8938f64426fbbb8dcc65420cdd`.
 
-Start a fresh Normal Isaac run on save slot 1 after confirming the candidate
-observer and MCM are loaded from the game log. Record the seed, fresh/Continue
-state, actor count, difficulty, active item and settings. First observe a native
-Blank Card use with Jera as the baseline; do not infer charge behavior from a
-fixture or from `UseActiveItem` calls. Continue only with the issue's remaining
-acceptance cases and preserve each run's conditions and log evidence.
+For further captures, confirm the observer and MCM are loaded from the game log
+and record seed, fresh/Continue state, actor count, difficulty, active item and
+settings. The native smoke and transition observations above came from the
+recorded run; do not infer behavior from a fixture or `UseActiveItem` calls.
+Continue only with the issue's remaining acceptance cases and preserve each
+run's conditions and log evidence.
 
 ## Native startup — pass
 
@@ -139,8 +196,8 @@ The owner started a new Normal Isaac run on slot 1 and opened the console.
 The observer independently recorded `continued=false`, difficulty `0`, one
 Isaac (`type=0`), seed `3170816660`, player seed `2828316171`, initial D6
 (`105`) at six charges, and no held card or pill. `repentogon=false`.
-The startup log reports J460 and MCM v113 loaded. No Blank Card use has been
-tested yet.
+The startup log reports J460 and MCM v113 loaded. At startup, no Blank Card use
+had yet been tested.
 
 Capture: session-relative `capture-20261114T133120828848Z`. Source length
 19,026 bytes, identical before/after metadata and two-read SHA-256
