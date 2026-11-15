@@ -474,7 +474,7 @@ The On-smoke fixture is installed as
 Isaac process was absent. Installation and byte audit do not establish gameplay
 behavior; corrected-module smoke and all other v2 engine cases remain pending.
 
-### Candidate v3 cold-update artifacts — staging verified, deployment pending
+### Candidate v3 cold update — installed and audited; Car Battery retest pending
 
 - Runtime manifest: [`blank-card-jera-runtime-v3.json`](evidence/blank-card-jera-runtime-v3.json),
   pinned to source `bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f`, 22 runtime files,
@@ -491,7 +491,26 @@ behavior; corrected-module smoke and all other v2 engine cases remain pending.
   `matrix.lua` to the validated revision-3 bytes. Synthetic success and injected
   helper-write-failure rollback both passed while preserving failed generations,
   the original pack and protected mods. The recipe does not change profile or
-  game data. Deployment and native Car Battery retest remain pending.
+  game data.
+
+Isaac was confirmed closed before the frozen updater ran; it exited 0. Journal:
+`session/candidate-update-v3.json`. The v2 candidate from source `0e1c6e4` is
+archived at `session/candidate-used-0e1c6e4215d6`; the full previous helper
+generation is at `session/diagnostic-generation-v2`. The original pre-test
+pack remains unchanged, and the profile and game data were not modified. Only
+the helper's autoloaded `matrix.lua` was updated to the revision-3 bytes; the
+separately staged `matrix-v3.lua` has the same 25,146-byte size and SHA-256
+`21bce95185f01034b64c24c39935fabc12755d91f9bbbd3a87a3470dc31afc45`.
+
+The first read-only post-install audit failed because its script transcribed a
+batch-file hash incorrectly (`c423c015` instead of `c423b015`). A corrected
+scratch audit exited 0 and verified the exact 22-file runtime set and bytes,
+the module hash above, both matrix copies, helper files, original pack and
+previous candidate. The owner cross-checked the audit output; Isaac process
+count was zero. This was an audit-input typo, not a product or installation
+failure. No v3 Car Battery gameplay retest has run yet. The next owner run is
+slot-1 Continue, followed by `battery-smoke` (which recovers a zero-charge bar
+with a real battery pickup) and then the Car Battery retest.
 
 ## Session and setup
 
