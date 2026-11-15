@@ -5,20 +5,44 @@
 
 ## Status
 
-**Production implementation is present; native validation is partial and
-acceptance is pending.** A bounded production On smoke has passed in a
-disposable run, but no feature acceptance pass is claimed. The owner clarified
-the intended timing: preserve Blank Card's
+**Production implementation and the recorded native acceptance checks pass**
+for the tested J460, no-REPENTOGON, MCM v113 environment. This is bounded
+disposable-run evidence, not a claim across other game builds or platforms.
+The owner clarified the intended timing: preserve Blank Card's
 native post-use charge behavior; using Jera sets the cost of its next activation
 to four. Do not set four on card selection or grant free charge. The original
 “four charges per activation” criterion is superseded. The first Jera use after
 Magician may consume the inherited two-charge cost; the subsequent Jera use
-should cost four. Four ordinary room clears after Jera, battery and other native
-consumable interactions, item swaps, a fresh disabled run and the charge display remain required
-checks. The two-player isolation, current-On/next-run-Off and cold Continue
-checks have since passed in the captures below.
+should cost four. The native captures below cover the On behavior, four ordinary
+room clears, real battery refills, other consumables, Schoolbag slots, Car
+Battery, two-player isolation, MCM current-On/next-run-Off, cold Continue and a
+fresh disabled control. The owner also confirmed four charge bars in the UI
+before the co-op run. Active slots 0 and 1 are covered natively; callback
+contract tests cover slots 2 and 3. The revision-4 automatic co-op command crash
+is retained as a diagnostic-tool failure; revision 5 removed that command and
+the owner joined player 2 through native UI/controller input.
 
-### Reserve-loss defect and pending correction
+### Native acceptance map
+
+| Behavior | Evidence | Result / scope |
+| --- | --- | --- |
+| On: held Jera, one Blank Card, ordinary pickup doubling | v2 On smoke; v5 matrix | Pass |
+| Native post-use timing and stored battery charge | v3 and bb2d battery-smoke | Pass; Jera sets the next cost to four |
+| Car Battery repeats and stored charge | bb2d Car Battery mode | Pass; primary slot and native repeat path |
+| Ordinary room recharge | v4 finish-on tail | Pass; four mapped 1×1 rooms on stage 2, room clear 0→1→2→3→4 |
+| Other consumables and Schoolbag swap | v5 On matrix capture | Pass; active slots 0 and 1; slots 2 and 3 are contract-tested only |
+| Co-op player isolation and MCM current On / next-run Off | v5 with native UI-joined player 2 | Pass; keyboard P1 plus one controller P2 |
+| Continue with next-run Off | v5 cold Continue | Pass; saved run remains On and charge remains four |
+| Disabled native behavior and inherited cost | v5 fresh Off control | Pass; Jera and Dagaz remain native |
+| Visible charge bars | owner observation before co-op matrix | Four bars observed at full charge |
+
+The automatic `addplayer` crash occurred in diagnostic fixture revision 4 after
+the four-room case passed. It is not a product behavior result. The unsafe
+helper was archived and must not be run; safe revision 5 requires native
+player joining. The session's original-profile restoration and final cleanup
+remain separate outstanding tasks.
+
+### Historical reserve-loss defect and validated correction
 
 The first native `battery-smoke` exposed a defect in the candidate implementation:
 with Blank Card at 4 and blue reserve at 4, the Jera use callback reinserted
@@ -43,15 +67,13 @@ The current source queues the cost-four metadata update by player pointer,
 run seed and slot, then applies it on `MC_POST_PLAYER_UPDATE` only when blue
 reserve is zero. Later non-Jera use cancels the pending slot; changed active
 items or actor seed are skipped; run start and exit reset pending state. It
-does not reinsert a charged bar before native discharge. Callback and matrix
-protocol specs pass locally, but this correction has not been tested in the
-game. The next engine entry is the passive
-[`blank-card-jera-test-main.lua`](../../tools/validation/blank-card-jera-test-main.lua),
-which loads the batch and matrix definitions without starting a fixture. Its
-`battery-smoke` mode must establish Magician's native two-charge bar plus
-reserve, retain that reserve through Jera, and demonstrate four-charge capacity
-through real battery refills and two following Jera uses. No engine pass is
-claimed for the correction.
+does not reinsert a charged bar before native discharge. This correction was
+later validated by the native battery-smoke cases recorded below. The passive
+[`blank-card-jera-test-main.lua`](../../tools/validation/blank-card-jera-test-main.lua)
+loads batch and matrix definitions without starting a fixture; its battery-smoke
+mode was used for the subsequent native reserve, cost-transition and refill
+checks. The earlier pending statement and test plan are historical and are
+superseded by the successful captures below.
 
 ## Observer and contract check
 
@@ -400,7 +422,8 @@ no-slot calls and other mimics remain ignored. The association clears on player
 update, run start and exit, and the reserve-safe cost update is unchanged.
 Callback mocks cover charge 2/4, all four slots, one replay per primary use,
 mismatches and cleanup. The native validation for this fix passed in the Car
-Battery mode recorded below; other acceptance cases remain pending.
+Battery mode recorded below. Other acceptance evidence was outstanding at
+that point and is recorded in later sections.
 
 ## Bounded lifecycle matrix
 
@@ -422,7 +445,7 @@ Battery mode recorded below; other acceptance cases remain pending.
   status. `on` covers ordinary
   pickups, three battery-fed cycles from one initial battery, card transitions,
   other-rune passthrough, Schoolbag swaps, four mapped hostile-room clears, a
-  bounded co-op command experiment, and changing MCM to next-run Off while the
+  bounded co-op check, and changing MCM to next-run Off while the
   current run stays On. `finish-on` resumes only room clears, co-op and next-run
   Off after the five previously passed On cases. `off` is the native control;
   `co-op` reports pending until a second actor joins through owner-selected
@@ -436,16 +459,15 @@ Battery mode recorded below; other acceptance cases remain pending.
   subsequently passed the four-room recharge case; its following automatic
   co-op command crashed the game. The separate safe v5 co-op and current-On/
   next-run-Off checks have now passed with owner-joined players. A real cold
-  Continue has also passed; fresh disabled behavior, charge display and
-  remaining acceptance checks stay pending.
-  The earlier v2 repeated-use error
-  is historical, not a v3 failure. These fixtures use
+  Continue and fresh disabled behavior have also passed. The owner observed
+  four UI charge bars at full charge before co-op; active slots 2 and 3 remain
+  unverified in-engine. The earlier v2 repeated-use error is historical, not a v3 failure. These fixtures use
   native input, repeated use and real pickups; they do not write charge or
   room-clear flags. Room changes and NPC kills cannot be undone inside the
   disposable run. Schoolbag, D6 or a second actor may remain for profile
-  restoration; co-op now requires owner-joined actors and never creates a
-  player automatically. The battery-smoke and full matrix require their documented prepared, empty-room
-  conditions.
+  restoration; co-op requires owner-joined actors and never creates a
+  player automatically. The battery-smoke and full matrix require their
+  documented prepared, empty-room conditions.
 
 ## Candidate v2 staging record
 
@@ -574,9 +596,9 @@ It removed both passives and refilled the base bar with a real battery. The
 terminal frame 2532 showed one Blank Card (collectible 286), Jera (card 33),
 base charge 4/blue charge 0, The Battery (63) count 0, and Car Battery (356)
 count 0. `car_battery_with_stored_charge` passed. This validates the Car
-Battery compatibility regression in this mode; the other On matrix, ordinary
-four-room recharge, Schoolbag, battery-loop, settings/Continue/Off, co-op and
-display acceptance cases remain pending.
+Battery compatibility regression in this mode; the remaining matrix cases
+were still pending at the time of this capture. Subsequent evidence is recorded
+in later sections.
 
 - Capture: `session/capture-bb2d-car-20261115T190017Z`; stable 85,980-byte log,
   log/second-read SHA-256
@@ -719,9 +741,9 @@ charge 4, blue charge 0, and neither Battery passive. The `next_run_off_keeps_cu
 case also passed: current-run setting remained enabled and next-run setting was
 disabled, without granting charge. The matrix completed with two cases passed.
 The owner also observed player 1's four charge bars before the run. This is
-native evidence for two-player isolation and the current-On/next-run-Off MCM
-path; cold Continue was checked separately below, and a fresh disabled run is
-still pending.
+native evidence for two-player isolation, the current-On/next-run-Off MCM path,
+and visible full charge. Cold Continue and the fresh disabled run were checked
+separately below.
 
 - Capture: `session/capture-bb2d-coop-20261115T215017Z`; stable log 43,116 bytes,
   SHA-256 `989530809954c15c618e9aca818d87aa7442760f5c4c84d722019012246f0ff7`.
@@ -755,6 +777,25 @@ Continue after saving next-run Off; the fresh-run Off control remains pending.
   `1c6957744e579a7c2ca2d36a513d21b07fff256067f18121eb4af8fc03f09e2e`, zero
   malformed records and no collector errors.
 
+### Safe v5 fresh Off control — native pass
+
+The owner started a fresh Normal run on slot 1 with the feature disabled. The
+observer recorded `continued=false`, difficulty 0, one Isaac, seed `4199808892`,
+and player seed `49891336`; the initial room was empty, with D6 at six charge
+and no Blank Card. The matrix reported `enabled=false`. Native Jera use did not
+dispatch the Jera effect; a real battery then filled Blank Card to four for the
+next control. After native Magician set the inherited two-charge cost, Jera
+use spent two without dispatching the rune effect. Dagaz (enum 35) also remained
+native. All three cases passed: `disabled_native_jera`,
+`disabled_native_cost_timing`, and `disabled_other_rune`. The terminal state
+was one Blank Card at two charge, Dagaz held, and no Battery passive.
+
+- Capture: `session/capture-bb2d-off-20261115T230149Z`; stable log 90,119 bytes,
+  SHA-256 `15e3fe1d510017eba90aea84b73dd58ebeb7eaee28bd828ead70a8ccf74cd0c8`.
+- Parsed records: 67, SHA-256
+  `cf22c192944705c488ee75c7a6b420d031b9fe9c553170a5e5f4d6036d4b5e35`, zero
+  malformed records and no collector errors.
+
 ### Independent review checkpoint
 
 Two independent read-only reviews covered base `ce1a9b6a38e274de1f8fbd9bbf69069ddbf0a067`
@@ -764,9 +805,9 @@ through head `07c68c1ec93ba8b51516c4f318bd096c8cfe7967`. Verified ancestry
 included in that review range. Standards review found zero actionable
 violations or smells. Spec review listed remaining native acceptance criteria
 and the Car Battery retest as risks at that checkpoint; it found no confirmed
-implementation bug or scope creep. The Car Battery retest has since passed as
-recorded below. Merge remains pending until the other acceptance evidence is
-complete.
+implementation bug or scope creep. The Car Battery retest and remaining native acceptance cases have since
+passed as recorded below. This review checkpoint predates those results and is
+not a current merge assessment.
 
 ## Session and setup
 

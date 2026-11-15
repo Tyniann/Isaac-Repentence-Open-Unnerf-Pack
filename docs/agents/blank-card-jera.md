@@ -41,8 +41,10 @@ state is not shared or saved.
 
 The active-slot checks prevent an item mimic from replacing a different active
 item. Other cards and consumables, the feature-Off path and charge outside the
-matching use remain native. The new Car Battery replay handling has not yet
-passed an engine check; see the issue ledger.
+matching use remain native. The native Car Battery, off-control and other-rune
+checks passed in the J460 captures recorded in the issue ledger. Native active
+slots 0 and 1 were exercised; slots 2 and 3 remain covered by callback contract
+tests only.
 
 ## Data and state
 
@@ -53,38 +55,32 @@ Continue retains the run snapshot. The callback uses only short-lived per-player
 updates and matching a Car Battery replay. It saves no additional state and
 shares no mutable state between players.
 
-## Native feasibility and limits
+## Native validation scope
 
-On J460 with REPENTOGON absent, a separate capacity probe used
-`AddCollectible(Blank Card, currentCharge, false, usedSlot, 4)` with Blank Card
-held and charge 2. The observed ownership count, total collectibles, card,
-pedestals, all slot items/charges and battery charge stayed unchanged. A real
-battery pickup then filled charge to four, and the verified native smoke used
-Blank Card once and discharged to zero. This validates that capacity-update
-mechanism in that disposable context; it is not an engine test of this module.
+The current implementation passed the recorded native acceptance checks on
+Repentance+ `1.9.7.17.J460`, without REPENTOGON and with MCM v113. Captures
+cover the held-rune On path, ordinary pickup doubling, real battery refill,
+Car Battery repeat handling, post-use cost timing, four ordinary 1×1 room
+clears, other consumables, Schoolbag swaps, player isolation, current-On with
+next-run Off, a real Continue, and a fresh Off control. The owner also verified
+four visible charge bars before the co-op matrix. Native active slots 0 and 1
+were covered; slots 2 and 3 were only contract-tested. See the ledger for
+capture IDs, raw hashes and case-level results.
 
-The preceding native transition capture observed Magician's four-charge use,
-then Jera consuming the inherited two-charge cost after switching back. The
-owner clarified that Jera sets the *next* cost to four, while preserving the
-native post-use timing. The capacity probe is exploratory implementation
-evidence, not an alternative timing policy.
+The native transition was confirmed: switching back from Magician can leave an
+inherited two-charge cost for the first Jera activation; that activation sets
+the next cost to four. The correction waits until native discharge and blue
+reserve handling are complete. No selection-time bar write, free charge or
+global Jera/Clear Rune change is used.
 
-A bounded production On smoke passed in a fresh one-player Normal run: native
-Jera used Blank Card, doubled a penny, battery and closed chest, and a real
-battery restored the four-charge bar. A later native battery-smoke passed the
-Magician reserve control, Jera next-cost transition and stored-charge sequence;
-the Car Battery mode also passed its repeat-count and stored-charge cases. The
-broader On matrix passed five cases, then stopped at the room-clear charge
-assertion. The v4 tail later passed four ordinary-room clears after advancing
-to stage 2. It then attempted an automatic `addplayer 0 1` co-op probe and the
-game raised a native exception and wrote a minidump. No co-op, next-run Off or
-display result followed. Do not repeat the v3/v4 co-op command. Revision 5
-removes automatic player creation; a co-op run without two actors reports
-pending and requires the owner to join through native UI or a controller.
-The revision-5 helper is now installed through a guarded helper-only update;
-production, profile and game data were preserved. The native crash dump was
-preserved privately in the session. No further native action is authorized
-until the owner chooses the hardware join path.
+Diagnostic history includes a revision-4 fixture crash when it issued
+`addplayer 0 1` after the room-clear case passed. The crash dump is preserved in
+the private session; the crash was not reproduced. Revision 5 removes all
+automatic player creation. The owner joined player 2 through native character
+selection using keyboard P1 and one controller P2; the safe co-op case passed.
+The old v3/v4 diagnostic helper files are archived outside the game mod path
+and must not be run. The active v5 helper is installed. Original-profile
+restoration and final validation-session cleanup remain pending with the owner.
 
 ## Tools and tests
 
@@ -153,11 +149,11 @@ and other-rune transitions, Schoolbag swaps, four mapped hostile-room clears,
 a bounded co-op check, and saving next-run Off while the
 current run stays On. The Off mode checks native Jera behavior; Continue must
 follow a real relaunch so the passive game-start observer can record the
-continued flag. Co-op can report pending if no second actor appears. It never
-writes charge or room-clear flags; it uses native input, pickups, consumables,
-room changes and NPC deaths. Room/map changes cannot be undone inside that
-disposable run, and Schoolbag/D6 or a created second actor may remain for profile
-restoration. The matrix protocol mock has passed local checks. Revision 3 releases its
+continued flag. Co-op reports pending if no owner-joined second actor appears;
+it never creates a player automatically. The matrix never writes charge or
+room-clear flags; it uses native input, pickups, consumables, room changes and
+NPC deaths. Room/map changes cannot be undone inside that disposable run, and
+Schoolbag/D6 or a second actor may remain for profile restoration. The matrix protocol mock has passed local checks. Revision 3 releases its
 synthetic action pulse on the first observed native item-use callback, and
 snapshots record battery-passive counts. Its `battery-smoke` validates native
 Magician controls, Jera's inherited charge and next-four cost, and two Jera uses
@@ -190,19 +186,17 @@ reports a pending native join and does not use an item or alter charge. Its
 local spec also checks the full-charge and empty-bar paths and next-run Off
 protocol. A frozen helper-only updater archives the unsafe diagnostic generation and
 installs revision 5 while preserving the production mod and profile/data files.
-The guarded update is complete; do not run archived v3/v4 helper paths. Any
-future native co-op join must use owner-selected UI or controller input.
+The guarded update is complete; do not run archived v3/v4 helper paths. Co-op
+requires owner-selected native UI or controller input; the owner-joined two-
+player check passed as recorded in the ledger.
 
 The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
-four charge, and neither The Battery nor Car Battery already held. Invoke
-`OUPBlankCardMatrix.Run("car-battery")` once, inspect with `Status()`, and
-follow the batch's console-close prompts. It first uses native Magician to
-measure Car Battery's repeat count, then checks Jera at the inherited two-cost
-bar and the next four-cost bar. It compares a single Jera bar's penny doubling
-to the native repeat count, then checks both passives with charge moving 8→4→0
-and the corresponding native penny counts. This mode passed its native
-compatibility checks; the ledger records its evidence. Other matrix criteria
-remain pending.
+four charge, and neither The Battery nor Car Battery already held. Its native
+compatibility checks passed: it measures Car Battery's repeat count, checks
+inherited two-cost to next-four timing, compares a single-bar Jera use to the
+native repeat count, then checks both passives through 8→4→0 charge with native
+penny counts. See the ledger for the evidence. Do not rerun historical v3/v4
+co-op helper paths; those files are archived outside the active mod directory.
 
 The pinned v2 candidate manifest is
 [`blank-card-jera-runtime-v2.json`](../testing/evidence/blank-card-jera-runtime-v2.json),
@@ -217,7 +211,8 @@ rollback passed locally. The recipe does not start the game; profile and game
 data remained unchanged in that local smoke.
 
 See the [issue-specific ledger](../testing/blank-card-jera-issue19.md) for
-session provenance, hashes, evidence and remaining acceptance work.
+session provenance, hashes, evidence, tested limits and the pending original-
+profile restoration and cleanup.
 
 ---
 *Last updated: 2026-11-15*

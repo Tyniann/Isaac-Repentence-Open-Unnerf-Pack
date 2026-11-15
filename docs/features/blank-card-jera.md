@@ -19,21 +19,19 @@ Jera is selected or grant charge. Jera's ordinary four-room recharge remains
 native.
 
 The adjustment applies when Blank Card is the active item in the used slot and
-Jera is held in the primary card slot. With Car Battery, the intended behavior
-is to repeat Jera's effect once from the native repeated-use callback without
-spending another Blank Card charge. The current Car Battery change still needs
-its engine validation; unrelated mimicked actives remain ignored. The feature
-does not change global Jera behavior or Clear Rune, and leaves other cards and
-consumables to the game.
+Jera is held in the primary card slot. With Car Battery, the native repeated-use
+callback repeats Jera's effect without spending another Blank Card charge.
+Unrelated mimicked actives remain ignored. The feature does not change global
+Jera behavior or Clear Rune, and leaves other cards and consumables to the game.
 
-The intended four-charge next-use timing is an owner-approved clarification of
-issue #19. A separate J460 capacity probe confirmed a way to set the next cost
-without changing the held item or current charge. The bounded On smoke and v3
-battery-smoke have partial native passes, but the current Car Battery callback
-change has not been deployed or tested in-game. Car Battery, ordinary
-room-clear recharge, other consumables, item slots, Continue, Off and co-op
-checks remain pending. See the [issue #19 ledger](../testing/blank-card-jera-issue19.md)
-for evidence and limits.
+Native checks passed on Repentance+ v1.9.7.17.J460 without REPENTOGON, with
+MCM v113. They cover ordinary pickups, battery refills, Car Battery, four-room
+recharge, other consumables, Schoolbag in slots 0 and 1, co-op isolation, Off,
+and Continue. The owner also confirmed the visible four-charge bar before the
+co-op run. See the [issue #19 ledger](../testing/blank-card-jera-issue19.md)
+for the captures, tested scope and remaining limits. These results do not
+cover other game builds; active slots 2 and 3 have callback contract tests but
+were not exercised in the native captures.
 
 ## Configuration
 
