@@ -239,6 +239,37 @@ The separate passive batch mod is at
 SHA above; the passive observer main is unchanged. `acceptance-staging.json`
 preserves the staging record. Cleanup and profile restoration remain pending.
 
+### Candidate v2 production On smoke — basic behavior pass
+
+The owner ran the installed v2 candidate in a fresh Normal Isaac run: source
+`0e1c6e4215d629675cd8f32be468eaf7f4cba640`, module SHA-256
+`81234e4d8e697b4fb6379369263c16676334b2a5f554e7f71a709c4152e8f3fa`. Startup
+was J460/MCM v113 with REPENTOGON absent, seed `2855396759`, player seed
+`483707137`, Isaac type `0`, Normal difficulty `0`, and `continued=false`.
+At frame 8 the fixture had one Blank Card (286), Jera (33), base charge 4,
+blue reserve 0, and one penny, battery and closed chest. A single native use at
+frame 14 used flags 4 and slot 0; one Jera dispatch at frame 14 used flags 384.
+Each pickup doubled from one to two, and the rune and single Blank Card remained.
+Charge moved 4→0; real battery `1657471443` restored it to 4 by frame 59/75.
+The batch completed at frame 75 and the On smoke at frame 76 with one use and
+one Jera dispatch. This confirms basic On duplication, held rune, and native
+4→0→4 battery recharge for this run only.
+
+- Capture: `session/capture-v2-on-smoke-20261115T172307Z`; stable 25,203-byte
+  log, log/second-read SHA-256
+  `5f3dd444acabc1b1c3a35618dcd2fe247007e777b737a577a8a5f9b8ef69f347`.
+- Parsed records: 21, SHA-256
+  `ab3da2e2359d51663d325c8215a908d451763de4e1b82e88e20fb691adefe8b7`, zero
+  malformed records and no collector errors. The owner cross-checked the raw
+  collector output.
+
+The fixture logged six pickups remaining in the same frame as its removal
+request. Native removal is deferred, so cleanup is inconclusive until a later
+empty-room preflight; do not count the six as a confirmed cleanup failure or
+claim they were removed. The Battery reserve case, Car Battery, post-use cost
+transitions, slot changes, room-clear recharge, Continue, Off and co-op remain
+pending. No feature acceptance pass is claimed.
+
 ## Bounded lifecycle matrix
 
 - Matrix: [`blank-card-jera-matrix.lua`](../../tools/validation/blank-card-jera-matrix.lua),
