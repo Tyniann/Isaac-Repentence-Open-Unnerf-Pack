@@ -14,9 +14,9 @@ to four. Do not set four on card selection or grant free charge. The original
 “four charges per activation” criterion is superseded. The first Jera use after
 Magician may consume the inherited two-charge cost; the subsequent Jera use
 should cost four. Four ordinary room clears after Jera, battery and other native
-consumable interactions, item swaps, a cold Continue, disabled behavior and the charge display
-remain required checks. The two-player isolation and current-On/next-run-Off
-checks have since passed in the capture below.
+consumable interactions, item swaps, a fresh disabled run and the charge display remain required
+checks. The two-player isolation, current-On/next-run-Off and cold Continue
+checks have since passed in the captures below.
 
 ### Reserve-loss defect and pending correction
 
@@ -435,8 +435,9 @@ Battery mode recorded below; other acceptance cases remain pending.
   cases before the room-clear exact-charge assertion stopped it. Native v4
   subsequently passed the four-room recharge case; its following automatic
   co-op command crashed the game. The separate safe v5 co-op and current-On/
-  next-run-Off checks have now passed with owner-joined players. A cold Continue,
-  disabled behavior, charge display and remaining acceptance checks stay pending.
+  next-run-Off checks have now passed with owner-joined players. A real cold
+  Continue has also passed; fresh disabled behavior, charge display and
+  remaining acceptance checks stay pending.
   The earlier v2 repeated-use error
   is historical, not a v3 failure. These fixtures use
   native input, repeated use and real pickups; they do not write charge or
@@ -719,12 +720,39 @@ case also passed: current-run setting remained enabled and next-run setting was
 disabled, without granting charge. The matrix completed with two cases passed.
 The owner also observed player 1's four charge bars before the run. This is
 native evidence for two-player isolation and the current-On/next-run-Off MCM
-path; it does not validate a cold Continue or a fresh disabled run.
+path; cold Continue was checked separately below, and a fresh disabled run is
+still pending.
 
 - Capture: `session/capture-bb2d-coop-20261115T215017Z`; stable log 43,116 bytes,
   SHA-256 `989530809954c15c618e9aca818d87aa7442760f5c4c84d722019012246f0ff7`.
 - Parsed records: 58, SHA-256
   `6e8856562b3cf90c384fd705be220fd406fbacacf2f732a0752e9dc8d85c2e8f`, zero
+  malformed records and no collector errors.
+
+
+### Safe v5 cold Continue with next-run Off — native pass
+
+After the owner saved through the menu, fully exited Isaac and relaunched slot
+1, the observer recorded `continued=true`, the same run seed `2633492662`, and
+two Isaac players. Player 1 remained controller 0, seed `413018421`; player 2
+was controller 1, seed `327774610` after restart (its prior-process seed was
+`2465916929`). Both began with Blank Card (286) at four charge and Jera (33).
+The matrix started enabled at frame 1098 in room 84, shape 1, stage 1.
+
+At frame 1101, native Blank Card/Jera use discharged the bar to zero. A real
+battery spawned afterward (so it was not duplicated by Jera) and restored the
+bar to four by frame 1162. The `continue_retains_on_and_four_charge_state`
+case passed at frame 1162: the loaded run seed matched the saved run, current
+settings remained On while `nextRun` was Off, one Jera remained held, one Blank
+Card remained owned, charge was 4 with blue charge 0, and neither Battery
+passive was held. The matrix completed with one case passed. This validates
+Continue after saving next-run Off; the fresh-run Off control remains pending.
+
+- Capture: `session/capture-bb2d-continue-20261115T224128Z`; stable log 57,435
+  bytes, SHA-256
+  `0daf6ecce8128e55d2e8c795e2ac7a6d1193a3f405f722775e284b27f41b4979`.
+- Parsed records: 19, SHA-256
+  `1c6957744e579a7c2ca2d36a513d21b07fff256067f18121eb4af8fc03f09e2e`, zero
   malformed records and no collector errors.
 
 ### Independent review checkpoint
