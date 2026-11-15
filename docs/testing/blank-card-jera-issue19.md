@@ -270,6 +270,37 @@ claim they were removed. The Battery reserve case, Car Battery, post-use cost
 transitions, slot changes, room-clear recharge, Continue, Off and co-op remain
 pending. No feature acceptance pass is claimed.
 
+### Candidate v2 stored-battery run — fixture error, observations retained
+
+The next run used the same installed v2 source and matrix (`1d5b33b…`). At
+matrix start, the room had zero pickups. A real Battery pickup
+(`4011573285`) produced base charge 4 plus blue reserve 4. One requested Jera
+activation at frame 306 produced two native item-use callbacks in that same
+frame and two Jera dispatches: the first began at 4+4, and the second at 4+0.
+The first native discharge therefore retained the spare four charges. The
+matrix then reported `Unexpected native item-use count: first_overcharged_jera`
+at frame 324, before recording any case as passed. The terminal is a handled
+`matrix_error` record; collector `errors[]` being empty does not make the run a
+pass. Cause of the repeated native use is unresolved; the fixture's input pulse
+may have remained active across native queries, but this is only a hypothesis.
+
+- Capture: `session/capture-v2-battery-20261115T172654Z`; stable 32,393-byte
+  log, both-read SHA-256
+  `55126274bf20113c88bf15613f68e657bfaa4a8c46e0123508d73e5a69fd920f`.
+- Parsed records: 37, SHA-256
+  `43f15298493cd6a826dca2670e78713cdb536407f50e52a69f8bd6a8560f612c`, zero
+  malformed records and no collector `errors[]`. Owner's “complete” report
+  describes the run ending; the raw capture records the matrix error. The
+  temporary Battery was removed by fixture error cleanup, explaining its
+  absence afterward; that does not indicate a passed battery case.
+
+The capture used seed `2855396759` and actor `483707137`, matching the v2 On
+smoke. It confirms the initial native reserve was retained by the first
+discharge, but it does not validate the complete Battery sequence or corrected
+module. A revised input latch/control is being designed; rerun only after its
+preflight and native-use counts are confirmed. Car Battery, cost transitions,
+slots, room clears, Continue, Off and co-op remain pending.
+
 ## Bounded lifecycle matrix
 
 - Matrix: [`blank-card-jera-matrix.lua`](../../tools/validation/blank-card-jera-matrix.lua),
@@ -291,10 +322,12 @@ pending. No feature acceptance pass is claimed.
   current run stays On. `off` is the native control; `co-op` retries that bounded
   co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
   the passive observer to confirm a real continued run.
-- The new `car-battery` protocol spec passed locally. Corrected-module engine
-  validation, this Car Battery mode, and remaining matrix engine runs are
-  pending. The mode uses native input, native repeated use and real pickups; it
-  does not write charge or room-clear flags. Room changes/NPC kills cannot be undone
+- The new `car-battery` protocol spec passed locally. The v2 stored-battery run
+  observed reserve retention on the first native discharge, but the matrix
+  stopped on an unexpected repeated item-use callback before any case passed.
+  Corrected-module battery validation, the Car Battery mode, and remaining
+  matrix engine runs are pending. These fixtures use native input, repeated use
+  and real pickups; they do not write charge or room-clear flags. Room changes/NPC kills cannot be undone
   inside the disposable run. Schoolbag, D6, or a second actor may remain for
   profile restoration; if the bounded `addplayer 0 1` experiment creates no
   second Isaac, co-op is recorded pending. The battery-smoke and full matrix
