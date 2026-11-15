@@ -167,6 +167,15 @@ unvalidated in the game.
   contract and is not a direct installer for this candidate. Any later
   deployment needs a separate guarded install with a fresh backup, closed game
   and installed-byte verification.
+- Frozen one-session swap recipe:
+  [`blank-card-jera-install.py`](evidence/blank-card-jera-install.py),
+  SHA-256 `93d073fe8e621fc130d4be7303315c8f679150141a6bbc42499f6665a9a37470`.
+  It pins the session backup and runtime manifest hashes, verifies the executable
+  and protected mod files, checks that Isaac is closed, then moves the original
+  pack aside and swaps in the candidate with hash checks and rollback handling.
+  Its synthetic local smoke passed; it does not edit profile or game data or
+  launch Isaac. The actual installation remains pending and is not an engine
+  implementation pass.
 
 ## Session and setup
 
