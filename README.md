@@ -50,8 +50,8 @@ The current target is **Repentance+ v1.9.7.17**. The original seven adjustments
 and configuration have [recorded local Normal/Hard checks](docs/testing/issue-1-engine-results.md#acceptance-matrix).
 Magic Mushroom has its own [pool and Continue validation](docs/testing/magic-mushroom-1.9.7.17.md).
 Void choice absorption has separate [native matrix, Continue and charge checks](docs/testing/void-choice-1.9.7.17.md).
-Blank Card + Jera has [bounded native charge observations](docs/testing/blank-card-jera-issue19.md);
-the production callback and remaining acceptance cases still need engine checks.
+Blank Card + Jera passed [native On/Off, recharge, battery, Schoolbag,
+local co-op and cold-Continue checks](docs/testing/blank-card-jera-issue19.md) on J460.
 Each feature page explains its tested conditions and limits; other game builds,
 Greed modes, and multiplayer have separate validation requirements. Sack Head's
 Normal-On and Normal-Off checks, natural reward-chain checks, actual Greed-mode

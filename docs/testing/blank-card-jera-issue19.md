@@ -39,10 +39,10 @@ the owner joined player 2 through native UI/controller input.
 The automatic `addplayer` crash occurred in diagnostic fixture revision 4 after
 the four-room case passed. It is not a product behavior result. The unsafe
 helper was archived and must not be run; safe revision 5 requires native
-player joining. The session's original-profile restoration and final cleanup
-remain separate outstanding tasks.
+player joining. Original profile, data and pack restoration completed and was
+audited as recorded below. Repository PR/merge work remains separate.
 
-### Frozen restoration driver — review complete, execution pending
+### Frozen restoration driver — execution and audit pass
 
 [`blank-card-jera-restore.py`](evidence/blank-card-jera-restore.py) is the
 maintained one-session restoration driver. It validates immutable backup file
@@ -52,13 +52,29 @@ pack, game-data and profile trees on their destination volumes, archives the
 disposable trees and diagnostic folders, verifies the restored inventories,
 and rolls back moved trees if an operation fails. Synthetic success, injected
 profile-rename rollback and unrelated-mod-change refusal passed in a local
-temporary fixture. Isaac is confirmed closed. The remote restoration has not
-been executed; original-profile restoration and cleanup remain pending.
+temporary fixture. The user confirmed Isaac closed; the frozen driver completed
+with exit 0 and a separate read-only audit passed with exit 0 and process count
+0. Journals are `session/restore-journal.json` and
+`session/restore-result.json`. The original profile, game data and mod trees
+were restored to exact saved file and directory inventories: profile 189 files
+and 2 directories; game data 8 files and 3 directories; mods 287 files and 36
+directories. All immutable backup file and directory snapshots matched. The
+original pack archive at `session/original-pack` remains unchanged (21 files),
+and restored `options.ini` matches its original SHA-256
+`a86c6288bf3175b26142836b8a0560dde5c4db8cee40bf65bf39108d43945e05`.
 
-The full standalone local suite then passed: all 23 `tests/*.lua` files ran
-individually with `lua`, and all 3 `tests/*_spec.py` files ran individually
-with `PYTHONDONTWRITEBYTECODE=1 python3`. Each process exited 0. Lua syntax
-checking also passed for all 61 repository `*.lua` files using
+The disposable pack, data and profile were retained at `session/final-test-pack`,
+`session/final-test-data`, and the same-volume profile sibling
+`C:\Users\Mario\Documents\My Games\Binding of Isaac Repentance+\issue19-20261114T132550Z-e0063e.test-session`.
+The two diagnostic folders are archived at `session/final-diagnostics` and
+absent from active mods. The unsafe helper archive and private crash dump remain
+preserved. The game is closed, and session ownership has been returned to the
+owner. No profile, pack or game-file action remains for this validation session.
+
+The full standalone local suite passed before restoration: all 23 `tests/*.lua`
+files ran individually with `lua`, and all 3 `tests/*_spec.py` files ran
+individually with `PYTHONDONTWRITEBYTECODE=1 python3`. Each process exited 0.
+Lua syntax checking also passed for all 61 repository `*.lua` files using
 `rg --files -g '*.lua' -0 | xargs -0 luac -p`. These local tests do not rerun
 engine validation or execute the restoration driver.
 
@@ -281,7 +297,8 @@ not replay the smoke. The installed-file hash check after launch was not done.
 The separate passive batch mod is at
 `mods/oup_blank_card_issue19_batch/main.lua`, unchanged from the verified batch
 SHA above; the passive observer main is unchanged. `acceptance-staging.json`
-preserves the staging record. Cleanup and profile restoration remain pending.
+preserves the staging record. At this staging checkpoint, cleanup and profile
+restoration were pending; the final restoration audit is recorded above.
 
 ### Candidate v2 production On smoke — basic behavior pass
 
@@ -789,7 +806,8 @@ case passed at frame 1162: the loaded run seed matched the saved run, current
 settings remained On while `nextRun` was Off, one Jera remained held, one Blank
 Card remained owned, charge was 4 with blue charge 0, and neither Battery
 passive was held. The matrix completed with one case passed. This validates
-Continue after saving next-run Off; the fresh-run Off control remains pending.
+Continue after saving next-run Off; the fresh-run Off control passed in the
+following section.
 
 - Capture: `session/capture-bb2d-continue-20261115T224128Z`; stable log 57,435
   bytes, SHA-256
@@ -880,10 +898,11 @@ collector SHA-256
 The first collection wrapper failed during command parsing; the corrected
 wrapper captured the same session without replaying gameplay.
 
-## Cleanup handoff
+## Cleanup and ownership handoff — complete
 
-After the final owner run, close Isaac, preserve its logs and runtime data, and
-archive the diagnostic observer. Restore profile, game data and `options.ini`
-against `before.json`, preserving unrelated mods. Retain the original backups;
-record post-cleanup hashes and confirm the game is closed. Until that cleanup is
-verified, the issue session remains owned by the validation thread.
+The frozen restoration driver and independent audit restored the original
+profile, game data, pack and options; verified immutable backups, unrelated
+mods, archives and the closed game; and returned session ownership to the owner.
+The test run, crash dump, unsafe helper quarantine and disposable tree archives
+remain preserved in the validation session. Repository PR and merge work are
+not part of this restoration checkpoint.

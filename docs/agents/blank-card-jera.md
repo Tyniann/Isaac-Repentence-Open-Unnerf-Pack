@@ -79,11 +79,13 @@ the private session; the crash was not reproduced. Revision 5 removes all
 automatic player creation. The owner joined player 2 through native character
 selection using keyboard P1 and one controller P2; the safe co-op case passed.
 The old v3/v4 diagnostic helper files are archived outside the game mod path
-and must not be run. The active v5 helper is installed. The frozen restoration
-driver [`blank-card-jera-restore.py`](../testing/evidence/blank-card-jera-restore.py)
-checks backups and current contents before restoring original profile, game data
-and pack files; its local transaction/rollback checks passed. Remote restoration
-and final validation-session cleanup remain pending with the owner.
+and must not be run. The active v5 helper was used for validation, then removed
+with the diagnostics during restoration. The frozen restoration driver
+[`blank-card-jera-restore.py`](../testing/evidence/blank-card-jera-restore.py)
+restored original profile, game data, pack and options; the independent audit
+matched file and directory inventories and confirmed the game closed. Disposable
+artifacts remain archived, and session ownership has been returned to the owner.
+See the ledger for exact paths and hashes.
 
 ## Tools and tests
 
@@ -196,8 +198,8 @@ player check passed as recorded in the ledger.
 The full repository's standalone local suite passed after the native evidence
 was recorded: all 23 `tests/*.lua` files and 3 `tests/*_spec.py` files exited
 successfully, and syntax validation passed for all 61 repository Lua files.
-The ledger lists these commands. This does not execute or validate the restore
-driver; remote restoration is still pending.
+The ledger lists these commands and records the successful restore-driver
+execution and independent audit. The disposable artifacts remain preserved.
 
 The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
 four charge, and neither The Battery nor Car Battery already held. Its native
@@ -220,8 +222,8 @@ rollback passed locally. The recipe does not start the game; profile and game
 data remained unchanged in that local smoke.
 
 See the [issue-specific ledger](../testing/blank-card-jera-issue19.md) for
-session provenance, hashes, evidence, tested limits and the pending original-
-profile restoration and cleanup.
+session provenance, hashes, evidence, tested limits and the completed
+restoration handoff.
 
 ---
 *Last updated: 2026-11-15*

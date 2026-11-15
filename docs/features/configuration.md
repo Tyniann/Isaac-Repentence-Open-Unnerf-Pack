@@ -96,11 +96,10 @@ No Greed reward-chain or Greedier check was run. See the
 [Sack Head technical reference](../agents/sack-head.md) and
 [issue #20 validation ledger](../testing/sack-head-issue20.md).
 
-The eleventh control is Blank Card + Jera. A separate capacity probe on J460
-preserved the held item and current charge while setting the next cost, but the
-production callback has not yet been tested in Isaac. Four-room recharge,
-batteries and other consumables, slot changes, Continue, Off behavior and co-op
-remain pending. See the [feature page](blank-card-jera.md),
+The eleventh control is Blank Card + Jera. Native J460 checks passed for the
+production callback, four ordinary 1×1 room clears, The Battery and Car Battery,
+consumables, Schoolbag, local co-op, cold Continue and Off behavior. Continue
+retained active On with the saved next-run choice Off. See the [feature page](blank-card-jera.md),
 [technical reference](../agents/blank-card-jera.md) and
 [issue #19 validation ledger](../testing/blank-card-jera-issue19.md).
 
