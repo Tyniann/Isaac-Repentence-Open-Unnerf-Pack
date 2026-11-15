@@ -425,16 +425,17 @@ Battery mode recorded below; other acceptance cases remain pending.
   current run stays On. `off` is the native control; `co-op` retries that bounded
   co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
   the passive observer to confirm a real continued run.
-- The v3 matrix protocol spec passed locally. Native v3 `battery-smoke` then
-  passed its Magician stored-charge control, Jera cost transition and complete
-  stored-battery sequence, as detailed above. The earlier v2 repeated-use error
-  remains historical and is not a v3 failure. The Car Battery mode and the
-  remaining matrix engine runs are pending. These fixtures use native input,
-  repeated use and real pickups; they do not write charge or room-clear flags.
-  Room changes and NPC kills cannot be undone inside the disposable run. Schoolbag, D6, or a second actor may remain for
-  profile restoration; if the bounded `addplayer 0 1` experiment creates no
-  second Isaac, co-op is recorded pending. The battery-smoke and full matrix
-  require their documented prepared, empty-room conditions.
+- The v3 matrix protocol spec passed locally. Native v3 `battery-smoke` and
+  `car-battery` passed their recorded cases. The On matrix then passed five
+  cases before the room-clear exact-charge assertion stopped it; that criterion,
+  the remaining On cases and other acceptance checks remain pending. The earlier
+  v2 repeated-use error is historical, not a v3 failure. These fixtures use
+  native input, repeated use and real pickups; they do not write charge or
+  room-clear flags. Room changes and NPC kills cannot be undone inside the
+  disposable run. Schoolbag, D6 or a second actor may remain for profile
+  restoration; if `addplayer 0 1` creates no second Isaac, co-op is pending. The
+  battery-smoke and full matrix require their documented prepared, empty-room
+  conditions.
 
 ## Candidate v2 staging record
 
@@ -574,6 +575,50 @@ display acceptance cases remain pending.
   `b5997fbcef440a50e8182befb92c9bd84a7139097652364f255ff36446982d52`, zero
   malformed records and no collector errors. The main agent cross-checked the
   compact trace and final raw records.
+
+### Candidate bb2d On matrix — five cases passed; room-clear check stopped
+
+The owner ran the v3 `on` matrix with source `bb2d0587b1d018c82e3abc9f75928e3e29d8fb6f`
+and helper `21bce95185f01034b64c24c39935fabc12755d91f9bbbd3a87a3470dc31afc45`,
+using seed `2855396759` and actor `483707137`. The main agent cross-checked the
+raw output. Five cases passed before a room-clear assertion stopped the matrix:
+
+- `ordinary_keys_bombs_hearts` (frame 2810): key, bomb and heart variants
+  each doubled from one to two.
+- `three_battery_fed_cycles` (frame 2931): one artificial battery seed fed
+  three native duplication and collection cycles.
+- `post_use_cost_timing` (frame 3065).
+- `other_rune_passthrough` (frame 3131): Dagaz was card enum 35, and remained
+  native. This capture's 35 value is the observed game enum; do not substitute
+  any stale/fake harness value.
+- `schoolbag_swaps` (frame 3223): Blank Card stayed at four; D6 moved from
+  secondary charge 6 to 0 after the active-item swaps.
+
+The room-clear sequence was not accepted. Room 110 at frame 3293 moved charge
+0→1; room 109 at 3333 moved 1→2; room 108 at 3373 moved 2→4, then the matrix
+reported `Room clear did not add exactly one charge` and stopped with five
+passed cases. The room shape was not included in the capture. The owner's
+large-room explanation is plausible but unconfirmed; the fixture needs a
+standard 1×1-room filter with shape evidence before testing the remaining
+clears. Do not report the four-room criterion, co-op, MCM settings, charge
+display, or a normal matrix finish as passed. The terminal disposable-run state
+had one full-charge Blank Card (286), Jera (33), Schoolbag, D6 in slot 1 at
+charge 4, and no The Battery (63) or Car Battery. Native room clears also
+recharged the other active item.
+
+- Capture: `session/capture-bb2d-on-20261115T195326Z`; stable 136,187-byte log,
+  log/second-read SHA-256
+  `31e9bbef05d033a1c1e9ec7065b0908132319da3f73af1395ca539a91528bd1c`.
+- Parsed records: 263, SHA-256
+  `4d221611f2b47bd989ce323f17c6cc7314c35bd2b5637eeab29d3cd3986c41d9`, zero
+  malformed records and no collector errors. The matrix error is recorded in
+  the payload, so an empty collector error list is not a pass for room clears.
+
+An earlier collection attempt stopped at a hash guard after the captured SHA
+was transcribed incorrectly (`4b46cbe`/`4b46bce`); no native fixture action
+occurred in that attempt. The capture above is the corrected run. The next
+owner run is limited to the remaining room-clear tail, co-op and MCM checks;
+the five passed cases are to be reused, not replayed.
 
 ### Independent review checkpoint
 
