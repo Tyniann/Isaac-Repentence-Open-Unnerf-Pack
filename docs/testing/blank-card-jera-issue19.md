@@ -42,6 +42,27 @@ helper was archived and must not be run; safe revision 5 requires native
 player joining. The session's original-profile restoration and final cleanup
 remain separate outstanding tasks.
 
+### Frozen restoration driver — review complete, execution pending
+
+[`blank-card-jera-restore.py`](evidence/blank-card-jera-restore.py) is the
+maintained one-session restoration driver. It validates immutable backup file
+and directory inventories, the original 21-file pack, the installed 22-file
+runtime pin and unrelated mod contents before mutation. It stages original
+pack, game-data and profile trees on their destination volumes, archives the
+disposable trees and diagnostic folders, verifies the restored inventories,
+and rolls back moved trees if an operation fails. Synthetic success, injected
+profile-rename rollback and unrelated-mod-change refusal passed in a local
+temporary fixture. Isaac is confirmed closed. The remote restoration has not
+been executed; original-profile restoration and cleanup remain pending.
+
+The full standalone local suite then passed: all 23 `tests/*.lua` files ran
+individually with `lua`, and all 3 `tests/*_spec.py` files ran individually
+with `PYTHONDONTWRITEBYTECODE=1 python3`. Each process exited 0. Lua syntax
+checking also passed for all 61 repository `*.lua` files using
+`rg --files -g '*.lua' -0 | xargs -0 luac -p`. These local tests do not rerun
+engine validation or execute the restoration driver.
+
+
 ### Historical reserve-loss defect and validated correction
 
 The first native `battery-smoke` exposed a defect in the candidate implementation:

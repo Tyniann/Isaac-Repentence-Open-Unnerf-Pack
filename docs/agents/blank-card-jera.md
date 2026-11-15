@@ -79,8 +79,11 @@ the private session; the crash was not reproduced. Revision 5 removes all
 automatic player creation. The owner joined player 2 through native character
 selection using keyboard P1 and one controller P2; the safe co-op case passed.
 The old v3/v4 diagnostic helper files are archived outside the game mod path
-and must not be run. The active v5 helper is installed. Original-profile
-restoration and final validation-session cleanup remain pending with the owner.
+and must not be run. The active v5 helper is installed. The frozen restoration
+driver [`blank-card-jera-restore.py`](../testing/evidence/blank-card-jera-restore.py)
+checks backups and current contents before restoring original profile, game data
+and pack files; its local transaction/rollback checks passed. Remote restoration
+and final validation-session cleanup remain pending with the owner.
 
 ## Tools and tests
 
@@ -189,6 +192,12 @@ installs revision 5 while preserving the production mod and profile/data files.
 The guarded update is complete; do not run archived v3/v4 helper paths. Co-op
 requires owner-selected native UI or controller input; the owner-joined two-
 player check passed as recorded in the ledger.
+
+The full repository's standalone local suite passed after the native evidence
+was recorded: all 23 `tests/*.lua` files and 3 `tests/*_spec.py` files exited
+successfully, and syntax validation passed for all 61 repository Lua files.
+The ledger lists these commands. This does not execute or validate the restore
+driver; remote restoration is still pending.
 
 The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
 four charge, and neither The Battery nor Car Battery already held. Its native
