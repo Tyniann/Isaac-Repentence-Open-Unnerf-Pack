@@ -242,25 +242,44 @@ preserves the staging record. Cleanup and profile restoration remain pending.
 ## Bounded lifecycle matrix
 
 - Matrix: [`blank-card-jera-matrix.lua`](../../tools/validation/blank-card-jera-matrix.lua),
-  SHA-256 `1df01a33e93e59ab7e47cd98b050ee3bfa42be9805b66aefd76c175e9ea8968e`.
+  SHA-256 `1d5b33b01aba1fcd7d0484665e16b798696184a21e7f92c5071510dec106cd2f`.
 - Protocol spec: [`blank_card_jera_matrix_spec.lua`](../../tests/blank_card_jera_matrix_spec.lua).
   Local checks cover scoped input, stored-battery-charge success and deliberate
   fault detection, disabled native control, exact callback removal and survival
   of the passive Continue observer. They are mock protocol checks, not engine
   proof.
-- Modes: `battery-smoke` checks a stored battery bar; `on` covers ordinary
+- Modes: `battery-smoke` checks The Battery's stored second charge;
+  `car-battery` first measures native Car Battery's repeated Magician effect, then compares Jera's
+  repeat count with a single bar and tests inherited two-cost to next-four
+  timing. It then checks The Battery plus Car Battery through 8→4→0 charge and
+  native penny doubling. Each mode step is reported separately in the fixture
+  status. `on` covers ordinary
   pickups, three battery-fed cycles from one initial battery, card transitions,
   other-rune passthrough, Schoolbag swaps, four mapped hostile-room clears, a
   bounded co-op command experiment, and changing MCM to next-run Off while the
   current run stays On. `off` is the native control; `co-op` retries that bounded
   co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
   the passive observer to confirm a real continued run.
-- Remaining matrix engine runs are pending. It uses native input and pickups and does
-  not write charge or room-clear flags. Room changes/NPC kills cannot be undone
+- The new `car-battery` protocol spec passed locally. Corrected-module engine
+  validation, this Car Battery mode, and remaining matrix engine runs are
+  pending. The mode uses native input, native repeated use and real pickups; it
+  does not write charge or room-clear flags. Room changes/NPC kills cannot be undone
   inside the disposable run. Schoolbag, D6, or a second actor may remain for
   profile restoration; if the bounded `addplayer 0 1` experiment creates no
   second Isaac, co-op is recorded pending. The battery-smoke and full matrix
   require their documented prepared, empty-room conditions.
+
+## Candidate v2 staging record
+
+- Manifest: [`blank-card-jera-runtime-v2.json`](evidence/blank-card-jera-runtime-v2.json),
+  pinned to source commit `0e1c6e4215d629675cd8f32be468eaf7f4cba640`, 22 files,
+  SHA-256 `db9bac3a7d797b621df6656660024ac3890ec75d21d5f8e2263fb21470803e7a`.
+- Upgrade recipe:
+  [`blank-card-jera-update-v2.py`](evidence/blank-card-jera-update-v2.py).
+  Its synthetic swap smoke passed, including injected helper-write rollback.
+  It archives the previous candidate and helper while preserving the original
+  pre-test pack; the local check left profile and game data unchanged. This is
+  staging evidence only, not an installation or gameplay result.
 
 ## Session and setup
 

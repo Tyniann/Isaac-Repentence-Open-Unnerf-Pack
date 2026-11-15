@@ -5,7 +5,7 @@ local json = require("json")
 local mod = RegisterMod("OUP Blank Card Matrix", 1)
 local matrix = {}
 local state = {status = "idle"}
-local actor, first, task, wake, pulse, pending, startRoom, batteryOwner
+local actor, first, task, wake, pulse, pending, startRoom, batteryOwner, carOwner
 local callbacks = {}
 local lastStart
 local BC = CollectibleType.COLLECTIBLE_BLANK_CARD
@@ -42,6 +42,7 @@ local function detach()
     if pending and pending:Exists() then pending:Remove() end
     pending = nil
     if batteryOwner then batteryOwner:RemoveCollectible(CollectibleType.COLLECTIBLE_BATTERY); batteryOwner = nil end
+    if carOwner then carOwner:RemoveCollectible(CollectibleType.COLLECTIBLE_CAR_BATTERY); carOwner = nil end
 end
 local function finish(status, message)
     state.status, state.message = status, message
@@ -55,16 +56,64 @@ local function passed(name, details)
     state.cases[#state.cases + 1] = {name = name, status = "pass"}
     emit("case_pass", {name = name, details = details})
 end
-local function activate(name, item, expectedJera)
+local function activate(name, item, expectedJera, expectedUses)
     local uses, cards = state.uses, state.jera
     emit("before_use", {name = name, player = snapshot(actor)})
     pulse = Game():GetFrameCount() + 2
     wait(20)
     pulse = nil
-    assert(state.uses == uses + 1, "Expected exactly one native item use: " .. name)
+    assert(state.uses == uses + (expectedUses or 1), "Unexpected native item-use count: " .. name)
     assert(state.lastItem == item, "Wrong native active item used: " .. name)
     assert(state.jera == cards + expectedJera, "Unexpected Jera activation count: " .. name)
     emit("after_use", {name = name, player = snapshot(actor), jeraUses = state.jera - cards})
+end
+
+local refill, cleanPickups
+local function carBattery()
+    assert(not actor:HasCollectible(CollectibleType.COLLECTIBLE_CAR_BATTERY), "Car Battery fixture already present")
+    assert(not actor:HasCollectible(CollectibleType.COLLECTIBLE_BATTERY), "Run the stored-charge smoke first")
+    actor:AddCollectible(CollectibleType.COLLECTIBLE_CAR_BATTERY, 0, false)
+    carOwner = actor
+    actor:SetCard(0, Card.CARD_MAGICIAN)
+    wait(3)
+    local cards = state.cards
+    activate("car_battery_native_magician", BC, 0, 2)
+    local copies = state.cards - cards
+    assert(copies > 0 and total(actor) == 0, "Native Car Battery control did not spend one bar")
+    emit("car_battery_reference", {nativeCardUses = copies, player = snapshot(actor)})
+    refill("car_battery_magician")
+    assert(total(actor) == 2)
+    actor:SetCard(0, Card.RUNE_JERA)
+    wait(3)
+    activate("car_battery_inherited_jera", BC, copies, 2)
+    assert(total(actor) == 0 and actor:GetCard(0) == Card.RUNE_JERA)
+    refill("car_battery_inherited_jera")
+    assert(total(actor) == 4)
+    passed("car_battery_cost_transition", {nativeCardUses = copies, player = snapshot(actor)})
+    local position = Game():GetRoom():GetCenterPos() + Vector(140, 80)
+    Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, position, Vector.Zero, nil)
+    activate("car_battery_single_bar", BC, copies, 2)
+    assert(total(actor) == 0 and #pickups(PickupVariant.PICKUP_COIN) == 2 ^ copies)
+    passed("car_battery_single_charge_expenditure", {nativeCardUses = copies, pennies = #pickups(PickupVariant.PICKUP_COIN)})
+    cleanPickups()
+    actor:AddCollectible(CollectibleType.COLLECTIBLE_BATTERY, 0, false)
+    batteryOwner = actor
+    refill("both_batteries_first")
+    if total(actor) < 8 then refill("both_batteries_second") end
+    assert(total(actor) == 8)
+    Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_COIN, CoinSubType.COIN_PENNY, position, Vector.Zero, nil)
+    activate("both_batteries_first_jera", BC, copies, 2)
+    assert(total(actor) == 4 and #pickups(PickupVariant.PICKUP_COIN) == 2 ^ copies)
+    activate("both_batteries_second_jera", BC, copies, 2)
+    assert(total(actor) == 0 and #pickups(PickupVariant.PICKUP_COIN) == 2 ^ (copies * 2))
+    cleanPickups()
+    actor:RemoveCollectible(CollectibleType.COLLECTIBLE_BATTERY)
+    batteryOwner = nil
+    actor:RemoveCollectible(CollectibleType.COLLECTIBLE_CAR_BATTERY)
+    carOwner = nil
+    refill("after_car_battery")
+    assert(total(actor) == 4 and actor:GetCard(0) == Card.RUNE_JERA and actor:GetCollectibleNum(BC, true) == 1)
+    passed("car_battery_with_stored_charge", {nativeCardUses = copies, player = snapshot(actor)})
 end
 local function collect(pickup, name)
     local seed, before = pickup.InitSeed, snapshot(actor)
@@ -82,12 +131,12 @@ local function collect(pickup, name)
     end
     error("Native battery was not collected: " .. name)
 end
-local function refill(name)
+refill = function(name)
     local battery = Isaac.Spawn(EntityType.ENTITY_PICKUP, PickupVariant.PICKUP_LIL_BATTERY,
         BatterySubType.BATTERY_NORMAL, actor.Position, Vector.Zero, nil):ToPickup()
     collect(battery, name)
 end
-local function cleanPickups()
+cleanPickups = function()
     for _, pickup in ipairs(pickups()) do pickup:Remove() end
     wait(2) -- Native removal is deferred; inspect after real updates.
     assert(#pickups() == 0, "Fixture pickup cleanup incomplete")
@@ -346,6 +395,7 @@ end
 
 local function run()
     if state.mode == "battery-smoke" then batterySmoke()
+    elseif state.mode == "car-battery" then carBattery()
     elseif state.mode == "on" then
         ordinaryPickups(); chain(); transitions(true); slots(); roomClears(); coOp(); nextOff()
     elseif state.mode == "co-op" then coOp(); nextOff()
@@ -374,7 +424,7 @@ end
 
 function matrix.Run(mode)
     assert(state.status ~= "running", "Matrix already running")
-    local modes = {["battery-smoke"] = true, on = true, ["continue"] = true,
+    local modes = {["battery-smoke"] = true, ["car-battery"] = true, on = true, ["continue"] = true,
         off = true, ["co-op"] = true, ["prepare-continue"] = true}
     assert(modes[mode], "Unknown matrix mode")
     first, actor = Isaac.GetPlayer(0), Isaac.GetPlayer(0)

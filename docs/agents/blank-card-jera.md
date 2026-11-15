@@ -125,7 +125,7 @@ passed the behavior checks. Same-frame pickup cleanup was inconclusive because
 native removal is deferred; this is one engine smoke, not full feature acceptance.
 
 The matrix fixture is also disposable-run tooling. Its `Run(mode)`, `Status()`
-and `Stop()` interface supports `battery-smoke`, `on`, `off`, `co-op`,
+and `Stop()` interface supports `battery-smoke`, `car-battery`, `on`, `off`, `co-op`,
 `prepare-continue` and `continue`. The full On matrix covers native ordinary
 pickup doubling, three battery-fed cycles from one initial battery, Jera/Magician
 and other-rune transitions, Schoolbag swaps, four mapped hostile-room clears,
@@ -140,6 +140,29 @@ restoration. The matrix and its mock protocol have passed local checks. The
 first battery-smoke engine run found the reserve-loss defect described in the
 ledger; the corrected battery-smoke and remaining matrix engine cases are
 pending.
+
+The `car-battery` mode requires a cleared disposable Isaac room, Blank Card at
+four charge, and neither The Battery nor Car Battery already held. Invoke
+`OUPBlankCardMatrix.Run("car-battery")` once, inspect with `Status()`, and
+follow the batch's console-close prompts. It first uses native Magician to
+measure Car Battery's repeat count, then checks Jera at the inherited two-cost
+bar and the next four-cost bar. It compares a single Jera bar's penny doubling
+to the native repeat count, then checks both passives with charge moving 8→4→0
+and the corresponding native penny counts. This isolates Car Battery's repeat
+behavior from stored-charge behavior; the corrected module and this engine mode
+have not yet been validated in-game.
+
+The pinned v2 candidate manifest is
+[`blank-card-jera-runtime-v2.json`](../testing/evidence/blank-card-jera-runtime-v2.json),
+source commit `0e1c6e4215d629675cd8f32be468eaf7f4cba640`, 22 files, SHA-256
+`db9bac3a7d797b621df6656660024ac3890ec75d21d5f8e2263fb21470803e7a`. Its
+one-session upgrade recipe
+[`blank-card-jera-update-v2.py`](../testing/evidence/blank-card-jera-update-v2.py)
+reuses the frozen guarded swap inventory, archives the previous candidate and
+diagnostic helper, preserves the pre-test original pack, and rolls back if
+helper installation fails. A synthetic success and injected helper-write
+rollback passed locally. The recipe does not start the game; profile and game
+data remained unchanged in that local smoke.
 
 See the [issue-specific ledger](../testing/blank-card-jera-issue19.md) for
 session provenance, hashes, evidence and remaining acceptance work.
