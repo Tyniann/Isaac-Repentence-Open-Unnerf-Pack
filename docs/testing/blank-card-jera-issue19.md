@@ -266,9 +266,10 @@ one Jera dispatch. This confirms basic On duplication, held rune, and native
 The fixture logged six pickups remaining in the same frame as its removal
 request. Native removal is deferred, so cleanup is inconclusive until a later
 empty-room preflight; do not count the six as a confirmed cleanup failure or
-claim they were removed. The Battery reserve case, Car Battery, post-use cost
-transitions, slot changes, room-clear recharge, Continue, Off and co-op remain
-pending. No feature acceptance pass is claimed.
+claim they were removed. The stored-battery and post-use cost-transition cases
+were later covered by the v3 battery-smoke below. Car Battery, slot changes,
+room-clear recharge, Continue, Off and co-op remain pending. No feature
+acceptance pass is claimed.
 
 ### Candidate v2 stored-battery run — fixture error, observations retained
 
@@ -296,9 +297,10 @@ may have remained active across native queries, but this is only a hypothesis.
 
 The capture used seed `2855396759` and actor `483707137`, matching the v2 On
 smoke. It confirms the initial native reserve was retained by the first
-discharge, but it does not validate the complete Battery sequence or corrected
-module. A revised input latch/control is being designed; rerun only after its
-preflight and native-use counts are confirmed. Car Battery, cost transitions,
+discharge, but not the complete Battery sequence. Revision 3 later released the
+synthetic pulse on the first native use; the successful v3 battery-smoke below
+shows the repeated-use fixture error did not recur in that run. This supports
+that fixture change but does not prove the previous root cause. Car Battery,
 slots, room clears, Continue, Off and co-op remain pending.
 
 ### Matrix fixture revision 3 — local protocol check
@@ -320,12 +322,44 @@ two-charge bar, verifies the next capacity is four after real refills, spends
 four-charge bar. The protocol spec also checks the empty-start path, all three
 input hooks released on the first native use, Car Battery callback counting,
 fault detection and passive cleanup. `lua tests/blank_card_jera_matrix_spec.lua`
-passes locally. This is mock protocol evidence only; v3 has not been run in the
-engine. The owner plans to stage it under `matrix-v3.lua` in the existing
-stopped diagnostic session and load it once with
-`luarun mods/oup_blank_card_issue19_observer/matrix-v3.lua`. The resident v2
-game-start observer remains loaded; a cold game start will be required to load
-the updated helper before Continue validation.
+passes locally. The owner staged v3 as
+`mods/oup_blank_card_issue19_observer/matrix-v3.lua` and loaded it once with
+`luarun mods/oup_blank_card_issue19_observer/matrix-v3.lua` in the existing
+stopped diagnostic session. The resident v2 game-start observer remains loaded;
+a cold game start will be required to load the updated helper before Continue
+validation. Native v3 results follow.
+
+### Candidate v2 battery-smoke with matrix revision 3 — three cases passed
+
+The staged matrix was 25,146 bytes, SHA-256
+`21bce95185f01034b64c24c39935fabc12755d91f9bbbd3a87a3470dc31afc45`; staging
+is recorded in `matrix-v3-staging.json`. This diagnostic-only Lua update was
+loaded with `luarun`; there was no game restart or production-module reload.
+The production source remained `0e1c6e4215d629675cd8f32be468eaf7f4cba640`
+(module SHA-256
+`81234e4d8e697b4fb6379369263c16676334b2a5f554e7f71a709c4152e8f3fa`).
+
+The raw capture, cross-checked by the main agent, records all three matrix
+cases passing at terminal frame 931: `native_magician_stored_charge_control`,
+`stored_charge_across_cost_transition`, and `stored_battery_charge`. It used
+seed `2855396759` and actor `483707137`, the same pair as the v2 On smoke. The
+native Magician control demonstrated 2+2→2→0. With Jera, the inherited 2+2 bar
+retained two charges; real battery refills established the next 4+4 bar. One
+Jera use at frame 850 left base 4/blue 0 by frame 868, and the next use at
+frame 870 left 0+0 by frame 888. After The Battery was removed at frame 888, a
+real battery restored the base bar to four by frames 915/931. Terminal state
+was one Blank Card, Jera held, full base charge 4, blue charge 0, and no The
+Battery or Car Battery. The v3 fixture passed the intended reserve and
+next-cost checks for this run. This does not validate Car Battery or the
+remaining issue matrix.
+
+- Capture: `session/capture-v3-battery-20261115T174224Z`; stable 62,531-byte log,
+  both-read SHA-256
+  `2c0a9de50d875f0c6961205a991386c5659c3265ea137b3d010ee97ef0b8800b`.
+- Parsed records: 104, SHA-256
+  `7209d41391536379a077d89c4c4dfa8d1b60f0ad21cec4aa0a0ef67ac2e2c55c`, zero
+  malformed records and no collector errors. The earlier v2 matrix error at
+  frame 324 remains preserved above as historical evidence, not as a v3 failure.
 
 ## Bounded lifecycle matrix
 
@@ -351,14 +385,13 @@ the updated helper before Continue validation.
   current run stays On. `off` is the native control; `co-op` retries that bounded
   co-op experiment; `prepare-continue` saves next-run Off; `continue` requires
   the passive observer to confirm a real continued run.
-- The v3 matrix protocol spec passed locally. The v2 stored-battery run
-  observed reserve retention on the first native discharge, but the matrix
-  stopped on an unexpected repeated item-use callback before any case passed.
-  Corrected-module battery validation, the Car Battery mode, and remaining
-  matrix engine runs are pending. These fixtures use native input, repeated use
-  and real pickups; they do not write charge or room-clear flags. Room changes
-  and NPC kills cannot be undone
-  inside the disposable run. Schoolbag, D6, or a second actor may remain for
+- The v3 matrix protocol spec passed locally. Native v3 `battery-smoke` then
+  passed its Magician stored-charge control, Jera cost transition and complete
+  stored-battery sequence, as detailed above. The earlier v2 repeated-use error
+  remains historical and is not a v3 failure. The Car Battery mode and the
+  remaining matrix engine runs are pending. These fixtures use native input,
+  repeated use and real pickups; they do not write charge or room-clear flags.
+  Room changes and NPC kills cannot be undone inside the disposable run. Schoolbag, D6, or a second actor may remain for
   profile restoration; if the bounded `addplayer 0 1` experiment creates no
   second Isaac, co-op is recorded pending. The battery-smoke and full matrix
   require their documented prepared, empty-room conditions.
