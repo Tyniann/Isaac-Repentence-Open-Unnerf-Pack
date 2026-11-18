@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-11-18
+
 ### Added
 
 - Add Blank Card + Jera, setting the next Blank Card activation cost to four
