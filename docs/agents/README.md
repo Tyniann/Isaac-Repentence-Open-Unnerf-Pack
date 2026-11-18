@@ -48,6 +48,12 @@ The root [AGENTS.md](../../AGENTS.md) defines when to consult these guides:
 
 ## Evidence and technical reference
 
+- [Jera behavior history](../research/jera-behavior-history.md): Afterbirth+ versus
+  Repentance copying, charges and availability, restoration candidates, and
+  limits of the historical and current-target evidence.
+- [Sack Head history](../research/sack-head-history.md): release-era evidence,
+  conflicting conversion-rate claims, Shop availability, the unresolved early
+  sack-content conversion claim, and the later Equality! interaction.
 - [Compatibility results](../testing/issue-1-engine-results.md)
 - [Configuration results](../testing/configuration-results-1.9.7.17.md)
 - [Magic Mushroom results](../testing/magic-mushroom-1.9.7.17.md)
